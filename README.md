@@ -6,7 +6,7 @@ Interactive tools that score candidate markets for AI data centres on power, con
 
 | Edition 版本 | Markets 市场 | Link 链接 |
 |---|---|---|
-| Europe 欧洲 | 18 | [jstreecool-web.github.io/jstreecool.github.io](https://jstreecool-web.github.io/jstreecool.github.io/) |
+| Europe 欧洲 | 27 | [jstreecool-web.github.io/jstreecool.github.io](https://jstreecool-web.github.io/jstreecool.github.io/) |
 | China & Hong Kong 中国内地与香港 | 15 | [china.html](https://jstreecool-web.github.io/jstreecool.github.io/china.html) |
 
 ## How it works 工作原理
