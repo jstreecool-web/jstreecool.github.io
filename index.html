@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="jstreecool">
+<!-- © 2026 jstreecool. Licensed under CC BY-NC 4.0: https://creativecommons.org/licenses/by-nc/4.0/ -->
 <title>European AI Data Centre Site Selector</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -102,6 +104,8 @@ tbody tr{cursor:pointer} tbody tr:hover{background:var(--accent-soft)} tbody tr.
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
 .tabpane{display:none;flex-direction:column;gap:12px}.tabpane.on{display:flex}
 .note{font-size:12.5px;color:var(--ink2);max-width:95ch}
+footer.credit{border-top:1px solid var(--line);padding-top:12px;font-size:12px;color:var(--ink2);display:flex;flex-wrap:wrap;gap:4px 24px;justify-content:space-between}
+footer.credit p{margin:0;max-width:95ch} footer.credit a{color:var(--accent)}
 .detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .kv{border-left:2px solid var(--line);padding-left:8px}.kv>span{display:block;font-size:11.5px;color:var(--ink2)}.kv b{font-size:16px;font-weight:600}
 .riskrow{display:flex;gap:10px;flex-wrap:wrap}
@@ -164,6 +168,7 @@ a{color:var(--accent)}
     <div class="tabpane" id="t-cost"></div>
     <div class="tabpane" id="t-sources"></div>
   </section>
+  <footer class="credit"><p id="f-credit"></p><p id="f-license"></p></footer>
 </div>
 <div id="tip"></div>
 
@@ -368,6 +373,9 @@ function buildControls(){
   $("#h-rankhint").textContent=L("score 0–100, whisker = 5th–95th percentile","得分0–100，须线为第5–95百分位");
   $("#ranknote").innerHTML=L("Criteria columns: <b>P</b> power, <b>N</b> network, <b>D</b> demand, <b>C</b> cost, <b>R</b> risk, <b>A</b> China access, each 0–100 relative to the other markets. <b>Top 3</b> is the share of simulations in which the market finishes in the top three. The percentile range comes from 400 simulations that vary published figures by ±5% and estimates by ±15%.",
    "分项列：<b>电</b>电力、<b>网</b>网络连接、<b>需</b>市场需求、<b>本</b>成本、<b>险</b>风险、<b>准</b>中资准入，均为相对其余市场的0–100分。<b>前三概率</b>是该市场在模拟中进入前三名的比例。区间来自400次模拟：公开数据浮动±5%，估算值浮动±15%。");
+  const ME='<a href="https://github.com/jstreecool-web">jstreecool</a>', CC='<a href="https://creativecommons.org/licenses/by-nc/4.0/" rel="license">CC BY-NC 4.0</a>';
+  $("#f-credit").innerHTML=L("© 2026 "+ME+". Built and maintained by "+ME+"; please credit this page when you share or cite it.","© 2026 "+ME+"。由"+ME+"设计与维护，转发或引用时请注明出处。");
+  $("#f-license").innerHTML=L("Analysis and code licensed under "+CC+": free to share and adapt with credit, not for commercial use. Figures from the cited sources stay under their own terms.","分析与代码采用"+CC+"许可：注明出处即可分享和改编，不得用于商业用途。引用的第三方数据仍适用其各自条款。");
   document.querySelectorAll("#langs .chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===S.lang));
   drawSources();
 }
