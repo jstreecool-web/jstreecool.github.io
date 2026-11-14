@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ABN AMRO 案例分析</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deal-memo page — fixed contents rail on the left, one reading column, tables full column width */
+:root {
+  --bg: #f6f6f3;
+  --paper: #ffffff;
+  --ink: #1b2130;
+  --ink-2: #4d5566;
+  --rule: #dcdcd4;
+  --accent: #184f95;
+  --accent-soft: #e6eefa;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+    --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+    --s1: #3987e5; --s2: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+  --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+  --s1: #3987e5; --s2: #d95926;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+nav { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .navhead { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 8px; }
+nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-left: 2px solid var(--rule); }
+nav a.lang { margin-top: 14px; border-left: 0; padding-left: 0; color: var(--accent); font-weight: 700; }
+nav a:hover, nav a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--ink-2); letter-spacing: .04em; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; }
+.sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 8px; }
+.kpi { background: var(--paper); padding: 14px 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.kpi span { font-size: 13px; color: var(--ink-2); }
+section { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 24px; scroll-margin-top: 16px; }
+section > *:first-child { margin-top: 0; }
+h2 { font-family: var(--display); font-size: 24px; line-height: 1.4; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); text-wrap: balance; }
+h3 { font-size: 17px; margin: 28px 0 8px; color: var(--accent); text-wrap: balance; }
+p, li { max-width: 46em; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 1.4em; margin: 8px 0; }
+li { margin: 4px 0; }
+section > p:nth-of-type(1) strong:first-child { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+thead th { text-align: left; font-weight: 700; background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+code { font-size: .9em; }
+.fig { margin: 22px 0 6px; }
+.fig figcaption { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); }
+.sw.ref { height: 0; border-top: 2px dashed var(--ink-2); border-radius: 0; width: 16px; }
+.chart { width: 100%; max-width: 680px; height: auto; display: block; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .tick, .chart .reflab { fill: var(--ink-2); font-size: 12px; font-family: var(--body); }
+.chart .cat { fill: var(--ink); font-size: 13px; font-family: var(--body); }
+.chart .val { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--body); }
+.chart .s1 { fill: var(--s1); } .chart .s2 { fill: var(--s2); }
+.chart .ref { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar:hover path, .chart .bar:focus path { opacity: .8; }
+.chart .bar:focus { outline: none; }
+.src { font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+footer { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 16px; }
+  nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav .navhead { width: 100%; margin: 0; }
+  nav a { border: 1px solid var(--rule); padding: 4px 10px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 20px 18px; }
+  h1 { font-size: 27px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="目录"><div class="navhead">目录</div><a href="#summary">执行摘要</a><a href="#q1">一 · 竞争地位</a><a href="#q2">二 · TCI 的信</a><a href="#q3">三 · 两份报价</a><a href="#q4">四 · 董事会</a><a href="#q5">五 · Groenink 与 Martinez</a><a href="#appendix">附录 · 数据口径</a><a class="lang" href="en.html" hreflang="en">English version →</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">案例分析 · St.Gallen 案例 "House for sale: The battle to control ABN AMRO"</div>
+      <h1>ABN AMRO 案例分析：2007年控制权争夺战</h1>
+      <p class="sub">Barclays 与 RBS / Santander / Fortis 银团的竞购，按案例五道题逐一作答。分析日期 2026-11-15。</p>
+      <div class="kpis">
+        <div class="kpi"><b>€57bn</b><span>3 月 20 日市值（未受要约影响）</span></div>
+        <div class="kpi"><b>€71.1bn</b><span>银团报价，每股 €38.40</span></div>
+        <div class="kpi"><b>+25%</b><span>竞价带来的溢价</span></div>
+        <div class="kpi"><b>93%</b><span>银团报价中的现金比例</span></div>
+      </div>
+    </header>
+    <section id="summary"><h2>执行摘要</h2>
+<p>ABN AMRO 是一家"拆开卖比整体更值钱"的中型银行，管理层和监事会多年都没能解决这个问题。TCI 把它推上货架后，两方竞价把价格从 €57bn 抬到 €71.1bn（+25%）。到 2007 年 9 月，银团报价在价格和确定性上都明显占优。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>核心结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. 竞争地位</td>
+<td>"夹在中间"：收入全球第15、市值第34；本土资产仅29.4%，EPS 约6年持平，成本偏高。估值折价使它成为收购标的</td>
+</tr>
+<tr>
+<td>2. TCI 信件目的</td>
+<td>逼董事会启动出售或拆分，把 SOTP 折价变成控制权溢价；绕过管理层，直接向监事会主席施压</td>
+</tr>
+<tr>
+<td>3. 两份报价</td>
+<td>9月1日银团每股约€38.08，Barclays 约€32.46，高约17%；银团93%现金，价值仅缩水0.8%。Barclays 胜在不拆分和管理层支持。建议倾向银团，但要求对方给出融资和就业承诺</td>
+</tr>
+<tr>
+<td>4. 董事会</td>
+<td>12名监事仅3人有金融背景，5人身兼≥3个外部职务；主席出身零售业，权力集中。长期容忍业绩不佳，监督失守</td>
+</tr>
+<tr>
+<td>5. Groenink / Martinez</td>
+<td>Groenink 有利益冲突，用 LaSalle 做"毒丸"，不合格；Martinez 被动，未主导独立程序，结果尚可但过程失分</td>
+</tr>
+</tbody>
+</table></div></section>
+<section id="q1"><h2>问题一：ABN AMRO 2007年初的竞争地位</h2>
+<p><strong>结论：</strong> 到2007年初，ABN AMRO 是典型的"夹在中间"（stuck in the middle）的中型银行。按收入排全球第15，规模不小，但在任何一个市场都谈不上领先。它的成本高于主要对手，盈利多年停滞，市场也一直给它估值折价。说到底，它的问题不在资产质量，而在"组合大于整体"：这些业务在别人手里更值钱，所以它从一个整合者变成了被收购的标的。</p>
+<h3>1. 规模与聚焦：战略说了，执行没跟上</h3>
+<ul>
+<li>2000年公司宣布从全能银行转向聚焦战略，核心市场定为荷兰、巴西和意大利。但到2006年底，业务仍遍布<strong>56个国家</strong>，本土资产只占<strong>29.4%</strong>（约70%在海外）。美国的 LaSalle 这类非核心业务也还没处理掉。</li>
+<li>Groenink 自己承认，银行的地域布局"更像全球最大的全能银行"，但又拿不到相应的规模效益。结果是：跟全球巨头比规模不够，跟区域冠军比又不够聚焦。</li>
+<li>收购 Antonveneta（意大利）出价过高，没有带来承诺的价值，市场因此对管理层的并购纪律打折扣。</li>
+</ul>
+<h3>2. 成本与盈利：差距在结构上</h3>
+<ul>
+<li>CEO 也承认成本结构是最大弱点，成本高于主要竞争对手。</li>
+<li>基础 EPS 大约<strong>6年持平</strong>，而同期全球银行业利润普遍高速增长。ROE"进入同业前五"的目标始终没有接近。</li>
+</ul>
+<h3>3. 资本市场评价：估值有折价</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>ABN AMRO</th>
+<th>同业/基准</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>收入排名 / 市值排名</td>
+<td>第15 / 第34</td>
+<td>两个排名本应大致相当</td>
+</tr>
+<tr>
+<td>2000.5–2007初股价回报（不含股息）</td>
+<td><strong>0%</strong></td>
+<td>同业组约44%，Euro Stoxx Banks 指数44%</td>
+</tr>
+<tr>
+<td>年化回报</td>
+<td>约0%</td>
+<td>约5.5%（44%分摊约6.7年）</td>
+</tr>
+<tr>
+<td>Exhibit 1（2000.5 = 100，2006年底）</td>
+<td>约100</td>
+<td>Barclays 约170，RBS 约195</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>推论1：</strong> 收入排第15、市值只排第34，说明市场给它的单位收入估值（P/Revenue 或 P/B）明显低于同业。如果估值修复到同业水平，市值本该接近收入排名。这个缺口就是外部买方的套利空间。</li>
+<li><strong>推论2（分拆估值）：</strong> 2007年3月市场市值约€570亿，财团报价€711亿（溢价约25%），Barclays 报价€650亿（溢价约14%）。单 LaSalle 一项，财团就估到€245亿，约占整体报价的三分之一（BoA 的报价是$210亿）。荷兰券商认为各部分加总高于整体，这个说法在买方出价中得到了验证。</li>
+<li><strong>合规风险：</strong> 2004年违反伊朗/利比亚制裁，2005年卷入美国三起欺诈案。这既带来监管和声誉折价，也削弱了它在美国的扩张能力。</li>
+</ul>
+<h3>4. 行业环境（五力简析）</h3>
+<p>竞争全面加剧：传统银行之外，保险公司、PE、投行和新兴市场金融机构也在进入。客户议价能力上升，产品同质化。中型银行在批发业务上拼不过规模，在零售业务上又缺本土密度，两头受挤压。
+<em>外部背景（非案例内容）：</em> 2007年年中美国次贷危机爆发前，欧洲银行业正处于并购整合高峰，这放大了"弱者被收购"的逻辑。</p>
+<h3>对卖方顾问的含义</h3>
+<p>如果我们为 ABN AMRO 董事会提供咨询，"独立经营"的说服力很弱：EPS 停滞、TSR 为0、TCI 等股东施压，都削弱了管理层的谈判筹码。董事会应当承认"分拆价值高于整体"，把它当作谈判杠杆，而不是一味抵触。</p>
+<ul>
+<li>让整体收购方（Barclays）和分拆型财团相互竞价。</li>
+<li>对 LaSalle 这类可单独出售的资产，先做独立的分部估值（SOTP），避免以低价出售、被视为"毒丸"。</li>
+<li>重点比较各方案的现金比例和执行确定性，再兼顾员工和监管等利益相关方的诉求，以履行荷兰法下监事会对各方利益相关者的独立受托义务。</li>
+</ul></section>
+<section id="q2"><h2>问题二：TCI 2月20日信件的目的</h2>
+<p><strong>结论：</strong> 这封信表面上是在 AGM 上提交五项议案，实际目的是逼 ABN AMRO "把自己摆上货架"：通过拆分、分拆、出售或合并，把市值与分部加总价值（SOTP）之间的差距兑现出来，让 TCI 那笔超过 5 亿欧元（约 1%）的持股拿到收购溢价。从结果看，这个目的基本实现了。</p>
+<p><strong>1. 明面诉求与真实目的。</strong> 信中明确要求在 4 月 26 日的 AGM 上表决五项议案，推动 ABN AMRO "积极寻求拆分、分拆、出售或合并"。TCI 真正要的是价值兑现：它认为 ABN 的市值"显著低于"其资产的公允价值，荷兰券商也认为 ABN 的各部分加起来比整体更值钱。TCI 无意参与银行的长期经营，它要的是一个能把估值折价变成控制权溢价的事件。</p>
+<p><strong>2. 为什么写给监事会主席 Martinez。</strong> 第一，信中称他是股东利益的"最终守护人和受托人"，把问题定性为受托责任，给他施加了法律和声誉上的压力。第二，信中点出他在 Sears 主持过类似重组，等于让他按自己的先例来办。第三，荷兰实行双层董事会，Groenink 领导的管理委员会本身就是被批评的对象，TCI 因此绕过管理层，直接找有权监督和任免管理层的监事会。</p>
+<p><strong>3. 施压手段。</strong> 一是公开信，借舆论和其他股东的力量施压。二是用数据对比：Groenink 2000 年 5 月上任以来，ABN 的股价累计回报为 0%，同业组和 DJ Euro Stoxx Banks 指数均约为 44%，每股收益约六年持平。三是质疑战略，指出高价收购 Antonveneta 没有创造价值，市场因此对 ABN 的估值打了折扣。四是 TCI 有前科：它曾迫使德意志交易所 CEO 下台，所以这次的威胁是可信的。</p>
+<p><strong>4. 效果（按案例数据计算）。</strong> 到 2 月底，ABN 股价创六年新高。3 月 20 日市场给 ABN 的估值为 570 亿欧元。随后的报价相对这一水平的溢价如下：</p>
+<ul>
+<li>Barclays 650 亿欧元（每股 36.25 欧元），溢价约 <strong>+14.0%</strong></li>
+<li>Barclays 修订后 675 亿欧元，溢价约 <strong>+18.4%</strong></li>
+<li>财团 711 亿欧元（每股 38.40 欧元），溢价约 <strong>+24.7%</strong></li>
+</ul>
+<p>按这一溢价，TCI 那笔约 5 亿欧元的持股可增值约 0.7 亿至 1.2 亿欧元。之后 TCI 继续加码：5 月 1 日的第二封信只写给 Martinez，要求"立即解除"Groenink 的职务，并由监事会"完全接管出售流程"；后来又威胁起诉 Martinez 和其他监事违反受托责任。可以看出，TCI 是一步步从提议升级到人事要求，再升级到诉讼威胁。</p>
+<p><strong>5. 评价。</strong> 对全体股东来说，打破长期估值折价确实有好处。但"符合所有利益相关方利益"这一说法值得怀疑：拆分会带来裁员（Barclays 方案裁员 12,800 人），荷兰的金融中心地位也会受损，而荷兰法律要求监事会兼顾所有利益相关方，并不一定要接受最高报价。TCI 拿到溢价后就可以退出，后续的整合风险和融资风险（例如 8 月次贷危机后 Fortis 的融资压力）却留给了其他人。这正是对短期主义的典型批评。</p>
+<p><strong>从投行角度。</strong> 如果为董事会做防御顾问，关键是尽快拿出可信的独立 SOTP 估值和价值创造方案，避免显得只是在保管理层（例如出售 LaSalle 就被批评为"毒丸"）。同时要严格履行监事会的受托程序，防范诉讼风险。如果为潜在收购方做顾问，TCI 的信等于公开宣布 ABN"可以卖了"：股东基础已经倾向出售，拆分逻辑也有利于财团式竞购。但市场价格中已经包含部分溢价预期，报价要预留空间来应对竞价战，还要设计好现金比例，并锁定融资安排。</p></section>
+<section id="q3"><h2>问题三：Barclays 报价 vs 银团报价</h2>
+<p><strong>结论：</strong> 截至 2007 年 9 月初，银团（RBS/Santander/Fortis）报价在价值和确定性上都明显占优：每股约 €38.1，比 Barclays 的约 €32.5 高 €5.6（约 17%），而且 93% 是现金，8 月市场下跌后几乎没有缩水（−0.8%）；Barclays 报价缩水 11%。Barclays 的优势主要不在价格，而在“非价格”方面：银行保持完整、管理层支持、ABN 股东可分享合并后的上行空间。以股东价值为重的董事会应当倾向银团报价，但须就拆分执行和 Fortis 融资风险拿到充分承诺。</p>
+<h3>一、报价量化对比（按案例数据测算）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>Barclays</th>
+<th>银团</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>支付结构（每股 ABN）</td>
+<td>€13.15 现金 + 2.13 股 Barclays</td>
+<td>€35.60 现金 + 0.296 股 RBS</td>
+</tr>
+<tr>
+<td>宣布时总价值 / 每股</td>
+<td>€67.5bn / €36.46</td>
+<td>€71.1bn / €38.40</td>
+</tr>
+<tr>
+<td>9 月 1 日总价值 / 每股</td>
+<td>€60.1bn / €32.46</td>
+<td>€70.5bn / €38.08</td>
+</tr>
+<tr>
+<td>价值变动（宣布→9/1）</td>
+<td><strong>−11.0%</strong>（8/29 为 €58.4bn，−13.5%）</td>
+<td><strong>−0.8%</strong></td>
+</tr>
+<tr>
+<td>现金占比（宣布时 / 9/1）</td>
+<td>36% / 41%</td>
+<td>93% / 94%</td>
+</tr>
+<tr>
+<td>现金总额</td>
+<td>≈€24.3bn（附表 7：€24.8bn）</td>
+<td>≈€65.9bn</td>
+</tr>
+<tr>
+<td>隐含收购方股价（宣布→9/1）</td>
+<td>€10.94→€9.07（−17%）</td>
+<td>€9.46→€8.36（−12%）</td>
+</tr>
+<tr>
+<td>较 3/20 市值 €57bn 的溢价（宣布 / 9/1）</td>
+<td>18.4% / <strong>5.4%</strong>（€3.1bn）</td>
+<td>24.7% / <strong>23.7%</strong>（€13.5bn）</td>
+</tr>
+<tr>
+<td>协同效应 / 占交易价值</td>
+<td>€3.5bn / 5.2%</td>
+<td>€4.23bn / 5.9%</td>
+</tr>
+<tr>
+<td>溢价 ÷ 协同效应（宣布时）</td>
+<td>3.0x</td>
+<td>3.3x</td>
+</tr>
+<tr>
+<td>交易额 ÷ 收购方市值（注）</td>
+<td>86%（单一买方）</td>
+<td>32%（三家合计）；Fortis 单家约 59%</td>
+</tr>
+</tbody>
+</table></div>
+<p>注：附表 2 市值未注明币种，按 Forbes 惯例视为美元，以 1.35 USD/EUR 换算；若视为欧元，分别为 63% / 24% / Fortis 43%。</p>
+<p><strong>银团分摊（按 38.3/33.8/27.9）：</strong> RBS €27.2bn、Fortis €24.0bn、Santander €19.8bn。Fortis 已明确的资金为 €13bn 配股 + €2bn 可转债 + €0.98bn 出售 CaiFor = €16.0bn，仍有约 €8bn 缺口，要靠举债解决，而 8 月以后举债成本正在上升。</p>
+<p><strong>LaSalle：</strong> 卖给美国银行的价格是 $21bn（约 €15.6bn），银团估值 €24.5bn，差约 €8.9bn；若“€24.5bn”实为美元，差额只有约 €2.6bn。银团 6 月 27 日威胁，若剔除 LaSalle 将降到 €37.40（€69.2bn，每股少 €1.00、总额少 €1.9bn）。但 7 月 16 日剔除后仍维持 €38.40：出售 LaSalle 收回的现金留在 ABN 体内，归属于收购方。</p>
+<figure class="fig"><figcaption>8 月市场下跌后，以换股为主的 Barclays 报价缩水 11%，现金为主的银团报价只缩水 0.8%</figcaption><div class="legend"><span><i class="sw s1"></i>宣布时</span><span><i class="sw s2"></i>9 月 1 日</span><span><i class="sw ref"></i>未受要约影响的市值</span></div><svg viewBox="0 0 640 300" role="img" aria-labelledby="ct cd" class="chart"><title id="ct">两份报价的总价值：宣布时与 9 月 1 日</title><desc id="cd">Barclays 从 €67.5bn 跌到 €60.1bn；银团从 €71.1bn 到 €70.5bn；未受要约影响的市值为 €57bn。</desc><line x1="56" x2="528" y1="252.0" y2="252.0" class="grid"/><text x="48" y="256.0" text-anchor="end" class="tick">€0bn</text><line x1="56" x2="528" y1="195.0" y2="195.0" class="grid"/><text x="48" y="199.0" text-anchor="end" class="tick">€20bn</text><line x1="56" x2="528" y1="138.0" y2="138.0" class="grid"/><text x="48" y="142.0" text-anchor="end" class="tick">€40bn</text><line x1="56" x2="528" y1="81.0" y2="81.0" class="grid"/><text x="48" y="85.0" text-anchor="end" class="tick">€60bn</text><line x1="56" x2="528" y1="24.0" y2="24.0" class="grid"/><text x="48" y="28.0" text-anchor="end" class="tick">€80bn</text><g class="bar" tabindex="0"><title>Barclays · 宣布时: €67.5bn</title><path d="M109.0,252.0 V63.6 Q109.0,59.6 113.0,59.6 H169.0 Q173.0,59.6 173.0,63.6 V252.0 Z" class="s1"/><text x="141.0" y="53.6" text-anchor="middle" class="val">€67.5bn</text></g><g class="bar" tabindex="0"><title>Barclays · 9 月 1 日: €60.1bn</title><path d="M175.0,252.0 V84.7 Q175.0,80.7 179.0,80.7 H235.0 Q239.0,80.7 239.0,84.7 V252.0 Z" class="s2"/><text x="207.0" y="74.7" text-anchor="middle" class="val">€60.1bn</text></g><text x="174.0" y="272.0" text-anchor="middle" class="cat">Barclays</text><g class="bar" tabindex="0"><title>银团（RBS / Santander / Fortis） · 宣布时: €71.1bn</title><path d="M345.0,252.0 V53.4 Q345.0,49.4 349.0,49.4 H405.0 Q409.0,49.4 409.0,53.4 V252.0 Z" class="s1"/><text x="377.0" y="43.4" text-anchor="middle" class="val">€71.1bn</text></g><g class="bar" tabindex="0"><title>银团（RBS / Santander / Fortis） · 9 月 1 日: €70.5bn</title><path d="M411.0,252.0 V55.1 Q411.0,51.1 415.0,51.1 H471.0 Q475.0,51.1 475.0,55.1 V252.0 Z" class="s2"/><text x="443.0" y="45.1" text-anchor="middle" class="val">€70.5bn</text></g><text x="410.0" y="272.0" text-anchor="middle" class="cat">银团（RBS / Santander / Fortis）</text><line x1="56" x2="530" y1="89.5" y2="89.5" class="ref"/><text x="534" y="86.5" class="reflab">3 月 20 日市值</text><text x="534" y="102.5" class="reflab">€57bn</text><line x1="56" x2="528" y1="252" y2="252" class="axis"/></svg><p class="src">数据：案例 Exhibit 5、7。单位：十亿欧元。</p></figure><h3>二、两份报价各自的优势</h3>
+<p><strong>Barclays 报价</strong></p>
+<ul>
+<li><strong>股东：</strong> 以换股为主，ABN 股东将持有新 Barclays 约 38% 的股份，能分享协同效应和长期上行空间；对希望继续持股的长期股东来说可以递延纳税、保持敞口。</li>
+<li><strong>管理层/员工：</strong> 管理层最初推荐这份报价；ABN 保持完整，不被拆分，品牌和全球网络得以保留。两家地域互补（东欧、亚洲、巴西、印度），目标是成为全球最大的资产管理机构。</li>
+<li><strong>荷兰利益相关方：</strong> 工会倾向支持；“欧洲冠军”的叙事说得通。（总部设在阿姆斯特丹的承诺为案例外背景，案例正文未提及。）</li>
+<li><strong>交易确定性：</strong> 欧盟已于 8 月 6 日批准；只有一个买方，整合路径简单；中国国家开发银行和淡马锡入股，增加了现金和资本。</li>
+<li><strong>短板：</strong> 64% 是股票，8 月 Barclays 股价下跌后报价缩水 €7.4bn，溢价仅剩 5%；计划裁员 12,800 人、另将 10,000 个岗位转移到印度；扩股还须 Barclays 股东批准，这些股东一直反对加价。</li>
+</ul>
+<p><strong>银团报价</strong></p>
+<ul>
+<li><strong>股东：</strong> 绝对价格更高，9 月 1 日每股多 €5.6、总额多 €10.4bn；93% 是现金，价值几乎锁定，在信贷危机中尤其可贵。溢价约 24%，协同效应更高（€4.23bn）。</li>
+<li><strong>管理层/员工：</strong> 银团声称裁员“少于 Barclays”。</li>
+<li><strong>荷兰利益相关方：</strong> 荷兰业务由荷比银行 Fortis 接手，留在本土；ING、Rabobank 一度表态支持。</li>
+<li><strong>交易确定性：</strong> Fortis 股东已于 8 月 6 日批准 €13bn 增资，RBS 股东已于 8 月 10 日批准；三家分摊后，每家相对自身规模的负担更小。</li>
+<li><strong>短板：</strong> ABN 将被拆分，三方之间的分拆、迁移和整合十分复杂；需要多个司法辖区的监管批准；Fortis 相对自身规模负担过重（约占其市值 59%），融资风险突出。</li>
+</ul>
+<p><strong>事后看（仅供参考）：</strong> 银团于 2007 年 10 月胜出。2008 年 RBS 由英国政府注资救助，Fortis 被比、荷、卢三国政府救助并拆分，荷兰政府接管了原 ABN AMRO 的荷兰业务。这说明 2007 年时被低估的是收购方的融资风险和杠杆风险。</p>
+<h3>三、结论与董事会考量</h3>
+<p>截至 2007 年 9 月，按股东价值标准应<strong>倾向银团报价</strong>：它在价格（高约 17%）、溢价（23.7% 对 5.4%）和价值确定性（现金 93%）三个维度都占优，而 Barclays 报价的价值随其股价下跌持续缩水，还面临自家股东的批准风险。</p>
+<p>按荷兰法律，监事会须平衡所有利益相关方，没有义务接受最高价。因此价格之外，董事会还应权衡：（1）完成交易的确定性，尤其是 Fortis 的融资能力，以及“融资不成即退出”之类的条件；（2）拆分对员工、客户和荷兰金融体系稳定的影响，需要裁员和就业方面的书面承诺；（3）多国监管审批的时间表；（4）拆分后各部分的资本充足性，这关系到存款人利益。合理的做法是推荐银团报价，同时要求其提供融资和监管方面的承诺，并对员工作出约束性安排。</p></section>
+<section id="q4"><h2>问题四：2007年3月1日董事会的构成与角色</h2>
+<p><strong>结论：</strong> ABN AMRO 的监事会"名气大、银行业懂行的人少、忙人多"——12人中仅3人有金融背景，5人身兼≥3个上市公司职务，而且权力集中在一位零售业出身的主席身上。在荷兰双层制下，监事会的法定职责是监督和辅导管理层，但它连续七年容忍业绩停滞、高价收购 Antonveneta 和合规事故，TCI 2月20日来信时又措手不及。所以截至2007年3月1日，我们认为监事会<strong>构成不合理、监督职责基本失守</strong>。</p>
+<h3>一、董事会统计（Exhibit 8/9）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>监事会（12人，非执行）</th>
+<th>管理委员会（7人，执行）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平均 / 中位年龄</td>
+<td>62.7 / 63.5岁（83%≥60岁）</td>
+<td>50.6 / 48岁（42–59岁）</td>
+</tr>
+<tr>
+<td>性别</td>
+<td>男10、女2（女性16.7%）</td>
+<td>全部男性</td>
+</tr>
+<tr>
+<td>国籍</td>
+<td>荷兰籍50%；外籍50%，共7个国籍</td>
+<td>荷兰籍6/7（85.7%），仅CFO为英籍</td>
+</tr>
+<tr>
+<td>平均任期（至2007年）</td>
+<td>4.1年；1/3的人任期≤2年</td>
+<td>6.4年；3/7为2006年新任</td>
+</tr>
+<tr>
+<td>金融/银行背景</td>
+<td><strong>3/12＝25%</strong>（de Rothschild、Sharman、Randa）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>政界背景</td>
+<td>3/12＝25%（Groenman、Maas、Pratini）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>外部上市公司职务≥3个</td>
+<td><strong>5/12＝41.7%</strong>（Martinez、Olijslager、Scaroni、Kramer 各3个；Sharman 4个）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>委员会席位</td>
+<td>共10席，<strong>Martinez占3席（30%）</strong>，兼任提名薪酬委员会和合规监督委员会主席</td>
+<td>Groenink 一人兼管内审、合规与法务、人力资源</td>
+</tr>
+<tr>
+<td>不在任何委员会</td>
+<td><strong>5/12＝41.7%</strong>（de Rothschild、Groenman、Scaroni、Kramer、Randa）</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<h3>二、构成评价</h3>
+<ol>
+<li><strong>银行业专业能力不足。</strong> ABN AMRO 是全球营收排名第15的银行，但监事会里只有3名金融背景成员，其中 de Rothschild 和 Randa 两人<strong>不在任何委员会</strong>。真正有银行经验的人没有参与风险和合规的实际工作，审计委员会只能由 Sharman 一人撑起。</li>
+<li><strong>主席权力过于集中，专业不对口。</strong> Martinez 是前 Sears 零售业 CEO，没有银行业背景，却同时坐在全部三个委员会，并担任其中两个的主席，另外还有3个外部职务。这样的工作量很难让他有效监督一家复杂的跨国银行。另外，按荷兰 Tabaksblat 公司治理守则（2003，<strong>案例外信息</strong>），监事会主席原则上不应兼任薪酬委员会主席，ABN AMRO 的安排至少与最佳实践存在张力。</li>
+<li><strong>"忙碌董事"问题突出。</strong> 41.7%的监事兼任≥3个上市公司职务，Sharman 有4个（其中1个是主席）。到了收购战这种需要每天投入时间的危机，监事会的精力明显跟不上。</li>
+<li><strong>多元化不均衡。</strong> 国籍多元化做得不错（荷兰籍和外籍各占一半），但女性只占16.7%，管理委员会更是全部男性、几乎全是荷兰人，同质化严重，容易形成"群体思维"。</li>
+<li><strong>独立性。</strong> 监事会名义上全部独立，但 de Rothschild 身为投行家族掌门，在并购顾问业务上存在潜在利益冲突，需要关注。3名政界人士更倾向于"利益相关者"视角，而不是股东价值视角。</li>
+</ol>
+<h3>三、角色评价</h3>
+<p>按荷兰双层制，监事会负责<strong>监督和辅导管理委员会</strong>，必须平衡<strong>所有利益相关者</strong>（股东、员工、客户等）的利益；遇到收购时，<strong>没有义务接受出价最高的要约</strong>。这给了监事会很大的裁量空间，但相应的问责也更重。从实际表现看，监事会没有尽到职责：</p>
+<ul>
+<li><strong>容忍长期业绩不佳。</strong> 2000–2007年股价累计回报为0%，同期同业约为+44%；ROE进入同业前五的目标从未达到；市值排名第34，与营收排名第15不相称。</li>
+<li><strong>没有推动战略落地。</strong> 管理层宣布了"聚焦战略"，但到2006年底仍持有 LaSalle 等非核心业务，本国资产只占29.4%。</li>
+<li><strong>对重大风险把关不严。</strong> 监事会批准了高价收购 Antonveneta；2004–2005年又先后爆出违反对伊朗、利比亚制裁的问题以及3宗美国欺诈案。之后仍由 CEO 本人直接主管内审和合规，监事会没有纠正这种自我监督的结构。</li>
+<li><strong>对资本市场反应迟钝。</strong> TCI 的来信"令监事会措手不及"，案例也明确说没有一位监事经历过类似程度的投资者审视。</li>
+</ul></section>
+<section id="q5"><h2>问题五：Groenink 与 Martinez 在竞购中的角色</h2>
+<p><strong>结论：</strong> Groenink 在整个竞购中立场<strong>严重冲突</strong>。他把个人声誉押在"整体存续"的战略上，于是偏向出价较低的 Barclays，并用出售 LaSalle 作为"毒丸"，客观上压制了更高的出价。他的做法更多是在维护自己和管理层的利益，而不是为股东争取最大价值。Martinez 作为监事会主席，本应主导一个独立的出售程序，实际上却长期被动、站在管理层一边，直到股东诉讼和法律追责的压力下才不得不"让市场说话"。结论：<strong>Groenink 不合格；Martinez 勉强及格偏下。</strong></p>
+<h3>一、关键数据</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>节点</th>
+<th>数据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Groenink 任期</td>
+<td>1990年起任管理委员会成员（17年），2000年5月起任CEO</td>
+</tr>
+<tr>
+<td>任内股东回报</td>
+<td>0%，同期同业及 Euro Stoxx 银行指数均约为+44%</td>
+</tr>
+<tr>
+<td>未受要约影响的市值（3月20日）</td>
+<td>€57bn</td>
+</tr>
+<tr>
+<td>Barclays 出价（4月23日 → 7月23日）</td>
+<td>€65bn → €67.5bn（9月1日跌至€60.1bn）</td>
+</tr>
+<tr>
+<td>财团出价（5月29日起）</td>
+<td>€71.1bn（9月1日为€70.5bn），现金比例提高到93%</td>
+</tr>
+<tr>
+<td>LaSalle 售价</td>
+<td>卖给 BofA 作价 $21bn；财团估值 <strong>€24.5bn</strong></td>
+</tr>
+<tr>
+<td>竞争带来的溢价</td>
+<td>从€57bn 涨到€71bn，约<strong>+25%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>二、Groenink：利益冲突下的防御者</h3>
+<ol>
+<li><strong>个人立场先于股东。</strong> "聚焦战略"由他亲自推动，被拆分就等于承认战略失败。管理层公开表示"不希望被拆分"，并偏向出价较低的 Barclays。据当时媒体报道（<strong>案例外信息，需核实</strong>），Barclays 方案承诺合并后集团总部设在阿姆斯特丹、保留部分 ABN AMRO 高管的职位，这进一步加剧了利益冲突。</li>
+<li><strong>把 LaSalle 当作"毒丸"。</strong> 4月23日，管理层与 Barclays 方案同步宣布以 $21bn 把 LaSalle 卖给 BofA，比财团给出的估值低得多，明显是为了挡住财团（RBS 的核心目标正是 LaSalle）。VEB 起诉后，商事法院裁定这笔交易需要股东批准；但 <strong>6月26日最高法院</strong>撤销了这一判决，认定无需股东批准。所以这一做法<strong>合法，但不合乎公司治理的初衷</strong>：它绕开了股东对公司命运的决定权。</li>
+<li><strong>内外信誉双双受损。</strong> TCI 5月1日要求撤换他，管理委员会内部也传出不满（"tough but not warm"）。7月30日他撤回对 Barclays 的推荐、宣布"不再有明确偏好"，又同时表示继续倾向"不拆分"。这等于承认此前的推荐站不住脚，令其信誉进一步受损。</li>
+<li><strong>判断：</strong> 用"保护利益相关者"来为偏向 Barclays 辩护，说服力很弱：Barclays 方案计划裁员12,800人，另有10,000个岗位转移到印度，而财团承诺的裁员"少于 Barclays"。他的立场最符合的是<strong>自己的利益</strong>，其次是管理层的独立地位，最后才是股东。</li>
+</ol>
+<h3>三、Martinez：本应独立，却选择了被动</h3>
+<ul>
+<li><strong>该做而没做的事：</strong> 他没有在TCI来信后立即成立由独立监事组成的特别委员会，没有另聘独立财务和法律顾问，也没有把出售程序从管理层手中收回。5月4日他继续公开支持 Groenink，拒绝了 TCI 提出的"由监事会全面接管出售程序"的要求。FT 也质疑监事会是否有能力推翻 Groenink 团队的决定。</li>
+<li><strong>他面对的压力：</strong> TCI 威胁以违反受信义务为由起诉他本人，VEB 要求与财团谈判、并提起 LaSalle 诉讼。</li>
+<li><strong>对他有利的几点：</strong><ol>
+<li>荷兰法律确实允许监事会平衡各利益相关者，不强制接受最高价；</li>
+<li>当时 LaSalle 的法律地位直到6月26日才明确；</li>
+<li>最终形成的是双方竞价局面：市值从€57bn 抬升到€71bn，7月30日撤回推荐后，选择权也交还给了股东。</li>
+</ol>
+</li>
+<li><strong>判断：</strong> 结果尚可，但过程失分。价格的提升主要来自 TCI、VEB 和财团的外部压力，并不是监事会主动设计的结果。他没有体现出监事会应有的<strong>独立性</strong>。</li>
+</ul>
+<h3>给董事会的治理建议（如果我们是顾问）</h3>
+<ol>
+<li>立即成立由独立监事组成的<strong>特别交易委员会</strong>，由有银行业背景的监事（例如 Sharman 或 Randa）主持，另聘独立的投行和律师，<strong>管理层退出出售程序的决策</strong>。</li>
+<li>对所有要约进行统一的公平性评估，内容涵盖价格、现金比例、完成确定性、监管风险和就业影响，并书面记录"利益相关者平衡"的具体理由，以降低诉讼风险。</li>
+<li>冻结 LaSalle 等可能阻碍其他要约的交易，或者<strong>提交股东大会表决</strong>。</li>
+<li>交易结束后：撤换或重新安排CEO；把内审和合规的管理职责从CEO处剥离；监事会主席不再兼任委员会主席；限制监事的外部职务数量；补充银行业专家和女性监事。</li>
+</ol></section>
+<section id="appendix"><h2>附录：案例数据不一致之处与假设</h2>
+<p>案例中有几处数字和日期互相矛盾，下表列出本报告采用的口径。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>事项</th>
+<th>案例中的不同说法</th>
+<th>本报告采用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ABN 与 AMRO 合并年份</td>
+<td>正文第2页写"1980年"，第1页为1990年</td>
+<td>1990年（1980为笔误）</td>
+</tr>
+<tr>
+<td>Martinez 任职</td>
+<td>Exhibit 9 为2002年，正文为2006年任主席</td>
+<td>2002年任监事，2006年任主席</td>
+</tr>
+<tr>
+<td>Barclays 宣布意向日期</td>
+<td>正文3月19日，Exhibit 7 为3月20日</td>
+<td>不影响分析</td>
+</tr>
+<tr>
+<td>Barclays 报价总额</td>
+<td>€65bn（4月全换股）vs €67.5bn（7月修订）</td>
+<td>以€67.5bn为"宣布时"价值</td>
+</tr>
+<tr>
+<td>Barclays 现金部分</td>
+<td>正文€14.8bn，Exhibit 7 为€24.8bn</td>
+<td>€24.8bn（与€13.15×股数约€24.3bn吻合）</td>
+</tr>
+<tr>
+<td>Barclays 8月底价值</td>
+<td>正文€58.4bn（8/29），Exhibit 5 为€60.1bn（9/1）</td>
+<td>表格用€60.1bn</td>
+</tr>
+<tr>
+<td>银团换股比例</td>
+<td>0.844 股 RBS vs 0.296 股 RBS</td>
+<td>并非矛盾：分别对应5月（€30.40现金）和7月（€35.60现金）方案</td>
+</tr>
+<tr>
+<td>银团初始现金比例</td>
+<td>正文"70%"，Exhibit 7 "70/79%"</td>
+<td>按计算为79%</td>
+</tr>
+<tr>
+<td>LaSalle 估值</td>
+<td>BofA $21bn vs 银团"€(!)24.5bn"</td>
+<td>两种币种情形都列出</td>
+</tr>
+<tr>
+<td>ABN 总股数</td>
+<td>不同报价倒算为1.793–1.886bn</td>
+<td>统一用 1.852bn（€71.1bn ÷ €38.40）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>案例外假设：</strong> EUR/USD = 1.35；Exhibit 2 市值视为美元；协同效应口径（年化还是累计）未知，只做比例比较。标注"案例外信息"的内容（Tabaksblat 守则、Barclays 总部承诺、事后结果）来自一般资料，引用前应核实。</p></section>
+    <footer>本页仅基于案例材料及标注的案例外信息，用于学习练习，不构成投资建议。</footer>
+  </main>
+</div>
+</body>
+</html>

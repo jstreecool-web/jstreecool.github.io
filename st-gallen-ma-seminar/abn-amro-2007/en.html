@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ABN AMRO Case Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deal-memo page — fixed contents rail on the left, one reading column, tables full column width */
+:root {
+  --bg: #f6f6f3;
+  --paper: #ffffff;
+  --ink: #1b2130;
+  --ink-2: #4d5566;
+  --rule: #dcdcd4;
+  --accent: #184f95;
+  --accent-soft: #e6eefa;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+    --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+    --s1: #3987e5; --s2: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+  --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+  --s1: #3987e5; --s2: #d95926;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+nav { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .navhead { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 8px; }
+nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-left: 2px solid var(--rule); }
+nav a.lang { margin-top: 14px; border-left: 0; padding-left: 0; color: var(--accent); font-weight: 700; }
+nav a:hover, nav a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--ink-2); letter-spacing: .04em; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; }
+.sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 8px; }
+.kpi { background: var(--paper); padding: 14px 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.kpi span { font-size: 13px; color: var(--ink-2); }
+section { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 24px; scroll-margin-top: 16px; }
+section > *:first-child { margin-top: 0; }
+h2 { font-family: var(--display); font-size: 24px; line-height: 1.4; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); text-wrap: balance; }
+h3 { font-size: 17px; margin: 28px 0 8px; color: var(--accent); text-wrap: balance; }
+p, li { max-width: 46em; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 1.4em; margin: 8px 0; }
+li { margin: 4px 0; }
+section > p:nth-of-type(1) strong:first-child { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+thead th { text-align: left; font-weight: 700; background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+code { font-size: .9em; }
+.fig { margin: 22px 0 6px; }
+.fig figcaption { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); }
+.sw.ref { height: 0; border-top: 2px dashed var(--ink-2); border-radius: 0; width: 16px; }
+.chart { width: 100%; max-width: 680px; height: auto; display: block; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .tick, .chart .reflab { fill: var(--ink-2); font-size: 12px; font-family: var(--body); }
+.chart .cat { fill: var(--ink); font-size: 13px; font-family: var(--body); }
+.chart .val { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--body); }
+.chart .s1 { fill: var(--s1); } .chart .s2 { fill: var(--s2); }
+.chart .ref { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar:hover path, .chart .bar:focus path { opacity: .8; }
+.chart .bar:focus { outline: none; }
+.src { font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+footer { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 16px; }
+  nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav .navhead { width: 100%; margin: 0; }
+  nav a { border: 1px solid var(--rule); padding: 4px 10px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 20px 18px; }
+  h1 { font-size: 27px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="Contents"><div class="navhead">Contents</div><a href="#summary">Executive summary</a><a href="#q1">1 · Competitive position</a><a href="#q2">2 · TCI&#x27;s letter</a><a href="#q3">3 · The two offers</a><a href="#q4">4 · The board</a><a href="#q5">5 · Groenink &amp; Martinez</a><a href="#appendix">Appendix · Data notes</a><a class="lang" href="index.html" hreflang="zh-CN">中文版 →</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">Case analysis · St.Gallen case "House for sale: The battle to control ABN AMRO"</div>
+      <h1>ABN AMRO case analysis: the 2007 battle for control</h1>
+      <p class="sub">Barclays vs the RBS / Santander / Fortis consortium, answered question by question. Analysis dated 15 Nov 2026.</p>
+      <div class="kpis">
+        <div class="kpi"><b>€57bn</b><span>Unaffected market value, 20 Mar</span></div>
+        <div class="kpi"><b>€71.1bn</b><span>Consortium offer, €38.40 per share</span></div>
+        <div class="kpi"><b>+25%</b><span>Premium won through the contest</span></div>
+        <div class="kpi"><b>93%</b><span>Cash share of the consortium offer</span></div>
+      </div>
+    </header>
+    <section id="summary"><h2>Executive summary</h2>
+<p>ABN AMRO was a mid-sized bank worth more broken up than as a whole, a problem that management and the Supervisory Board failed to resolve for years. Once TCI put it in play, a two-way bidding contest drove the price from €57bn to €71.1bn (+25%). By September 2007, the consortium's offer was clearly superior on both price and deal certainty.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Key conclusion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Competitive position</td>
+<td>"Stuck in the middle": no. 15 globally by revenue but no. 34 by market cap; only 29.4% of assets in the home market, EPS flat for about 6 years, and an above-peer cost base. The valuation discount made it a takeover target</td>
+</tr>
+<tr>
+<td>2. Purpose of TCI's letter</td>
+<td>To force the board to launch a sale or break-up and convert the SOTP discount into a control premium; it bypassed management and put pressure directly on the Supervisory Board Chairman</td>
+</tr>
+<tr>
+<td>3. The two offers</td>
+<td>On 1 September, the consortium offered about €38.08 per share vs. about €32.46 for Barclays, roughly 17% higher; the consortium offer was 93% cash and had lost only 0.8% of its value. Barclays' advantages were no break-up and management support. We lean towards the consortium, but would require financing and employment commitments</td>
+</tr>
+<tr>
+<td>4. The board</td>
+<td>Of 12 Supervisory Board members, only 3 had a financial-services background and 5 held ≥3 outside positions; the Chairman came from retail, and power was concentrated. The board tolerated underperformance for years, a failure of oversight</td>
+</tr>
+<tr>
+<td>5. Groenink / Martinez</td>
+<td>Groenink was conflicted and used LaSalle as a "poison pill": unfit for the role. Martinez was passive and did not lead an independent process; the outcome was acceptable, but the process falls short</td>
+</tr>
+</tbody>
+</table></div></section>
+<section id="q1"><h2>Question 1: ABN AMRO's competitive position in early 2007</h2>
+<p><strong>Bottom line:</strong> By early 2007, ABN AMRO was a textbook "stuck in the middle" mid-sized bank. Ranked no. 15 globally by revenue, it had real scale, but it was not a leader in any single market. Its costs were higher than those of its major competitors, earnings had stagnated for years, and the market persistently valued it at a discount. Ultimately, its problem was not asset quality but the fact that the parts were worth more than the whole: these businesses were more valuable in other hands, which turned it from a consolidator into a takeover target.</p>
+<h3>1. Scale and focus: strategy announced, execution lagging</h3>
+<ul>
+<li>In 2000 the bank announced a shift from a universal-banking model to a focused strategy, with the Netherlands, Brazil and Italy as core markets. Yet by end-2006 it still operated in <strong>56 countries</strong>, with only <strong>29.4%</strong> of assets in its home market (about 70% abroad). Non-core businesses such as LaSalle in the US had still not been divested.</li>
+<li>Groenink himself admitted that the bank's geographical scope "more closely resembles that of the world's largest universal banks", without delivering the corresponding scale benefits. The result: too small to compete with the global giants, and not focused enough to compete with the regional champions.</li>
+<li>The acquisition of Antonveneta (Italy) was overpriced and failed to deliver the promised value, leading the market to discount management's M&amp;A discipline.</li>
+</ul>
+<h3>2. Costs and profitability: a structural gap</h3>
+<ul>
+<li>The CEO also acknowledged that the cost structure was the bank's major weakness, with costs above those of its major competitors.</li>
+<li>Underlying EPS was broadly <strong>flat for around 6 years</strong>, while banking profits globally grew strongly over the same period. The target of an ROE "amongst the top 5 of its peer group" never came close to being met.</li>
+</ul>
+<h3>3. Capital markets view: a valuation discount</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>ABN AMRO</th>
+<th>Peers / benchmark</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Revenue rank / market cap rank</td>
+<td>No. 15 / no. 34</td>
+<td>The two ranks should be broadly similar</td>
+</tr>
+<tr>
+<td>Share price return, May 2000–early 2007 (excl. dividends)</td>
+<td><strong>0%</strong></td>
+<td>Peer group approx. 44%; Euro Stoxx Banks index 44%</td>
+</tr>
+<tr>
+<td>Annualised return</td>
+<td>Approx. 0%</td>
+<td>Approx. 5.5% (44% over approx. 6.7 years)</td>
+</tr>
+<tr>
+<td>Exhibit 1 (May 2000 = 100, end-2006)</td>
+<td>Approx. 100</td>
+<td>Barclays approx. 170, RBS approx. 195</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Implication 1:</strong> Ranking no. 15 by revenue but only no. 34 by market cap means the market valued each unit of ABN AMRO's revenue (P/Revenue or P/B) well below peers. Had its valuation re-rated to peer levels, its market cap ranking should have approached its revenue ranking. This gap was the arbitrage opportunity for outside buyers.</li>
+<li><strong>Implication 2 (sum-of-the-parts valuation):</strong> In March 2007 the unaffected market value was about €57bn; the consortium bid €71.1bn (a premium of about 25%) and Barclays €65bn (a premium of about 14%). The consortium valued LaSalle alone at €24.5bn, about one-third of the total offer (BoA's offer was $21bn). Dutch brokers' view that the parts were worth more than the whole was validated by the buyers' bids.</li>
+<li><strong>Compliance risk:</strong> Breaches of Iran/Libya sanctions in 2004 and involvement in three US fraud cases in 2005. These created a regulatory and reputational discount and also constrained its ability to expand in the US.</li>
+</ul>
+<h3>4. Industry environment (brief Five Forces view)</h3>
+<p>Competition was intensifying across the board: beyond traditional banks, insurers, PE firms, investment banks and emerging-market financial institutions were all entering. Customer bargaining power was rising and products were becoming commoditised. Mid-sized banks were squeezed on both sides: they could not match the scale players in wholesale, and lacked local density in retail.
+<em>External context (outside the case):</em> Before the US subprime crisis broke in mid-2007, European banking was at the peak of an M&amp;A consolidation wave, which amplified the "weak players get acquired" logic.</p>
+<h3>Implications for the sell-side adviser</h3>
+<p>If we were advising the ABN AMRO board, the case for "stand-alone" was weak: stagnant EPS, 0% TSR and pressure from shareholders such as TCI all undermined management's negotiating leverage. The board should acknowledge that the break-up value exceeded the whole, and use this as negotiating leverage rather than simply resisting.</p>
+<ul>
+<li>Play the whole-company bidder (Barclays) and the break-up consortium off against each other.</li>
+<li>For separately saleable assets such as LaSalle, first run an independent sum-of-the-parts (SOTP) valuation, to avoid selling at a low price and being seen as a "poison pill".</li>
+<li>Focus on comparing each proposal's cash component and execution certainty, while also weighing the interests of stakeholders such as employees and regulators, so that the Supervisory Board discharges its independent fiduciary duty to all stakeholders under Dutch law.</li>
+</ul></section>
+<section id="q2"><h2>Question 2: The purpose of TCI's 20 February letter</h2>
+<p><strong>Bottom line:</strong> On the surface, the letter requested five motions for the AGM; its real purpose was to force ABN AMRO to "put itself up for sale": through a break-up, spin-off, sale or merger, to crystallise the gap between market value and sum-of-the-parts (SOTP) value, and secure a takeover premium on TCI's stake of more than €500m (about 1%). Judged by the outcome, this purpose was largely achieved.</p>
+<p><strong>1. Stated demands vs. real purpose.</strong> The letter explicitly requested a vote on five motions at the AGM on 26 April, pushing ABN AMRO to "actively pursue the potential break up, spin-off, sale or merger" of its businesses. What TCI really wanted was value realisation: it argued that ABN's market capitalisation stood "at a significant discount to the fair value" of its underlying assets, and Dutch brokers likewise argued that ABN's individual parts were worth more than the whole. TCI had no interest in the bank's long-term operations; it wanted an event that would convert the valuation discount into a control premium.</p>
+<p><strong>2. Why it was addressed to Supervisory Board Chairman Martinez.</strong> First, the letter called him the "ultimate guardian and fiduciary of shareholders' interests", framing the issue as one of fiduciary duty and putting legal and reputational pressure on him. Second, it pointed to his having led a similar restructuring at Sears, effectively asking him to follow his own precedent. Third, the Netherlands has a two-tier board structure, and the Managing Board led by Groenink was itself the target of criticism; TCI therefore bypassed management and went directly to the Supervisory Board, which has the power to oversee, appoint and dismiss management.</p>
+<p><strong>3. Pressure tactics.</strong> First, an open letter, using public opinion and other shareholders to apply pressure. Second, hard comparisons: since Groenink took over in May 2000, ABN's cumulative share price return was 0%, against about 44% for both the peer group and the DJ Euro Stoxx Banks index, and EPS had been broadly flat for about six years. Third, a challenge to strategy, arguing that the high-priced acquisition of Antonveneta had failed to create value and caused the market to discount ABN's valuation. Fourth, TCI's track record: it had previously forced the Deutsche Boerse CEO to step down, so its threat was credible.</p>
+<p><strong>4. Impact (calculated from case data).</strong> By the end of February, ABN's share price hit a six-year high. On 20 March the market valued ABN at €57bn. The premia of the subsequent offers relative to this level were:</p>
+<ul>
+<li>Barclays €65bn (€36.25 per share), a premium of about <strong>+14.0%</strong></li>
+<li>Barclays revised €67.5bn, a premium of about <strong>+18.4%</strong></li>
+<li>Consortium €71.1bn (€38.40 per share), a premium of about <strong>+24.7%</strong></li>
+</ul>
+<p>At these premia, TCI's stake of about €500m would gain about €70m–120m in value. TCI then escalated further: its second letter on 1 May, addressed only to Martinez, demanded that the Supervisory Board "immediately terminate the appointment of Mr Groenink" and "take complete control of the sale process"; it later threatened to sue Martinez and other Supervisory Board members for breach of fiduciary duty. TCI clearly escalated step by step, from proposals to personnel demands to the threat of litigation.</p>
+<p><strong>5. Assessment.</strong> For shareholders as a whole, breaking a long-standing valuation discount was genuinely beneficial. But the claim that this would "best serve all the stakeholders" is questionable: a break-up would bring job cuts (12,800 under the Barclays proposal) and damage the Netherlands' standing as a financial centre, while Dutch law requires the Supervisory Board to consider all stakeholders and does not necessarily require it to accept the highest offer. TCI could exit once it had captured the premium, leaving the subsequent integration and financing risks (e.g. Fortis' funding pressure after the subprime crisis in August) to others. This is the classic critique of short-termism.</p>
+<p><strong>From an investment-banking perspective.</strong> If advising the board on defence, the key is to produce a credible independent SOTP valuation and value-creation plan quickly, to avoid appearing merely to protect management (the LaSalle sale, for example, was criticised as a "poison pill"). At the same time, the Supervisory Board must rigorously follow its fiduciary process to manage litigation risk. If advising a potential acquirer, TCI's letter was effectively a public announcement that ABN was "for sale": the shareholder base was already leaning towards a sale, and the break-up logic favoured a consortium-style bid. But the market price already reflected part of the expected premium, so the offer needed to leave headroom for a bidding war, with a well-designed cash component and committed financing.</p></section>
+<section id="q3"><h2>Question 3: Barclays' offer vs the consortium's offer</h2>
+<p><strong>Bottom line:</strong> As of early September 2007, the consortium's offer (RBS/Santander/Fortis) is clearly superior on both value and certainty: at roughly €38.1 per share, it is €5.6 (about 17%) above Barclays' roughly €32.5; it is 93% cash, and it lost almost no value (−0.8%) in the August market decline, whereas Barclays' offer fell 11%. Barclays' advantages lie mainly not in price but in non-price factors: the bank remains intact, management supports the offer, and ABN shareholders share in the combined group's upside. A board focused on shareholder value should favour the consortium's offer, but must obtain adequate commitments on break-up execution and Fortis's financing risk.</p>
+<h3>1. Quantitative comparison of the offers (based on case data)</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Barclays</th>
+<th>Consortium</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Consideration (per ABN share)</td>
+<td>€13.15 cash + 2.13 Barclays shares</td>
+<td>€35.60 cash + 0.296 RBS shares</td>
+</tr>
+<tr>
+<td>Headline value at announcement (total / per share)</td>
+<td>€67.5bn / €36.46</td>
+<td>€71.1bn / €38.40</td>
+</tr>
+<tr>
+<td>Value on 1 Sep (total / per share)</td>
+<td>€60.1bn / €32.46</td>
+<td>€70.5bn / €38.08</td>
+</tr>
+<tr>
+<td>Change in value (announcement → 1 Sep)</td>
+<td><strong>−11.0%</strong> (€58.4bn on 29 Aug, −13.5%)</td>
+<td><strong>−0.8%</strong></td>
+</tr>
+<tr>
+<td>Cash share (at announcement / 1 Sep)</td>
+<td>36% / 41%</td>
+<td>93% / 94%</td>
+</tr>
+<tr>
+<td>Total cash</td>
+<td>≈€24.3bn (Exhibit 7: €24.8bn)</td>
+<td>≈€65.9bn</td>
+</tr>
+<tr>
+<td>Implied acquirer share price (announcement → 1 Sep)</td>
+<td>€10.94→€9.07 (−17%)</td>
+<td>€9.46→€8.36 (−12%)</td>
+</tr>
+<tr>
+<td>Implied premium to unaffected market value of €57bn on 20 Mar (at announcement / 1 Sep)</td>
+<td>18.4% / <strong>5.4%</strong> (€3.1bn)</td>
+<td>24.7% / <strong>23.7%</strong> (€13.5bn)</td>
+</tr>
+<tr>
+<td>Synergies / as % of deal value</td>
+<td>€3.5bn / 5.2%</td>
+<td>€4.23bn / 5.9%</td>
+</tr>
+<tr>
+<td>Premium ÷ synergies (at announcement)</td>
+<td>3.0x</td>
+<td>3.3x</td>
+</tr>
+<tr>
+<td>Deal value ÷ acquirer market value (Note)</td>
+<td>86% (single buyer)</td>
+<td>32% (three combined); Fortis alone ≈59%</td>
+</tr>
+</tbody>
+</table></div>
+<p>Note: Exhibit 2 does not state the currency of market values; following Forbes convention they are treated as US dollars and converted at 1.35 USD/EUR. If treated as euros, the figures are 63% / 24% / Fortis 43%, respectively.</p>
+<p><strong>Consortium split (38.3/33.8/27.9):</strong> RBS €27.2bn, Fortis €24.0bn, Santander €19.8bn. Fortis's committed funding is a €13bn rights issue + €2bn of convertibles + €0.98bn from the sale of CaiFor = €16.0bn, leaving a gap of roughly €8bn to be covered by debt, at a time when borrowing costs have been rising since August.</p>
+<p><strong>LaSalle:</strong> It was sold to Bank of America for $21bn (≈€15.6bn), against the consortium's valuation of €24.5bn, a difference of roughly €8.9bn; if the "€24.5bn" is in fact in dollars, the difference is only about €2.6bn. On 27 June the consortium threatened to cut its offer to €37.40 (€69.2bn, i.e. €1.00 less per share and €1.9bn less in total) if LaSalle were excluded. Yet after the exclusion on 16 July it held its offer at €38.40: the cash proceeds from the LaSalle sale remain within ABN and accrue to the acquirer.</p>
+<figure class="fig"><figcaption>After the August sell-off, Barclays' mostly-stock offer lost 11% of its value; the mostly-cash consortium offer lost 0.8%</figcaption><div class="legend"><span><i class="sw s1"></i>At announcement</span><span><i class="sw s2"></i>1 Sep</span><span><i class="sw ref"></i>Unaffected market value</span></div><svg viewBox="0 0 640 300" role="img" aria-labelledby="ct cd" class="chart"><title id="ct">Total offer value: at announcement vs 1 September</title><desc id="cd">Barclays fell from €67.5bn to €60.1bn; the consortium from €71.1bn to €70.5bn; unaffected market value €57bn.</desc><line x1="56" x2="528" y1="252.0" y2="252.0" class="grid"/><text x="48" y="256.0" text-anchor="end" class="tick">€0bn</text><line x1="56" x2="528" y1="195.0" y2="195.0" class="grid"/><text x="48" y="199.0" text-anchor="end" class="tick">€20bn</text><line x1="56" x2="528" y1="138.0" y2="138.0" class="grid"/><text x="48" y="142.0" text-anchor="end" class="tick">€40bn</text><line x1="56" x2="528" y1="81.0" y2="81.0" class="grid"/><text x="48" y="85.0" text-anchor="end" class="tick">€60bn</text><line x1="56" x2="528" y1="24.0" y2="24.0" class="grid"/><text x="48" y="28.0" text-anchor="end" class="tick">€80bn</text><g class="bar" tabindex="0"><title>Barclays · At announcement: €67.5bn</title><path d="M109.0,252.0 V63.6 Q109.0,59.6 113.0,59.6 H169.0 Q173.0,59.6 173.0,63.6 V252.0 Z" class="s1"/><text x="141.0" y="53.6" text-anchor="middle" class="val">€67.5bn</text></g><g class="bar" tabindex="0"><title>Barclays · 1 Sep: €60.1bn</title><path d="M175.0,252.0 V84.7 Q175.0,80.7 179.0,80.7 H235.0 Q239.0,80.7 239.0,84.7 V252.0 Z" class="s2"/><text x="207.0" y="74.7" text-anchor="middle" class="val">€60.1bn</text></g><text x="174.0" y="272.0" text-anchor="middle" class="cat">Barclays</text><g class="bar" tabindex="0"><title>Consortium (RBS / Santander / Fortis) · At announcement: €71.1bn</title><path d="M345.0,252.0 V53.4 Q345.0,49.4 349.0,49.4 H405.0 Q409.0,49.4 409.0,53.4 V252.0 Z" class="s1"/><text x="377.0" y="43.4" text-anchor="middle" class="val">€71.1bn</text></g><g class="bar" tabindex="0"><title>Consortium (RBS / Santander / Fortis) · 1 Sep: €70.5bn</title><path d="M411.0,252.0 V55.1 Q411.0,51.1 415.0,51.1 H471.0 Q475.0,51.1 475.0,55.1 V252.0 Z" class="s2"/><text x="443.0" y="45.1" text-anchor="middle" class="val">€70.5bn</text></g><text x="410.0" y="272.0" text-anchor="middle" class="cat">Consortium (RBS / Santander / Fortis)</text><line x1="56" x2="530" y1="89.5" y2="89.5" class="ref"/><text x="534" y="86.5" class="reflab">20 Mar market value</text><text x="534" y="102.5" class="reflab">€57bn</text><line x1="56" x2="528" y1="252" y2="252" class="axis"/></svg><p class="src">Source: case Exhibits 5 and 7. €bn.</p></figure><h3>2. Strengths of each offer</h3>
+<p><strong>Barclays' offer</strong></p>
+<ul>
+<li><strong>Shareholders:</strong> Predominantly a share exchange; ABN shareholders would own about 38% of the new Barclays and share in synergies and long-term upside. For long-term holders wishing to stay invested, it allows tax deferral and continued exposure.</li>
+<li><strong>Management/employees:</strong> Management initially recommended this offer; ABN stays intact rather than being broken up, preserving its brand and global network. The two banks are geographically complementary (Eastern Europe, Asia, Brazil, India), with the aim of becoming the world's largest asset manager.</li>
+<li><strong>Dutch stakeholders:</strong> Unions tend to be supportive; the "European champion" narrative is credible. (The commitment to headquarter the group in Amsterdam is context from outside the case and is not mentioned in the case text.)</li>
+<li><strong>Deal certainty:</strong> The EU approved the deal on 6 August; a single buyer makes for a simple integration path; investments by China Development Bank and Temasek add cash and capital.</li>
+<li><strong>Weaknesses:</strong> 64% is stock, so the offer lost €7.4bn in value after Barclays' share price fell in August, leaving a premium of only 5%; 12,800 job cuts are planned, with a further 10,000 roles moved to India; the share issuance also requires approval from Barclays shareholders, who have consistently opposed raising the offer.</li>
+</ul>
+<p><strong>The consortium's offer</strong></p>
+<ul>
+<li><strong>Shareholders:</strong> Higher absolute price: €5.6 more per share and €10.4bn more in total on 1 Sep; 93% cash, so value is all but locked in, which is especially valuable amid the credit crisis. Premium of about 24%, with higher synergies (€4.23bn).</li>
+<li><strong>Management/employees:</strong> The consortium claims job cuts will be "fewer than Barclays'".</li>
+<li><strong>Dutch stakeholders:</strong> The Dutch business would be taken over by Dutch-Belgian bank Fortis and remain domestic; ING and Rabobank at one point expressed support.</li>
+<li><strong>Deal certainty:</strong> Fortis shareholders approved the €13bn capital increase on 6 August, and RBS shareholders gave approval on 10 August; with the burden split three ways, each member's commitment is smaller relative to its own size.</li>
+<li><strong>Weaknesses:</strong> ABN would be broken up, and the separation, migration and integration among the three parties are highly complex; regulatory approvals are needed in multiple jurisdictions; Fortis is overstretched relative to its size (≈59% of its market value), making financing risk acute.</li>
+</ul>
+<p><strong>In hindsight (for reference only):</strong> The consortium prevailed in October 2007. In 2008 RBS was recapitalised by the UK government, and Fortis was rescued and broken up by the Belgian, Dutch and Luxembourg governments, with the Dutch government taking over the former ABN AMRO's Dutch business. This shows that what was underestimated in 2007 was the acquirers' financing and leverage risk.</p>
+<h3>3. Conclusion and board considerations</h3>
+<p>As of September 2007, on a shareholder-value basis the board should <strong>favour the consortium's offer</strong>: it is superior on all three dimensions of price (≈17% higher), premium (23.7% vs 5.4%) and value certainty (93% cash), whereas the value of Barclays' offer keeps eroding as its share price falls, and it also faces approval risk from its own shareholders.</p>
+<p>Under Dutch law, the Supervisory Board must balance the interests of all stakeholders and is not obliged to accept the highest price. Beyond price, therefore, the board should also weigh: (1) deal certainty, in particular Fortis's ability to finance its share and conditions such as a "walk away if financing fails" clause; (2) the impact of the break-up on employees, customers and the stability of the Dutch financial system, which calls for written commitments on job cuts and employment; (3) the timetable for multi-jurisdictional regulatory approvals; and (4) the capital adequacy of each business after the break-up, which bears on depositors' interests. The sensible course is to recommend the consortium's offer while requiring it to provide financing and regulatory commitments and to enter into binding arrangements for employees.</p></section>
+<section id="q4"><h2>Question 4: Composition and role of the board as at 1 March 2007</h2>
+<p><strong>Bottom line:</strong> ABN AMRO's Supervisory Board was "big on names, short on bankers, long on busy directors": only 3 of its 12 members had a financial-services background, 5 held ≥3 listed-company mandates, and power was concentrated in a Chairman who came from retail. Under the Dutch two-tier board system, the Supervisory Board's statutory duty is to supervise and advise the Managing Board, yet it tolerated seven years of stagnant performance, the expensive Antonveneta acquisition and a string of compliance failures, and was then caught off guard by TCI's letter of 20 February. As at 1 March 2007, we therefore judge the Supervisory Board <strong>poorly composed, with its oversight function largely failing</strong>.</p>
+<h3>1. Board statistics (Exhibit 8/9)</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Supervisory Board (12, non-executive)</th>
+<th>Managing Board (7, executive)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Average / median age</td>
+<td>62.7 / 63.5 years (83% ≥60)</td>
+<td>50.6 / 48 years (range 42–59)</td>
+</tr>
+<tr>
+<td>Gender</td>
+<td>10 men, 2 women (16.7% female)</td>
+<td>All male</td>
+</tr>
+<tr>
+<td>Nationality</td>
+<td>50% Dutch; 50% foreign, 7 nationalities in total</td>
+<td>6/7 Dutch (85.7%); only the CFO is British</td>
+</tr>
+<tr>
+<td>Average tenure (to 2007)</td>
+<td>4.1 years; one-third with tenure ≤2 years</td>
+<td>6.4 years; 3/7 newly appointed in 2006</td>
+</tr>
+<tr>
+<td>Financial / banking background</td>
+<td><strong>3/12 = 25%</strong> (de Rothschild, Sharman, Randa)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Political background</td>
+<td>3/12 = 25% (Groenman, Maas, Pratini)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>≥3 external listed-company mandates</td>
+<td><strong>5/12 = 41.7%</strong> (Martinez, Olijslager, Scaroni, Kramer with 3 each; Sharman with 4)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Committee seats</td>
+<td>10 seats in total; <strong>Martinez holds 3 (30%)</strong> and chairs both the Nomination &amp; Compensation Committee and the Compliance Oversight Committee</td>
+<td>Groenink alone oversees Internal Audit, Compliance &amp; Legal, and HR</td>
+</tr>
+<tr>
+<td>Not on any committee</td>
+<td><strong>5/12 = 41.7%</strong> (de Rothschild, Groenman, Scaroni, Kramer, Randa)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2. Assessment of composition</h3>
+<ol>
+<li><strong>Insufficient banking expertise.</strong> ABN AMRO was the world's 15th-largest bank by revenue, yet only 3 Supervisory Board members had a financial background, and two of them, de Rothschild and Randa, <strong>sat on no committee</strong>. The members with genuine banking experience were not involved in the hands-on work of risk and compliance oversight, leaving Sharman to carry the Audit Committee on his own.</li>
+<li><strong>Excessive concentration of power in a Chairman without relevant expertise.</strong> Martinez, the former CEO of retailer Sears, had no banking background, yet sat on all three committees, chaired two of them, and held 3 external mandates on top. That workload makes effective oversight of a complex multinational bank very difficult. In addition, under the Dutch Tabaksblat Corporate Governance Code (2003, <strong>outside the case</strong>), the Chairman of the Supervisory Board should in principle not also chair the remuneration committee; ABN AMRO's arrangement is at the very least in tension with best practice.</li>
+<li><strong>A pronounced overboarding / busy-directors problem.</strong> 41.7% of Supervisory Board members held ≥3 listed-company mandates, and Sharman held 4 (one of them as Chairman). In a crisis such as a takeover battle, which demands daily time commitment, the board clearly lacked the bandwidth.</li>
+<li><strong>Uneven diversity.</strong> Nationality diversity was good (an even split between Dutch and foreign members), but women made up only 16.7%, and the Managing Board was all male and almost entirely Dutch; this homogeneity creates a real risk of groupthink.</li>
+<li><strong>Independence.</strong> All Supervisory Board members were nominally independent, but de Rothschild, as head of an investment-banking dynasty, faced potential conflicts of interest in M&amp;A advisory work that warranted attention. The 3 former politicians were more inclined towards a stakeholder model perspective than a shareholder-value perspective.</li>
+</ol>
+<h3>3. Assessment of role</h3>
+<p>Under the Dutch two-tier board system, the Supervisory Board is responsible for <strong>supervising and advising the Managing Board</strong> and must balance the interests of <strong>all stakeholders</strong> (shareholders, employees, customers, etc.); in a takeover, it <strong>is not obliged to reward the highest offer</strong>. This gives the Supervisory Board wide discretion, but correspondingly heavier accountability. On its actual record, the Supervisory Board did not discharge its duties:</p>
+<ul>
+<li><strong>It tolerated sustained underperformance.</strong> Cumulative share-price return over 2000–2007 was 0%, versus roughly +44% for peers over the same period; the target of a top-five ROE among peers was never met; and a market-cap ranking of 34th was out of line with a revenue ranking of 15th.</li>
+<li><strong>It did not drive strategy execution.</strong> Management announced a "focus strategy", but at end-2006 the bank still held non-core businesses such as LaSalle, and home-market assets accounted for only 29.4%.</li>
+<li><strong>It failed to police major risks.</strong> The Supervisory Board approved the expensive Antonveneta acquisition; in 2004–2005 the bank was hit successively by breaches of sanctions against Iran and Libya and by 3 US fraud cases. Afterwards, the CEO himself continued to oversee Internal Audit and Compliance directly, and the Supervisory Board did not correct this self-supervising structure.</li>
+<li><strong>It was slow to respond to the capital markets.</strong> TCI's letter "takes the ABN AMRO supervisory board by surprise", and the case states explicitly that no Supervisory Board member "had been under similar levels of investor scrutiny before".</li>
+</ul></section>
+<section id="q5"><h2>Question 5: The roles of Groenink and Martinez in the bidding contest</h2>
+<p><strong>Bottom line:</strong> Throughout the bidding contest, Groenink was <strong>severely conflicted</strong>. Having staked his personal reputation on a strategy of keeping the bank whole, he favoured the lower Barclays bid and used the sale of LaSalle as a "poison pill", which in effect suppressed the higher offer. His conduct served his own interests and those of management more than it maximised value for shareholders. Martinez, as Chairman of the Supervisory Board, should have led an independent sale process; in practice he remained passive and sided with management for a long time, and only "let the market decide" under the pressure of shareholder litigation and the threat of legal liability. Verdict: <strong>Groenink fails; Martinez scrapes a low pass.</strong></p>
+<h3>1. Key data</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Milestone</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Groenink's tenure</td>
+<td>Member of the Managing Board since 1990 (17 years); CEO since May 2000</td>
+</tr>
+<tr>
+<td>Shareholder return under his tenure</td>
+<td>0%, versus roughly +44% for both peers and the Euro Stoxx Banks index over the same period</td>
+</tr>
+<tr>
+<td>Undisturbed market cap (20 March)</td>
+<td>€57bn</td>
+</tr>
+<tr>
+<td>Barclays offer (23 April → 23 July)</td>
+<td>€65bn → €67.5bn (down to €60.1bn by 1 September)</td>
+</tr>
+<tr>
+<td>Consortium offer (from 29 May)</td>
+<td>€71.1bn (€70.5bn on 1 September), cash component raised to 93%</td>
+</tr>
+<tr>
+<td>LaSalle sale price</td>
+<td>Sold to BofA for $21bn; consortium valuation <strong>€24.5bn</strong></td>
+</tr>
+<tr>
+<td>Premium created by competition</td>
+<td>From €57bn to €71bn, roughly <strong>+25%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>2. Groenink: a conflicted defender</h3>
+<ol>
+<li><strong>Personal position ahead of shareholders.</strong> The "focus strategy" was his own initiative, and a break-up would have amounted to an admission that it had failed. Management publicly stated "a preference not to be split up" and favoured the lower Barclays bid. According to press reports at the time (<strong>outside the case; to be verified</strong>), the Barclays proposal committed to headquartering the combined group in Amsterdam and to retaining a number of ABN AMRO executives in their posts, which further aggravated the conflict of interest.</li>
+<li><strong>Using LaSalle as a "poison pill".</strong> On 23 April, alongside the Barclays deal, management announced the sale of LaSalle to BofA for $21bn, well below the consortium's valuation and plainly designed to block the consortium (LaSalle being RBS's core target). After VEB sued, the commercial court ruled that the transaction required shareholder approval; but on <strong>26 June the Supreme Court</strong> annulled that judgement, holding that no shareholder approval was needed. The move was therefore <strong>lawful, but contrary to the spirit of good corporate governance</strong>: it bypassed shareholders' right to decide the company's fate.</li>
+<li><strong>Credibility damaged inside and out.</strong> On 1 May TCI demanded his removal, and unrest surfaced within the Managing Board ("Groenink is tough but not warm"). On 30 July he withdrew the recommendation for Barclays, stating that management "can no longer voice a clear preference", while at the same time saying it continued to favour "a solution which does not break up the bank". This amounted to conceding that the earlier recommendation could not be defended, and further damaged his credibility.</li>
+<li><strong>Assessment:</strong> Justifying the preference for Barclays as "protecting stakeholders" is unconvincing: the Barclays plan envisaged 12,800 job cuts plus a further 10,000 roles moved to India, while the consortium undertook to "lay off fewer people than Barclays would". His position served <strong>his own interests</strong> first, the Managing Board's independence second, and shareholders only last.</li>
+</ol>
+<h3>3. Martinez: meant to be independent, chose to be passive</h3>
+<ul>
+<li><strong>What he should have done but did not:</strong> He did not immediately set up a special committee of independent Supervisory Board members after TCI's letter, did not retain separate independent financial and legal advisers, and did not take the sale process out of management's hands. On 4 May he continued to back Groenink publicly, rejecting TCI's demand that "the Supervisory Board immediately takes complete control of the sale process". The FT also questioned whether the Supervisory Board had the power to overturn "decisions made by Mr Groenink and his team".</li>
+<li><strong>The pressure he faced:</strong> TCI threatened to sue him personally for breach of fiduciary duty, while VEB demanded negotiations with the consortium and brought the LaSalle lawsuit.</li>
+<li><strong>Points in his favour:</strong><ol>
+<li>Dutch law does allow the Supervisory Board to balance the interests of all stakeholders and does not require it to accept the highest price;</li>
+<li>The legal status of the LaSalle sale was not settled until 26 June;</li>
+<li>The end result was a two-way bidding contest: market value rose from €57bn to €71bn, and after the recommendation was withdrawn on 30 July, the choice was handed back to shareholders.</li>
+</ol>
+</li>
+<li><strong>Assessment:</strong> An acceptable outcome, but a poor process. The price improvement came mainly from external pressure by TCI, VEB and the consortium, not from a process the Supervisory Board designed. He did not demonstrate the <strong>independence</strong> expected of a Supervisory Board.</li>
+</ul>
+<h3>Governance recommendations to the board (if we were advising)</h3>
+<ol>
+<li>Immediately establish a <strong>special transaction committee</strong> of independent Supervisory Board members, chaired by a member with banking experience (e.g. Sharman or Randa), with its own independent investment bank and legal counsel, and <strong>remove management from decision-making on the sale process</strong>.</li>
+<li>Run a consistent fairness assessment of all offers, covering price, cash component, deal certainty, regulatory risk and employment impact, and document in writing the specific rationale for the "stakeholder balance" to reduce litigation risk.</li>
+<li>Freeze transactions such as the LaSalle sale that could obstruct competing offers, or <strong>put them to a shareholder vote</strong>.</li>
+<li>After the transaction: replace or reassign the CEO; strip management responsibility for Internal Audit and Compliance from the CEO; ensure the Supervisory Board Chairman no longer chairs committees; cap the number of external mandates held by Supervisory Board members; and add banking experts and female members to the Supervisory Board.</li>
+</ol></section>
+<section id="appendix"><h2>Appendix: Data inconsistencies in the case and assumptions</h2>
+<p>Several figures and dates in the case contradict one another; the table below sets out the basis adopted in this report.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Conflicting statements in the case</th>
+<th>Basis adopted in this report</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Year of the ABN–AMRO merger</td>
+<td>Main text p. 2 says "1980"; p. 1 says 1990</td>
+<td>1990 ("1980" is a typo)</td>
+</tr>
+<tr>
+<td>Martinez's appointment</td>
+<td>Exhibit 9 says 2002; main text says Chairman from 2006</td>
+<td>Supervisory Board member from 2002, Chairman from 2006</td>
+</tr>
+<tr>
+<td>Date of Barclays' announcement of intent</td>
+<td>Main text 19 March; Exhibit 7 20 March</td>
+<td>No impact on the analysis</td>
+</tr>
+<tr>
+<td>Total Barclays offer value</td>
+<td>€65bn (April, all-share) vs €67.5bn (July, revised)</td>
+<td>€67.5bn taken as the "at announcement" value</td>
+</tr>
+<tr>
+<td>Barclays cash component</td>
+<td>Main text €14.8bn; Exhibit 7 €24.8bn</td>
+<td>€24.8bn (consistent with €13.15 × share count ≈ €24.3bn)</td>
+</tr>
+<tr>
+<td>Barclays value at end-August</td>
+<td>Main text €58.4bn (8/29); Exhibit 5 €60.1bn (9/1)</td>
+<td>€60.1bn used in tables</td>
+</tr>
+<tr>
+<td>Consortium share-exchange ratio</td>
+<td>0.844 RBS shares vs 0.296 RBS shares</td>
+<td>Not a contradiction: they correspond to the May (€30.40 cash) and July (€35.60 cash) offers respectively</td>
+</tr>
+<tr>
+<td>Consortium initial cash component</td>
+<td>Main text "70%"; Exhibit 7 "70/79%"</td>
+<td>79%, per calculation</td>
+</tr>
+<tr>
+<td>LaSalle valuation</td>
+<td>BofA $21bn vs consortium "€(!)24.5bn"</td>
+<td>Both currency scenarios shown</td>
+</tr>
+<tr>
+<td>Total ABN AMRO shares outstanding</td>
+<td>Back-solved from different offers at 1.793–1.886bn</td>
+<td>1.852bn used throughout (€71.1bn ÷ €38.40)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Assumptions outside the case:</strong> EUR/USD = 1.35; market caps in Exhibit 2 treated as USD; the basis of the synergy figures (annualised or cumulative) is unknown, so only relative comparisons are made. Items marked "outside the case" (the Tabaksblat Code, the Barclays headquarters commitment, subsequent outcomes) are drawn from general sources and should be verified before citation.</p></section>
+    <footer>Based only on the case materials and clearly labelled outside information. For study purposes; not investment advice.</footer>
+  </main>
+</div>
+</body>
+</html>
