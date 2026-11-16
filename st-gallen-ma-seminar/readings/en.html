@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M&A Seminar Readings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deal-memo page — fixed contents rail on the left, one reading column, tables full column width */
+:root {
+  --bg: #f6f6f3;
+  --paper: #ffffff;
+  --ink: #1b2130;
+  --ink-2: #4d5566;
+  --rule: #dcdcd4;
+  --accent: #184f95;
+  --accent-soft: #e6eefa;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+    --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+    --s1: #3987e5; --s2: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+  --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+  --s1: #3987e5; --s2: #d95926;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+nav { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .navhead { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 8px; }
+nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-left: 2px solid var(--rule); }
+nav a.lang { margin-top: 14px; border-left: 0; padding-left: 0; color: var(--accent); font-weight: 700; }
+nav a:hover, nav a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--ink-2); letter-spacing: .04em; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; }
+.sub a { color: var(--accent); }
+.sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 8px; }
+.kpi { background: var(--paper); padding: 14px 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.kpi span { font-size: 13px; color: var(--ink-2); }
+section { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 24px; scroll-margin-top: 16px; }
+section > *:first-child { margin-top: 0; }
+h2 { font-family: var(--display); font-size: 24px; line-height: 1.4; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); text-wrap: balance; }
+h3 { font-size: 17px; margin: 28px 0 8px; color: var(--accent); text-wrap: balance; }
+p, li { max-width: 46em; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 1.4em; margin: 8px 0; }
+li { margin: 4px 0; }
+section > p:nth-of-type(1) strong:first-child { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+thead th { text-align: left; font-weight: 700; background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+code { font-size: .9em; }
+.fig { margin: 22px 0 6px; }
+.fig figcaption { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); }
+.sw.ref { height: 0; border-top: 2px dashed var(--ink-2); border-radius: 0; width: 16px; }
+.chart { width: 100%; max-width: 680px; height: auto; display: block; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .tick, .chart .reflab { fill: var(--ink-2); font-size: 12px; font-family: var(--body); }
+.chart .cat { fill: var(--ink); font-size: 13px; font-family: var(--body); }
+.chart .val { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--body); }
+.chart .s1 { fill: var(--s1); } .chart .s2 { fill: var(--s2); }
+.chart .ref { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar:hover path, .chart .bar:focus path { opacity: .8; }
+.chart .bar:focus { outline: none; }
+.src { font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+footer { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 16px; }
+  nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav .navhead { width: 100%; margin: 0; }
+  nav a { border: 1px solid var(--rule); padding: 4px 10px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 20px 18px; }
+  h1 { font-size: 27px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="Contents"><div class="navhead">Contents</div><a href="#overview">Overview</a><a href="#hbr-boards">HBR · Board engagement</a><a href="#governance-guide">Governance big ideas</a><a href="#deloitte-unlocking">Deloitte · Unlocking M&amp;A</a><a href="#deloitte-ducks">Deloitte · Ducks in a row</a><a href="#deloitte-transformational">Deloitte · Transformational dealmakers</a><a href="#mckinsey-programmatic">McKinsey · Programmatic M&amp;A</a><a href="#bcg-synergy">BCG · Synergy planning</a><a href="#mckinsey-genai">McKinsey · GenAI in M&amp;A</a><a class="lang" href="index.html" hreflang="zh-CN">中文版 →</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">St Gallen M&A Seminar · Readings</div>
+      <h1>Readings: methods, facts and insights</h1>
+      <p class="sub">Notes on 8 governance and M&A readings, each with lessons for the ABN AMRO case. For the case itself, see the <a href="../abn-amro-2007/en.html">ABN AMRO report</a>.</p>
+      
+    </header>
+    <section id="overview"><h2>Overview: core methods of the 8 readings and what they mean for ABN AMRO</h2>
+<p><strong>Bottom line:</strong> The governance readings show that ABN AMRO's Supervisory Board should have led the change-of-control contest and did not. The M&amp;A readings agree that value is won or lost after signing, in integration and synergy delivery, and the consortium's three-way break-up funded with cash sits squarely in the high-risk zone they warn about.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Reading</th>
+<th>Core method</th>
+<th>Key lesson for ABN AMRO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rowley &amp; Capron, HBR 2025</td>
+<td>Four board engagement modes (passive, mentor, partner, control), chosen by value impact, conflicts, mission and capability</td>
+<td>The board should have controlled the sale process and offer comparison; it stayed passive</td>
+</tr>
+<tr>
+<td>Paine &amp; Srinivasan, HBR 2019</td>
+<td>Eight governance debates: shareholders vs stakeholders, shareholder power and activism, board composition, pay, short-termism and more</td>
+<td>The Dutch stakeholder model gave legal room to favour Barclays but blurred accountability; TCI is classic hedge-fund activism</td>
+</tr>
+<tr>
+<td>Deloitte &amp; HSG, 2017, Unlocking M&amp;A</td>
+<td>Eight "Value Creation Champion" practices: benchmarked, granular synergy targets, one owner end to end, beyond IT and cross-selling</td>
+<td>Bids in an auction lean on synergies; with FSI cost synergies at a median of about 4% of combined costs, the board should have tested how credible each bidder's case was</td>
+</tr>
+<tr>
+<td>Deloitte &amp; HSG, 2015, Ducks in a row</td>
+<td>Serial acquirers' deal and integration capabilities; the "digestibility" test</td>
+<td>Each consortium member faced an integration plus a carve-out; Fortis should first have asked whether it could absorb a deal bigger than itself</td>
+</tr>
+<tr>
+<td>Deloitte &amp; HSG, 2022, Transformational dealmakers</td>
+<td>Define the end-state first, then use acquisitions and divestments to get there; one governance for deal and transformation</td>
+<td>TCI triggered a reactive sale with no end-state; the consortium ran break-up and integration at once under auction pressure and never revisited the price as markets worsened</td>
+</tr>
+<tr>
+<td>McKinsey Quarterly, 2019, Programmatic M&amp;A</td>
+<td>A steady stream of small and midsize deals beats one-off big deals; strategy blueprint, early integration thinking, defined operating model</td>
+<td>ABN AMRO was a "big-bang" deal, the type with the weakest and most dispersed returns in the 2007–2017 data</td>
+</tr>
+<tr>
+<td>BCG, 2025, Synergy planning</td>
+<td>Start integration planning in diligence with line managers; set internal stretch targets above public guidance</td>
+<td>The form of payment decides who bears synergy risk: shared by ABN AMRO holders in a stock deal, borne by the consortium in a cash deal</td>
+</tr>
+<tr>
+<td>McKinsey, 2026, Gen AI in M&amp;A</td>
+<td>AI for screening, diligence and integration planning; build fluency now and codify data and playbooks</td>
+<td>No such tools in 2007; today they could speed up modelling the three pieces, but not remove financing or crisis risk, nor replace banking expertise on the board</td>
+</tr>
+</tbody>
+</table></div>
+<p>Suggested order: the two governance articles first (the theory behind Questions 4 and 5), then the three Deloitte studies and BCG (methods for Question 3's bid comparison), then the two McKinsey pieces as extensions.</p></section>
+<section id="hbr-boards"><h2>How the Best Boards Engage with Management — Timothy J. Rowley and Laurence Capron, Harvard Business Review, January–February 2025</h2>
+<p><strong>Bottom line:</strong> Most boards treat management the same way whatever the decision, and the most common way is passive. The authors argue for an "agile board" that moves between four modes (passive, mentor, partner, control) according to each decision's value impact, conflicts of interest, link to the mission, and the board's own capabilities.</p>
+<h3>Methodology</h3>
+<ol>
+<li><strong>Four modes of engagement.</strong> A spectrum from hands-off to full control, separated by who holds decision authority and who holds the key information.</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Decision authority</th>
+<th>Information advantage</th>
+<th>Meetings</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Passive</td>
+<td>Almost entirely management</td>
+<td>Management</td>
+<td>Management presents and "sells" decisions already made</td>
+<td>Low-impact operating decisions</td>
+</tr>
+<tr>
+<td>Mentor</td>
+<td>Management leads; the board joins early</td>
+<td>Board relies on management</td>
+<td>Fewer presentations, more discussion; directors advise and add options</td>
+<td>Directors have relevant experience; management wants advice</td>
+</tr>
+<tr>
+<td>Partner</td>
+<td>Joint decision; the board formally approves</td>
+<td>Roughly balanced</td>
+<td>Works like a negotiation; the board oversees execution</td>
+<td>Major strategy, M&amp;A, capital structure</td>
+</tr>
+<tr>
+<td>Control</td>
+<td>The board decides</td>
+<td>Board invests heavily in time</td>
+<td>Risk of drifting into detail</td>
+<td>CEO succession and pay, mission and goals, board appointments</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="2">
+<li><strong>Four factors for choosing a mode.</strong> Impact on long-term value; conflicts of interest (engage more when management's interests may diverge from other stakeholders'); implications for the mission and goals (e.g. new markets, brand repositioning); and whether directors have skills management lacks.</li>
+<li><strong>Step 1: take stock.</strong> Board and management build a decision inventory together and set a default mode for each category. The article's sample: mission and goals, shareholder relations, CEO pay and succession, and board changes under control; financial management, audit, risk, compliance, ESG and organisational change as partner; strategic direction, resource allocation, M&amp;A and non-CEO executive changes as mentor; R&amp;D road map, operations, marketing, talent review and cybersecurity as passive.</li>
+<li><strong>Step 2: manage the engagement.</strong> The chair and CEO check agenda items against their default modes and take changes to the full board; an annual review addresses systemic shifts. A one-off switch does not change the default.</li>
+</ol>
+<h3>Key facts and data</h3>
+<ul>
+<li>Sample: about 400 board assessments written by directors in the authors' governance programmes over the past decade, plus interviews and surveys.</li>
+<li>Only 9% of boards used more than one mode.</li>
+<li>Shares by mode: passive 46%, control 19%, mentor 14%, partner 12%.</li>
+<li>Technology road map example: a firm spending under 30% of annual capital allocation on technology, with a solid balance sheet, chose passive; one spending over 80%, with a weak balance sheet and bank covenants, chose partner.</li>
+<li>At the start of the Covid-19 pandemic, agile boards moved from passive to mentor and partner modes, which most directors and CEOs preferred; boards have since been drifting back.</li>
+</ul>
+<h3>Insights</h3>
+<ul>
+<li>The real danger is not passivity itself but passivity followed by a sudden jump to full control: uninformed boards overweight bad news, rush, and often replace the CEO.</li>
+<li>Mentor and partner modes are badly underused; they let CEOs admit problems, which passive and control modes discourage.</li>
+<li>Many directors define the job as policing management, watching only financial results and team composition. That is too narrow.</li>
+<li>The right mode for a decision type depends on context: the less mature the team, and the bigger the deal and its financing needs, the deeper the board's involvement.</li>
+<li>Board composition limits which modes are available: a board short on business knowledge and time cannot act as mentor or partner even if it wants to.</li>
+</ul>
+<h3>Application to the ABN AMRO case</h3>
+<ul>
+<li>ABN AMRO's Supervisory Board was a textbook long-term passive board: it tolerated years of stalled strategy, approved the costly Antonveneta deal, and left internal audit under the CEO after the compliance scandals.</li>
+<li>In the bidding contest, the sale process and offer comparison combined the highest value impact with a clear management conflict, so the framework calls for control mode through an independent special committee. Martinez did not switch.</li>
+<li>The LaSalle sale could block a higher offer; it belonged under board control or a shareholder vote, not with management as a defence.</li>
+<li>Few banking experts and many busy directors explain why the board struggled to act as mentor or partner.</li>
+<li>In practice, control passed to TCI, VEB and the courts rather than the Supervisory Board.</li>
+</ul>
+<p>Source: Timothy J. Rowley, Laurence Capron, "How the Best Boards Engage with Management", <em>Harvard Business Review</em>, January–February 2025.</p></section>
+<section id="governance-guide"><h2>A Guide to the Big Ideas and Debates in Corporate Governance — Lynn S. Paine and Suraj Srinivasan, Harvard Business Review, 2019</h2>
+<p><strong>Bottom line:</strong> Governance has no settled answer to its basic questions: what a company is for, whose interests count, and how much power shareholders should hold. The authors map eight areas of live debate and argue that boards must form a shared view on each, rather than default to shareholder-value orthodoxy.</p>
+<h3>Methodology</h3>
+<p>The article is a map of debates, not a single model.</p>
+<ol>
+<li><strong>Purpose (shareholder vs stakeholder primacy).</strong> One school sees the firm as a "legal fiction", a contract among shareholders; agency theory follows, with managers as agents and the board as monitor. The other sees a "real entity" with duties to employees, customers and society. Settle this first; every other choice depends on it.</li>
+<li><strong>Shareholder power.</strong> One side welcomes engagement, proposals and activism. The other warns of short-term pressure, unaccountable activists and weak stewardship by passive funds and proxy advisers. Use it to balance power among shareholders, board and management.</li>
+<li><strong>Board composition and role.</strong> Boards select, monitor and pay the CEO and decide on changes of control. Debates cover independence, diversity, structure (see table) and whether fiduciary duty includes ESG. Between governing and managing, "that line is neither sharp nor fixed"; in a crisis boards get drawn in.</li>
+<li><strong>Executive pay.</strong> Defenders cite a harder CEO job and shareholder returns. Critics cite benchmarking ratchets, narrow metrics, executives shaping their own targets and rewards for failure.</li>
+<li><strong>Resource allocation and short-termism.</strong> Critics say market pressure cuts investment in people, R&amp;D and the future, and ignores externalities. Others say the aggregate evidence, including on buybacks, is disputed. Remedy: stronger strategy oversight, explicit time frames, better investor communication.</li>
+<li><strong>Performance measurement.</strong> TSR is simple but carries short-term investor bias; accounting metrics look backward and can be managed. A balanced-scorecard dashboard tracks intermediate drivers, which needs a causal theory of value creation.</li>
+<li><strong>Risk oversight.</strong> Duties widened from handling law violations to ensuring control systems (1990s); expectations now span financial risk, conduct, cyber, culture and supply chains. Culture cannot be run by controls alone.</li>
+<li><strong>Reporting.</strong> Tensions over IFRS vs US GAAP, fair-value discretion, new business models and non-financial reporting (GRI, integrated reporting). Transparency is valuable but costly.</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Board design variable</th>
+<th>Options described</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tiers</td>
+<td>Unitary (US) vs management board plus supervisory board (Germany)</td>
+</tr>
+<tr>
+<td>Leadership</td>
+<td>Combined chair/CEO (common in US) vs separated</td>
+</tr>
+<tr>
+<td>Terms</td>
+<td>Staggered multi-year (France, Hong Kong) vs annual</td>
+</tr>
+<tr>
+<td>Constituencies</td>
+<td>Some jurisdictions require employee directors</td>
+</tr>
+<tr>
+<td>Committees</td>
+<td>Audit, remuneration, nominating; majority independent</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key facts and data</h3>
+<ul>
+<li>Business Roundtable, August 2019: 181 CEOs committed to all stakeholders, reversing its 1997 statement.</li>
+<li>UK Code (2018) makes boards set purpose; France's Pacte Law requires management in the "corporate interest".</li>
+<li>US, 2007–2017: over $1.3 trillion flowed into passive funds; top-10 holders' share of S&amp;P 500 firms rose from 21% to about 30%.</li>
+<li>Over 700 shareholder proposals a year; 200–300 public activist campaigns a year against US-listed firms (2005–2017), rising in Europe and Asia. Evidence on activism is mixed.</li>
+<li>Departing large-US-CEO tenure: 10.8 years (2017) vs 7.2 (2009), The Conference Board. Women were 4.8% of Fortune 500 CEOs (2018).</li>
+<li>PwC 2018 director survey: only a third rated C-suite succession planning excellent.</li>
+<li>CEO-to-worker pay ratio, 350 largest US firms: 20-to-1 (1965) to 312-to-1 (2017), Economic Policy Institute. Say-on-pay barely moved pay levels.</li>
+<li>ISS: TSR is the top long-term incentive metric at S&amp;P 500 boards. Ceres 2017 study of 600 firms: about 8% tied pay to sustainability, vs 3% in 2014.</li>
+<li>All large US banks now have a board risk committee and a CRO. EU adopted IFRS in 2002; 166 countries by 2018.</li>
+</ul>
+<h3>Insights</h3>
+<ul>
+<li>A board that has not agreed what the firm is for cannot judge a takeover bid consistently.</li>
+<li>More shareholder power does not mean more accountable shareholders; activists can drive outcomes with no duty to the company.</li>
+<li>Independence is necessary but not sufficient. The open question is whether large-company boards have the capacity and information to oversee complex firms.</li>
+<li>TSR-based pay and short horizons reinforce each other, biasing boards toward whatever maximises price today.</li>
+</ul>
+<h3>Application to the ABN AMRO case</h3>
+<ul>
+<li><strong>Two-tier Dutch board.</strong> ABN AMRO had the two-tier structure the article describes: Groenink's Management Board and Martinez's Supervisory Board. In practice the Supervisory Board let management run bid strategy, including the LaSalle sale. In a change-of-control crisis the board should step across the governing/managing line, not stay behind it.</li>
+<li><strong>Stakeholder mandate.</strong> Dutch law sits near the "real entity" view: boards weigh the interests of the company and all stakeholders. That gave legal room to favour Barclays (bank kept whole) over the higher consortium offer (€71.1bn vs ~€57bn unaffected value). But it also blurred accountability; the mandate could shelter a management preference rather than a reasoned stakeholder judgement.</li>
+<li><strong>TCI's activism.</strong> TCI fits the article's hedge-fund pattern: a stake used to force a sale or break-up. Critics call it short-termist, and the consortium's 2008 collapse supports them; supporters point to the premium shareholders captured. The article's question applies: who holds the activist to account for long-term consequences?</li>
+<li><strong>Supervisory Board capacity.</strong> Deciding on control changes and overseeing risk are core board duties. A board chaired by a retail executive, with few banking experts and busy directors, lacked the capacity the article doubts many boards have. A capable board would have tested both bids for financing and integration risk, the factors behind the 2008 rescues of RBS and Fortis.</li>
+<li><strong>Limits of fit.</strong> The stewardship, ESG and risk-committee debates largely postdate 2007. Read them as what a bank board would do today, not as standards breached then.</li>
+</ul>
+<p>Source: Lynn S. Paine and Suraj Srinivasan, A Guide to the Big Ideas and Debates in Corporate Governance, Harvard Business Review, 14 October 2019.</p></section>
+<section id="deloitte-unlocking"><h2>Unlocking the full potential of M&amp;A: What it takes to be a Value Creation Champion — University of St.Gallen (HSG) and Deloitte AG Switzerland, 2017</h2>
+<p><strong>Bottom line:</strong> Deal value is won or lost after signing. It depends on how ambitious, granular and closely tracked the synergy targets are. "Value Creation Champions" benchmark their targets, look beyond IT and cross-selling, and keep one owner accountable from diligence to delivery. Most Swiss acquirers studied fall short, above all on revenue synergies.</p>
+<h3>Methodology</h3>
+<ol>
+<li><strong>Eight practices of Value Creation Champions.</strong> This is the core of the study. Use it as a checklist when building or reviewing a synergy case.</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Practice</th>
+<th>In practice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Be comprehensive on cost synergies, but prioritise value</td>
+<td>Screen all levers, then pursue the most valuable, not the most popular</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Always consider procurement</td>
+<td>Pool spend and renegotiate; much can start before Day 1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Go beyond cross-selling</td>
+<td>Also test pricing power, new customers, geographies and markets</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Quantify revenue synergies in detail</td>
+<td>Specific levers separate the deal effect from business as usual</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Set directional targets early, readjust if needed</td>
+<td>Revise for new facts, never to excuse weak execution</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Plan like a champion</td>
+<td>Granular, benchmarked plans with contingency</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Track to deliver</td>
+<td>Dashboards and clear owners, with effort scaled to value</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Turn disciplined execution into an advantage</td>
+<td>Practical actions and a deliberate trade-off between speed and accuracy</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="2">
+<li>
+<p><strong>Synergy typology.</strong> Cost synergies are largely under management control. Revenue synergies depend on how customers and competitors react. Financial synergies come from working capital, debt and tax. Use it to separate controllable value from market-dependent value.</p>
+</li>
+<li>
+<p><strong>Three procurement roles.</strong> Value Creator (pool spend, renegotiate), Enabler (support other functions) and Accelerator (quick wins prepared before closing).</p>
+</li>
+<li>
+<p><strong>Five-phase synergy capture process (Deloitte).</strong> The phases run as follows, with management stage gates between the later ones:</p>
+</li>
+</ol>
+<ul>
+<li>Top-down targets before the bid (1–3 weeks).</li>
+<li>Bottom-up identification up to Day 1 (2–5 weeks).</li>
+<li>Bottom-up validation (6–8 weeks).</li>
+<li>Taking control with action plans and buy-in (3–4 weeks).</li>
+<li>Accelerated delivery and monitoring (duration open).</li>
+</ul>
+<p>Use it to turn a bid-stage synergy figure into a delivery plan.</p>
+<ol start="5">
+<li>
+<p><strong>"Two-to-track".</strong> Two functions share tracking, for example Finance plus the business for revenue synergies. One answers for execution, the other for the integrity of results.</p>
+</li>
+<li>
+<p><strong>Five-question self-test.</strong> It covers ambition, benchmarking, breakdown into sub-initiatives, the P&amp;L link and tracking.</p>
+</li>
+</ol>
+<h3>Key facts and data</h3>
+<ul>
+<li>Sample: interviews at more than 40 Swiss companies (board members, CFOs, M&amp;A and integration staff), November 2016 to May 2017. Deals were mostly above CHF 100 million and closed within five years. The results are cross-checked against Deloitte's Synergy Database (more than 800 deals).</li>
+<li>At least CHF 48bn of value must be created to justify 2016 Swiss deal activity. This assumes a 30% average control premium.</li>
+<li>For 80% of the cohort, synergies underpinned the investment case.</li>
+<li>Announced synergies as a share of deal value: 2.2% (lower quartile), 4.1% (median) and 8.4% (upper quartile).</li>
+<li>Cost synergies: 57% of the cohort called them very important and 26% important. They are typically 1–5% of combined costs (46% of deals).</li>
+<li>Revenue synergies: 74% called them important or very important. They are typically 2–14% of target revenue; the top 15% announce more than 25%.</li>
+<li>Financial services has the highest cost synergies: a median of 4% and an upper quartile of 9% of combined costs.</li>
+<li>The cohort's most popular cost levers are IT, procurement and people. By value in the database, IT ranks only sixth. 49% actively pursue procurement synergies.</li>
+<li>Pricing is cited as a revenue lever by 12% of Swiss firms versus 66% globally. Cross-selling leads in Switzerland (77% vs 65% globally).</li>
+<li>39% did not quantify revenue synergies. Of the 61% that did, 65% met or nearly met their targets.</li>
+<li>65% changed revenue-synergy targets, and 57% revised them downwards. Only 25% of champions changed targets.</li>
+<li>50% do not track revenue synergies, and 36% stop tracking before implementation ends.</li>
+<li>Fewer than half delivered 75–125% of target; 12% delivered under 75% and 25% over 125%. 36% needed more than two years.</li>
+</ul>
+<h3>Insights</h3>
+<ul>
+<li>In auctions, synergies justify the price. Part of the value therefore passes to the seller before integration even starts.</li>
+<li>The levers teams favour are often not the most valuable ones. A board should ask why operational improvement ranks so low in the plan.</li>
+<li>Revenue synergies are where discipline breaks down, yet most firms that quantify them deliver.</li>
+<li>Change a target only when diligence data proves wrong. When targets prove too high, champions look for new levers instead of lowering the number.</li>
+<li>Caveat: the sample is small, Swiss and self-reported, and the authors sell synergy advisory services. The study does not ask whether the price paid was too high.</li>
+</ul>
+<h3>Application to the ABN AMRO case</h3>
+<ul>
+<li><strong>Consortium:</strong> Its €71.1bn bid exceeded the ~€57bn unaffected value by roughly €14bn (simple difference). The study shows auctions push bidders to count synergies to win. The board should have asked how much of that gap depended on synergies, and whether they were benchmarked against FSI norms (median 4%, upper quartile 9% of combined costs).</li>
+<li><strong>Break-up risk:</strong> The eight practices assume one acquirer and one owner. A three-way split meant separation followed by three integrations, which weakened end-to-end ownership and tracking. Fortis met the 2008 crisis mid-integration.</li>
+<li><strong>Supervisory Board:</strong> The passive Martinez board could have used the five-question self-test to compare synergy realism, setting Barclays' keep-whole plan against three integration plans. It would not have rested on headline price alone.</li>
+<li><strong>Barclays and Groenink:</strong> In a mostly-stock offer, ABN AMRO shareholders would carry part of the delivery risk, so a granular, quantified synergy plan mattered. The study does not cover defences such as the LaSalle sale.</li>
+<li><strong>TCI:</strong> The activist's break-up thesis relied on value the buyers would create. The delivery figures warn against treating announced synergies as cash.</li>
+</ul>
+<p>Source: Tomi Laamanen, Xena Welch Guerra, Andreas Girisch (HSG); Anna Samanta, Michael van der Boom, Kristina Faddoul (Deloitte), "Unlocking the full potential of M&amp;A: What it takes to be a Value Creation Champion", Deloitte AG / University of St.Gallen, 2017 (no month stated; file dated September 2017).</p></section>
+<section id="deloitte-ducks"><h2>Serial acquirers: Getting your ducks in a row — Deloitte and University of St. Gallen (Welch Guerra, Laamanen, Samanta, Koller), 2015</h2>
+<p><strong>Bottom line:</strong> Swiss serial acquirers have professionalised the deal itself, but integration lags far behind. Most have dedicated M&amp;A teams and standard deal tool kits, yet few have integration teams, full integration playbooks or systematic synergy tracking. The study argues that value is made or lost after closing, so integration capability, organisational capacity and learning loops deserve the same investment as deal-making.</p>
+<h3>Methodology</h3>
+<ol>
+<li><strong>Research design.</strong> Semi-structured interviews with 25 Swiss serial acquirers, June to November 2014. Each finding pairs survey results and anonymised quotes with a Deloitte post-merger integration (PMI) view. Treat it as practitioner evidence, not a statistical test.</li>
+<li><strong>Seven-part capability model for serial acquirers.</strong> The seven findings double as a checklist to audit an acquirer, or to judge whether a bidder can deliver its plan.</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Capability</th>
+<th>What good looks like</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Organisation</td>
+<td>Dedicated integration team or an experienced integration director, with frequent touchpoints to the M&amp;A team</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Integration process</td>
+<td>A standard integration approach and tool set, agreed "non-negotiables" and guiding principles, but room to tailor each deal</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Origination</td>
+<td>Active pipeline management; targets screened against strategic, financial and integration criteria</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Early involvement</td>
+<td>Integration director appointed early; executive sponsor in place</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Organisational platform</td>
+<td>Robust IT, HR, Finance and reporting; capacity checked before adding deals</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Synergies</td>
+<td>Targets linked to operational integration plans and tracked regularly</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Learning</td>
+<td>Post-mortems against the business case, training, knowledge holders</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="3">
+<li><strong>Integration director role.</strong> One named, visible person runs all integration workstreams. Appoint them early so they understand the deal rationale, and make the role a career step to attract strong people.</li>
+<li><strong>Origination channel choice.</strong> Deals come from outside (target, seller, intermediary) or inside (business units or group screening). Consolidated industries lean on corporate initiative; fragmented industries on business units, which need strict criteria and training.</li>
+<li><strong>"Digestibility" test and capacity review.</strong> Before a deal, ask whether the unit can absorb it and whether management attention is available. Then decide which initiatives to accelerate, stop, start or continue.</li>
+<li><strong>Synergy process.</strong> Tie synergy targets to operational integration plans and track them regularly with one tool set. Add qualitative indicators such as employee morale and customer retention.</li>
+<li><strong>Knowledge management.</strong> Lessons-learned sessions, a "who-is-who" of experts for hard questions, training, and post-mortems fed back into new deals.</li>
+</ol>
+<h3>Key facts and data</h3>
+<ul>
+<li>Sample: 25 Swiss-based serial acquirers, revenues CHF 1bn to CHF 60bn; serial acquirer defined as more than 8 acquisitions over the previous 12 years. Respondents: 27% CFOs/COOs, 39% heads of M&amp;A or corporate development.</li>
+<li>Context: Swiss M&amp;A volume rose from CHF 27bn (2013) to CHF 178bn (2014), the highest since 2008 (Mergermarket).</li>
+<li>Teams: 48% have a dedicated M&amp;A team and 48% place M&amp;A in another team; only 9% have a dedicated PMI team (78% have none). Half of M&amp;A teams report to the CEO and 44% to the CFO.</li>
+<li>Tools: 73% have full M&amp;A tool kits; only 23% have full PMI tools (54% partial, 23% none).</li>
+<li>Origination: business units 39%, group 31%, mixed 17%, external 13%.</li>
+<li>Who leads integration: the business in 77% of cases; dedicated integration team 9%, M&amp;A team 9%.</li>
+<li>Capacity: 67% would postpone or drop a deal for lack of management attention (80% of firms with few deals, 50% of firms with many). Small deals often create as much work as large ones.</li>
+<li>Synergies: 21% measure fully, 26% partially, 53% not at all. Revenue synergies are often seen as too complex to measure.</li>
+<li>Learning: 55% document learnings; 43% train staff; 37% have no knowledge-management solution and 16% a formal one. More than a third are unaware of the learning potential.</li>
+</ul>
+<h3>Insights</h3>
+<ul>
+<li>Price matters less than execution. One interviewee put it bluntly: "Value is all about integration." Boards that debate only the bid premium are looking at the wrong variable.</li>
+<li>Deal teams and integration teams speak different languages. A deal simply handed over without context loses its rationale and its synergy logic.</li>
+<li>Timing paradox: integration leaders are needed early, but strong managers are freed only near signing.</li>
+<li>Saying no is a capability. Firms with fewer deals walk away more often because they lack the teams and processes to absorb more.</li>
+<li>Business cases are often written to win approval and then ignored. Without tracking, synergy targets become a negotiating tool rather than a plan.</li>
+<li>Caveat: small, interview-based Swiss sample from a firm selling PMI services; no link to measured returns.</li>
+</ul>
+<h3>Application to the ABN AMRO case</h3>
+<ul>
+<li><strong>Bidders' digestibility test.</strong> The three-way split gave each consortium member its own integration plus a carve-out. Fortis in particular should have asked whether it had the management attention and platform (IT, Finance, risk reporting) for a deal larger than itself. The 2008 rescues are consistent with the study's warning that overloaded platforms lead to performance deterioration.</li>
+<li><strong>Synergy discipline.</strong> Paying €71.1bn against roughly €57bn unaffected value relied on synergies. The reading suggests a board should ask whether each bidder had tied its synergy case to operating plans and named owners, not just to a valuation model.</li>
+<li><strong>Target Supervisory Board.</strong> Martinez's board compared offers mainly on price and consideration. The study implies it should also have tested each bidder's integration capability, and the cost of a three-way break-up versus Barclays' keep-whole plan.</li>
+<li><strong>Activist and management.</strong> TCI's push focused on releasing value through a sale; the reading reminds investors that value is realised after closing. Groenink's preference for Barclays could have been argued on integration feasibility rather than through the LaSalle defensive sale.</li>
+<li><strong>Limits of fit.</strong> The study covers Swiss serial acquirers doing repeated, mostly smaller deals. ABN AMRO was a one-off, contested bank mega-deal, so the toolkit is a lens on integration readiness, not direct evidence.</li>
+</ul>
+<p>Source: Xena Welch Guerra, Tomi Laamanen, Anna Samanta, Stefan Koller, Serial acquirers: Getting your ducks in a row, Deloitte and University of St. Gallen, February 2015.</p></section>
+<section id="deloitte-transformational"><h2>Insights from Swiss transformational deal-makers: Unlocking the full potential of M&amp;A — Deloitte AG Switzerland and University of St. Gallen (HSG), December 2022</h2>
+<p><strong>Bottom line:</strong> The best Swiss acquirers first decide what the company should become. Then they use acquisitions and divestments to reach that end-state faster than organic change allows. Value depends on syncing deal and transformation: one combined governance structure, a few high-impact priorities, and deal momentum used to shift culture.</p>
+<h3>Methodology</h3>
+<ol>
+<li><strong>Transform-while-transact sequence.</strong> Set the transformation agenda first, then a deliberate M&amp;A strategy, then add divestments and acquisitions (in sequence or in parallel) to reach an accelerated end-state. Use it when M&amp;A is meant to reshape the business model. Opportunistic targets are tested against the agenda.</li>
+<li><strong>Three-lens portfolio review.</strong> Sort businesses into core, non-core and in-between. Deciding what is non-core is itself transformational. Use it before choosing what to buy or sell.</li>
+<li><strong>Parallel vs. sequential execution.</strong> A trade-off between speed and capacity.</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Benefits</th>
+<th>When it fits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Simultaneous</td>
+<td>Momentum, early wins, wider view of opportunities, can skip interim operating models</td>
+<td>Competitive deal timing; strong programme capacity</td>
+</tr>
+<tr>
+<td>Sequential</td>
+<td>Keeps talent, protects day-to-day business, smaller teams and budgets</td>
+<td>Teams new to integration; organisation already stretched</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="4">
+<li><strong>Buy-then-sell vs. sell-then-buy.</strong> Buying first shields the core against takeover. Selling first frees funds for acquisitions. Choose based on market position.</li>
+<li><strong>Industrialise the basics, tailor the high-impact areas.</strong> Use a standard end-to-end playbook for routine stages. Tailor only where the return justifies the extra effort. Keep the critical path visible.</li>
+<li><strong>Three governance models.</strong> The transaction office sits under the transformation office; or the transformation team is the transaction team's client; or both form one team. Add a central nerve centre led by an experienced leader acting for the CEO. Both offices act as gatekeepers, including on buy-versus-build decisions.</li>
+<li><strong>Communication rules.</strong> Explain the transformation before the deals. State what is non-negotiable. Be open about sensitive topics. Use one shared vocabulary. Build up opinion leaders.</li>
+<li><strong>Two-stage cultural due diligence.</strong> Early: assess the target's culture informally through networks. Late: interview key staff to map integration risks.</li>
+<li><strong>Five-question impact test.</strong> Value, Outcome, Execution, Check (revisit past deal assumptions in today's climate), Unlock (is deal momentum being used?). A regular board or executive review.</li>
+</ol>
+<h3>Key facts and data</h3>
+<ul>
+<li>Sample: survey of 150 executives at the most active large Swiss acquirers, December 2021 to April 2022. 50 responses kept after quality screening. Plus expert interviews on deals from the last five years and about 60 academic sources.</li>
+<li>Context: 92% of respondents to Deloitte's 2022 M&amp;A Trends Survey (over 1,300 responses) expected deal volume to rise over the next 12 months.</li>
+<li>When transformation happened (Fig. 1): 53% during the transaction, 47% after.</li>
+<li>Activities alongside deals, champions vs. laggards (Fig. 2): top-management change 30% vs. 43%; reorganisation 63% vs. 71%; alliances and CVC 43% vs. 29%; product development 47% vs. 36%; cost optimisation 47% vs. 36%.</li>
+<li>Deal order (Fig. 3): sell-then-buy 63%; buy-then-sell 25%; both in parallel 13%.</li>
+<li>56% prefer a standardised approach; 44% a tailored one (Fig. 4).</li>
+<li>Team structure (Fig. 5): integrated team 41%; corporate transformation team with business-unit execution 17%; corporate transaction team with business-unit transformation 13%; separate teams 3%; no formal structure 3%.</li>
+<li>Cultural outcomes (Fig. 6): more agility 43%; more innovative culture 38%; better collaboration 24%.</li>
+<li>Few respondents think they have fully unlocked cultural change. Culture is often the last workstream started.</li>
+</ul>
+<h3>Insights</h3>
+<ul>
+<li>The study treats activist- or board-driven M&amp;A as the old, short-term model. Transformational value comes only from deals tied to an end-state defined in advance.</li>
+<li>Champions make less disruptive change, not more. They reorganise and replace management less often than laggards, and invest more in alliances, products and costs.</li>
+<li>A good price does not make you the right owner. Fear of missing out hides a deal's real strategic value.</li>
+<li>Speed and capacity conflict. A competitive auction can force parallel execution the organisation cannot absorb.</li>
+<li>Caveat: this is a consultancy-led study of 50 Swiss firms. Champions are partly self-identified and are not linked to measured returns.</li>
+</ul>
+<h3>Application to the ABN AMRO case</h3>
+<ul>
+<li><strong>Board and activist.</strong> TCI's pressure, not a defined end-state, started the sale. That is the reactive M&amp;A the study warns against. A capable Supervisory Board would have set the bank's intended end-state and judged both bids against it. Martinez's board stayed passive.</li>
+<li><strong>Consortium.</strong> A three-way break-up, Fortis's biggest integration and a 93% cash bid, all run in parallel under auction pressure. That is the high-risk, high-cost mode at its extreme. The study's warnings on capacity and expertise foreshadow the strain that, with the 2008 crisis, led to state rescues of Fortis and RBS.</li>
+<li><strong>Impact test.</strong> The Check question is what RBS and Fortis skipped: markets worsened before closing, yet the €71.1bn price was never revisited.</li>
+<li><strong>LaSalle.</strong> Selling LaSalle to Bank of America was a defensive sale to block a bidder, not a sale to fund strategy. It inverts the study's sell-then-buy logic.</li>
+<li><strong>Barclays.</strong> Its mostly-stock, keep-whole offer fits the study's preference for low disruption and integrated governance, but it lost on price. The reading covers execution, not how to win a contested auction.</li>
+</ul>
+<p>Source: Michael van der Boom, Kristina Faddoul, Roberto Micelli, Rick Taylor (Deloitte); Tomi Laamanen, Di Bian (University of St. Gallen), Insights from Swiss transformational deal-makers: Unlocking the full potential of M&amp;A, Deloitte AG Switzerland and University of St. Gallen, December 2022.</p></section>
+<section id="mckinsey-programmatic"><h2>How lots of small M&amp;A deals add up to big value — McKinsey Quarterly (Jeff Rudnicki, Kate Siegel, Andy West), 2019</h2>
+<p><strong>Bottom line:</strong> Among the world's 1,000 largest companies, those that do many small and midsize deals each year earned higher excess shareholder returns from 2007 to 2017 than peers relying on large deals, selective deals or organic growth. The edge comes from treating M&amp;A as a permanent, systematic capability with a strategy blueprint, early integration thinking and a defined operating model, not as one-off events.</p>
+<h3>Methodology</h3>
+<ol>
+<li><strong>Four M&amp;A strategy archetypes.</strong> Companies are classified by deal frequency and the value acquired relative to their own market cap.</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Archetype</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Programmatic</td>
+<td>More than two small or midsize deals a year; meaningful share of market cap acquired (median 15 percent)</td>
+</tr>
+<tr>
+<td>Large deal</td>
+<td>One or more deals a year with a target worth 30 percent or more of the acquirer's market cap</td>
+</tr>
+<tr>
+<td>Selective</td>
+<td>Two or fewer deals a year; cumulative value above 2 percent of market cap</td>
+</tr>
+<tr>
+<td>Organic</td>
+<td>One deal or fewer every three years; cumulative value below 2 percent of market cap</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="2">
+<li><strong>M&amp;A blueprint (strategy and sourcing).</strong> A document that links strategy to deal sourcing. It tests market trends and competitor moves, whether the firm is the best owner, which capabilities it wants to buy, and whether deals are realistic (asset availability and price, relationships, regulation). Use it before debating specific targets.</li>
+<li><strong>Combined diligence and integration planning.</strong> Programmatic buyers plan roles, processes and technology long before closing, and assess culture and organisational health in both diligence and integration. One tech company tracked whether staff selections matched the relative size of the two firms and preferred the target's candidate when two were equally suitable.</li>
+<li><strong>End-to-end M&amp;A operating model.</strong> Clear decision makers, criteria, KPIs, incentives and governance. One tech company ran its pipeline in a CRM-like database of hundreds of monitored targets, used even in executive performance reviews.</li>
+</ol>
+<h3>Key facts and data</h3>
+<ul>
+<li>Sample: Global 1,000 by market cap (excluding companies headquartered in Africa and Latin America); earlier study 1999–2010, update December 2007 to December 2017; source Thomson Reuters and McKinsey Corporate Performance Analytics.</li>
+<li>Programmatic acquirers had the highest median excess TRS. Selective and organic companies, on average, showed negative excess TRS; large-deal companies had the lowest median and the widest downside range (Exhibit 1, values shown only graphically).</li>
+<li>Among programmatic acquirers, more than five deals a year gave a median excess TRS of 0.7 percent (standard deviation 5.3 points) versus 0.5 percent (7.3 points) for two to five deals.</li>
+<li>Programmatic acquirers were 8 percent of the 178 dropouts but 28 percent of the 686 survivors, 48 percent of the top-250 survivors (n = 157) and 60 percent of the top-100 survivors (n = 65).</li>
+<li>Selective firms were 49 percent of dropouts; organic firms 30 percent.</li>
+<li>None of the organic companies of 2004–2014 had become programmatic by the latest analysis, and over a quarter had left the Global 1,000 by 2017.</li>
+<li>2019 McKinsey Global M&amp;A Capabilities Survey: programmatic acquirers were twice as likely to estimate revenue and cost synergies at several deal stages and 1.4 times more likely to name clear owners for each stage.</li>
+<li>Case: a consumer-goods company stuck on where to buy in China revisited its blueprint over eight weeks and quickly agreed on a handful of targets, several not raised before.</li>
+</ul>
+<h3>Insights</h3>
+<ul>
+<li>Frequency builds skill. More deals per year meant higher and less volatile excess returns.</li>
+<li>Switching models is hard. Firms rarely move into programmatic M&amp;A, which suggests capability takes years to build.</li>
+<li>Large deals carry the widest downside. The archetype data warn against "big-bang" bets.</li>
+<li>The authors concede the model does not fit everyone: consolidation trends and regulation can block it.</li>
+<li>Survivorship matters: the TRS comparison covers firms that stayed in the Global 1,000, so results describe survivors.</li>
+</ul>
+<h3>Application to the ABN AMRO case</h3>
+<ul>
+<li>The ABN AMRO takeover was the opposite of programmatic M&amp;A: a single "big-bang" deal at €71.1bn, a target very large relative to each consortium member. The reading's weak large-deal results over 2007–2017 are consistent with how Fortis and RBS ended up.</li>
+<li>The consortium's break-up plan was a rough "best owner" test, each partner taking the parts it valued most. The blueprint questions on capital needed and realism (price, regulation) proved decisive; that is where the financing strain arose.</li>
+<li>Barclays' bid was also a large deal. A board using this lens would ask both bidders for evidence of repeatable integration capability, not just price.</li>
+<li>For ABN AMRO's board and Groenink, the reading favours a standing M&amp;A capability with clear owners. The rushed LaSalle sale was a defensive event, not part of a program.</li>
+<li>Fit caveat: European banking in 2007 was consolidating under heavy regulation, the obstacles the authors name. Small bolt-ons rarely transform a bank's position, so the evidence informs risk, not a ban on large bank mergers.</li>
+</ul>
+<p>Source: Jeff Rudnicki, Kate Siegel, Andy West, "How lots of small M&amp;A deals add up to big value," McKinsey Quarterly, July 2019.</p></section>
+<section id="bcg-synergy"><h2>Planning for Synergies Should Start Sooner Than You Think — Boston Consulting Group (Edward Gore-Randall, Rahul Khubchandani, Chris Barrett, Daniel Friedman), 2025</h2>
+<p><strong>Bottom line:</strong> Synergy success is largely decided before signing. Acquirers should start integration planning during due diligence, involving the line managers who will deliver the synergies. They should then set internal stretch targets above public guidance, for revenue as well as cost, to absorb value leakage and find extra value.</p>
+<h3>Methodology</h3>
+<ol>
+<li><strong>Link due diligence to integration planning.</strong> Form a view of the integration approach and the combined target operating model before announcement. Bring business-unit and functional heads (for example sales and HR) into diligence to set function-level targets by year and location. Embed a diligence team member in the integration management office's baseline and synergy team. Avoid turning diligence into a formal budget exercise.</li>
+<li><strong>Make synergy drivers explicit.</strong> Spell out the operating-model choices behind each saving, so teams can see how value capture changes if those choices change during integration.</li>
+<li><strong>Stretch targets.</strong> Set internal targets above both the diligence case and public guidance. They act as a buffer against leakage (the gap between planned and realised initiatives) and push teams to look for levers missed in a diligence sprint of a few weeks.</li>
+<li><strong>De-averaging.</strong> Start from the high end of diligence assumptions and vary ambition by function. Push where extra value is likely (for example manufacturing yield), not where little is left (already lean support functions).</li>
+<li><strong>Triangulation.</strong> Combine external benchmarks, peer data, prior integration results, expert input, proprietary databases and scale curves to judge what stretch is credible; targets get more granular as data improves.</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Triangulation source</th>
+<th>What it adds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Benchmarks and peer data</td>
+<td>Typical synergy ranges by industry</td>
+</tr>
+<tr>
+<td>Prior integrations</td>
+<td>Realised, not promised, results</td>
+</tr>
+<tr>
+<td>Functional experts</td>
+<td>Operational feasibility</td>
+</tr>
+<tr>
+<td>Synergy database</td>
+<td>Benchmarks by deal size and industry, cost savings by line item</td>
+</tr>
+<tr>
+<td>Scale curves</td>
+<td>Unit-cost decline as volume doubles (exhibit: 90 percent curve means about 10 percent lower unit cost per doubling; 70 percent curve about 30 percent)</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="6">
+<li><strong>Leadership ownership.</strong> The merged company's top team must understand how stretch targets were derived and own them; otherwise they are dismissed as unrealistic.</li>
+</ol>
+<h3>Key facts and data</h3>
+<ul>
+<li>Typical broad-brush diligence estimates cited: cost savings above 20 percent from consolidation or benchmarks; revenue gains above 10 percent from high-level share assumptions, without regard to the future operating model.</li>
+<li>Sample of BCG-supported mergers with stretch targets (sample size not stated): cost synergies on average 10 percent above the internal diligence case and 18 percent above public guidance, after value leakage.</li>
+<li>Chemicals merger case: analysts doubted public guidance; leaders set higher internal targets in procurement and supply chain. Identified cost initiatives exceeded the original plan by 65 percent and revenue initiatives by 30 percent; the public cost commitment was met two years early.</li>
+<li>European industrial case: functional heads on the diligence team set preliminary targets by year and location before closing, so managers owned them from the start.</li>
+</ul>
+<h3>Insights</h3>
+<ul>
+<li>The main failure mode is a handoff gap. Diligence teams under time pressure produce numbers that the managers who must deliver them never saw.</li>
+<li>Confident management teams tend to accept synergy figures without testing the core business trajectory. Boards should not.</li>
+<li>Public guidance should sit below internal plans. If the two are equal, there is no margin for error.</li>
+<li>Stretch targets work only with evidence and ownership; without them they become wishful thinking.</li>
+<li>Caveat: the evidence comes from BCG's own client work, which is a selected sample, and the article does not address price paid or financing risk.</li>
+</ul>
+<h3>Application to the ABN AMRO case</h3>
+<ul>
+<li>A three-way break-up means three separate integration plans plus a separation of shared functions. Today's practice would require the consortium to design those operating models during diligence, before committing €71.1bn.</li>
+<li>Synergy cases built without line-manager input leave no buffer. With a 93 percent cash offer, both the financing and any synergy leakage fell on the consortium members, which mattered when the 2008 crisis hit Fortis and RBS.</li>
+<li>The offer structure shifts synergy risk. In Barclays' mostly-stock bid, ABN AMRO shareholders would have shared in synergy delivery risk; in the consortium's cash bid they were paid out. The Supervisory Board should have compared the credibility of each synergy case, not only headline price.</li>
+<li>A passive board with few banking experts was poorly placed to probe the drivers behind either bidder's numbers. The article's call for explicit drivers gives a board a concrete checklist.</li>
+<li>Limits: stretch targets cannot fix overpayment or a funding shock. The consortium's problems were mainly financing and the crisis, outside this article's scope.</li>
+</ul>
+<p>Source: Edward Gore-Randall, Rahul Khubchandani, Chris Barrett, Daniel Friedman, "Planning for Synergies Should Start Sooner Than You Think," Boston Consulting Group, 26 November 2025.</p></section>
+<section id="mckinsey-genai"><h2>Gen AI in M&amp;A: From theory to practice to high performance — McKinsey &amp; Company (Kameron Kordestani, Rui Silva, with Julia Berbel), 2026</h2>
+<p><strong>Bottom line:</strong> Gen AI is already cutting cost and time in target screening, diligence and integration planning, but most M&amp;A teams use it only lightly and through generic chatbots. The authors argue against waiting: teams should build AI fluency now and codify their strategy, deal data and playbooks, so they can plug them into the end-to-end tools expected within two to five years.</p>
+<h3>Methodology</h3>
+<ol>
+<li><strong>AI-enabled target identification.</strong> Large language models trained on a company's deal history and strategy are combined with machine-learning clustering that groups thousands of companies by business model, growth and adjacency. Semantic search scores each candidate against the acquirer's criteria. Use it when the target universe is large and fragmented.</li>
+<li><strong>AI-assisted due diligence.</strong> Tools query libraries of expert-interview transcripts in natural language, and search, summarise and organise thousands of virtual-data-room files, adding public data on customer and employee sentiment. Use it to speed up diligence and reduce the risk of missing issues.</li>
+<li><strong>AI-supported integration planning.</strong> Trained agents draft a day-one readiness plan, a post-close integration plan and communications (customer and supplier letters, press releases, change-management manuals) in minutes. Output quality varies, so heavy human review is still needed.</li>
+<li><strong>Five preparation steps.</strong> These can be combined; the more a team does, the better placed it is.</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What it involves</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Assess processes</td>
+<td>Find the workflows where automation helps most (scanning in fragmented markets; people integration in talent- or IP-heavy sectors)</td>
+</tr>
+<tr>
+<td>Build AI fluency</td>
+<td>Let teams test tools and see demos; decide what to build in-house on existing LLMs</td>
+</tr>
+<tr>
+<td>Executive sponsorship</td>
+<td>Name a clear owner and a senior champion</td>
+</tr>
+<tr>
+<td>Formalise playbooks</td>
+<td>Write down the M&amp;A philosophy and methods, e.g. target share of value captured in the first six months</td>
+</tr>
+<tr>
+<td>1–2 year road map</td>
+<td>Plan adoption, change management and sustained commitment</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key facts and data</h3>
+<ul>
+<li>Source: McKinsey survey on gen AI tools in M&amp;A, 200 participants, 2025.</li>
+<li>Users report average cost reduction of about 20 percent; 40 percent of respondents report deal cycles 30–50 percent faster.</li>
+<li>42 percent see gen AI as transformational (10 percent) or highly differentiating (32 percent); 48 percent say somewhat differentiating, 10 percent minimal.</li>
+<li>Adoption ambition: 8 percent want to lead, 35 percent adopt progressively, 47 percent explore cautiously, 10 percent follow others.</li>
+<li>Only 30 percent engage with gen AI at moderate to high levels; most rely on off-the-shelf chatbots.</li>
+<li>Top benefit across all phases: more or better insights (57 percent), then streamlined processes (56 percent).</li>
+<li>Priority areas for expansion: target identification and due diligence (45 percent each), integration and separation (8 percent), deal making (3 percent).</li>
+<li>Top obstacles: lack of expertise (71 percent), immature tools (58 percent), technology integration (37 percent), data privacy (36 percent), cost (25 percent), regulatory uncertainty (17 percent).</li>
+<li>For integration and separation, better integration with existing systems is the most cited adoption enabler (89 percent).</li>
+<li>Case: a software company used a scouting platform covering more than 40 million companies; in under a day it scored over 500 targets, narrowed them to 15 leads, and closed three acquisitions a few months later.</li>
+<li>Forecasts: reliable end-to-end tools in two to five years; diligence becomes "continuous and connected" within two years; over half of integration tasks automatable in two to three years. Large-company integrations today take two to five years.</li>
+</ul>
+<h3>Insights</h3>
+<ul>
+<li>The main bottleneck is people, not technology. Lack of expertise outranks tool immaturity.</li>
+<li>The benefit of AI depends on documented inputs. A firm that has not written down its strategy, criteria and playbooks has nothing to train the tools on.</li>
+<li>Integration is where users most want better tools yet least plan to expand use. The highest-value, most judgement-heavy phase is the slowest to automate.</li>
+<li>Faster screening and diligence raise the risk of false confidence. Outputs still need human checking, especially for accuracy.</li>
+<li>Survey figures are self-reported by users and the forecasts are the authors' estimates; treat them as directional.</li>
+</ul>
+<h3>Application to the ABN AMRO case</h3>
+<ul>
+<li>These tools did not exist in 2007. Framed as what a bidder would do today: the consortium could run AI-assisted diligence on ABN AMRO's data room and model each of the three break-up pieces separately, testing how financing and integration load would fall on each partner.</li>
+<li>A three-way break-up multiplies integration and separation work. AI-drafted separation plans and day-one communications would save time, but the article stresses that judgement stays human. The burden that hurt Fortis and RBS was financing and crisis exposure, which no tool removes.</li>
+<li>For the Supervisory Board, faster analysis does not replace banking expertise. A board chaired by a retail executive with few banking experts would still need people able to challenge AI outputs and management's preference for Barclays.</li>
+<li>TCI-style activists today could use AI scouting and sentiment data to build a break-up thesis faster. Boards should expect better-prepared activist campaigns and shorter response windows.</li>
+</ul>
+<p>Source: Kameron Kordestani, Rui Silva (with Julia Berbel), "Gen AI in M&amp;A: From theory to practice to high performance," McKinsey &amp; Company, January 2026.</p></section>
+    <footer>Study notes that paraphrase the originals; not investment advice. Copyright in the original works remains with their publishers.</footer>
+  </main>
+</div>
+</body>
+</html>

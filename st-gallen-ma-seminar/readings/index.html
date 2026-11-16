@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M&A 研讨课阅读材料</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deal-memo page — fixed contents rail on the left, one reading column, tables full column width */
+:root {
+  --bg: #f6f6f3;
+  --paper: #ffffff;
+  --ink: #1b2130;
+  --ink-2: #4d5566;
+  --rule: #dcdcd4;
+  --accent: #184f95;
+  --accent-soft: #e6eefa;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+    --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+    --s1: #3987e5; --s2: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+  --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+  --s1: #3987e5; --s2: #d95926;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+nav { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .navhead { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 8px; }
+nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-left: 2px solid var(--rule); }
+nav a.lang { margin-top: 14px; border-left: 0; padding-left: 0; color: var(--accent); font-weight: 700; }
+nav a:hover, nav a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--ink-2); letter-spacing: .04em; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; }
+.sub a { color: var(--accent); }
+.sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 8px; }
+.kpi { background: var(--paper); padding: 14px 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.kpi span { font-size: 13px; color: var(--ink-2); }
+section { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 24px; scroll-margin-top: 16px; }
+section > *:first-child { margin-top: 0; }
+h2 { font-family: var(--display); font-size: 24px; line-height: 1.4; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); text-wrap: balance; }
+h3 { font-size: 17px; margin: 28px 0 8px; color: var(--accent); text-wrap: balance; }
+p, li { max-width: 46em; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 1.4em; margin: 8px 0; }
+li { margin: 4px 0; }
+section > p:nth-of-type(1) strong:first-child { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+thead th { text-align: left; font-weight: 700; background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+code { font-size: .9em; }
+.fig { margin: 22px 0 6px; }
+.fig figcaption { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); }
+.sw.ref { height: 0; border-top: 2px dashed var(--ink-2); border-radius: 0; width: 16px; }
+.chart { width: 100%; max-width: 680px; height: auto; display: block; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .tick, .chart .reflab { fill: var(--ink-2); font-size: 12px; font-family: var(--body); }
+.chart .cat { fill: var(--ink); font-size: 13px; font-family: var(--body); }
+.chart .val { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--body); }
+.chart .s1 { fill: var(--s1); } .chart .s2 { fill: var(--s2); }
+.chart .ref { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar:hover path, .chart .bar:focus path { opacity: .8; }
+.chart .bar:focus { outline: none; }
+.src { font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+footer { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 16px; }
+  nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav .navhead { width: 100%; margin: 0; }
+  nav a { border: 1px solid var(--rule); padding: 4px 10px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 20px 18px; }
+  h1 { font-size: 27px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="目录"><div class="navhead">目录</div><a href="#overview">总览</a><a href="#hbr-boards">HBR · 董事会参与模式</a><a href="#governance-guide">公司治理核心议题</a><a href="#deloitte-unlocking">Deloitte · 释放并购潜力</a><a href="#deloitte-ducks">Deloitte · 理顺准备</a><a href="#deloitte-transformational">Deloitte · 转型型交易者</a><a href="#mckinsey-programmatic">McKinsey · 程序化并购</a><a href="#bcg-synergy">BCG · 协同规划</a><a href="#mckinsey-genai">McKinsey · 生成式 AI</a><a class="lang" href="en.html" hreflang="en">English version →</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">St Gallen M&A Seminar · 阅读材料</div>
+      <h1>阅读材料：方法论、知识点与洞见</h1>
+      <p class="sub">8 篇治理与并购读物的要点提炼，每篇都附有对 ABN AMRO 案例的启示。案例分析见 <a href="../abn-amro-2007/index.html">ABN AMRO 报告</a>。</p>
+      
+    </header>
+    <section id="overview"><h2>总览：8 篇读物的核心方法与对 ABN AMRO 的启示</h2>
+<p><strong>一句话结论：</strong> 治理类读物说明 ABN AMRO 监事会应当、却没有在控制权争夺中主导局面；并购类读物则一致指出，价值在签约后的整合与协同兑现中得失，而银团"三方拆分 + 巨额现金"的方案恰好落在这些研究所警示的高风险区间。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>读物</th>
+<th>核心方法论</th>
+<th>对 ABN AMRO 的关键启示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rowley &amp; Capron，HBR 2025</td>
+<td>四种董事会参与模式（被动、导师、伙伴、控制），按价值影响、利益冲突、使命、能力切换</td>
+<td>出售程序和报价比较应由董事会控制；监事会长期被动，没有切换</td>
+</tr>
+<tr>
+<td>Paine &amp; Srinivasan，HBR 2019</td>
+<td>八大治理争论：股东与利益相关者、股东权力与激进投资者、董事会构成、薪酬、短期主义等</td>
+<td>荷兰利益相关者模式给了偏向 Barclays 的法律空间，却也模糊了问责；TCI 是典型的对冲基金激进主义</td>
+</tr>
+<tr>
+<td>德勤 &amp; HSG，2017《释放并购潜力》</td>
+<td>八项"价值创造冠军"做法：协同目标对标、细化、全程单一负责人、超越 IT 与交叉销售</td>
+<td>竞价中出价靠协同支撑；金融业成本协同中位数约为合并成本的 4%，董事会应据此检验两方协同是否可信</td>
+</tr>
+<tr>
+<td>德勤 &amp; HSG，2015《理顺准备》</td>
+<td>连续收购者的交易能力与整合能力；"可消化性"检验</td>
+<td>银团每家都要同时做整合和剥离；Fortis 应先问自己能否消化一笔比自己还大的交易</td>
+</tr>
+<tr>
+<td>德勤 &amp; HSG，2022《转型型交易者》</td>
+<td>先定义目标终局，再用收购与剥离加速转型；交易与转型同步治理</td>
+<td>出售由 TCI 被动触发，而非服务于终局；银团在拍卖压力下同时做拆分和整合，且市场转差后没有重新检视价格</td>
+</tr>
+<tr>
+<td>McKinsey Quarterly，2019《程序化并购》</td>
+<td>持续的小中型交易组合优于"一锤子"大交易；战略蓝图、早期整合思考、明确运营模式</td>
+<td>ABN AMRO 是典型的"大爆炸"式交易，正是 2007–2017 年数据中回报最差、下行最宽的一类</td>
+</tr>
+<tr>
+<td>BCG，2025《协同规划要更早》</td>
+<td>尽调阶段就开始整合规划，让一线经理参与；内部设定高于对外口径的延伸目标</td>
+<td>支付方式决定谁承担协同落空的风险：换股时由 ABN 股东分担，现金时全部由银团承担</td>
+</tr>
+<tr>
+<td>McKinsey，2026《生成式 AI 与并购》</td>
+<td>AI 用于标的筛选、尽调、整合规划；先建立 AI 能力并沉淀数据与操作手册</td>
+<td>2007 年尚无此类工具；今天可加快三块业务的分拆建模，但无法消除融资与危机风险，也不能替代董事会的银行业专业判断</td>
+</tr>
+</tbody>
+</table></div>
+<p>阅读顺序建议：先读两篇治理文章（问题四、五的理论基础），再读三篇德勤研究和 BCG 文章（问题三报价比较的方法论），最后读两篇麦肯锡文章作为延伸。</p></section>
+<section id="hbr-boards"><h2>最佳董事会如何与管理层互动（How the Best Boards Engage with Management）— Timothy J. Rowley、Laurence Capron，《哈佛商业评论》2025年1–2月刊</h2>
+<p><strong>一句话结论：</strong> 多数董事会无论什么决策都只用一种方式对待管理层，最常见的是被动模式。作者主张做"敏捷董事会"：按每类决策的价值影响、利益冲突、使命相关性和董事会能力，在被动、导师、伙伴、控制四种模式之间切换。</p>
+<h3>方法论</h3>
+<ol>
+<li><strong>四种参与模式。</strong> 从放手到全面控制排成一条光谱，区分的关键是决策权在谁手里、谁掌握核心信息。</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>决策权</th>
+<th>信息优势</th>
+<th>会议特征</th>
+<th>典型适用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>被动</td>
+<td>几乎全在管理层</td>
+<td>管理层</td>
+<td>管理层汇报、"推销"已定方案</td>
+<td>价值影响小的日常运营决策</td>
+</tr>
+<tr>
+<td>导师</td>
+<td>管理层主导，董事会早期参与</td>
+<td>依赖管理层</td>
+<td>汇报少、讨论多，董事提建议和新选项</td>
+<td>董事有行业经验、管理层需要建议</td>
+</tr>
+<tr>
+<td>伙伴</td>
+<td>共同决策，董事会须正式批准</td>
+<td>大体对等</td>
+<td>像双方谈判，董事会紧盯执行</td>
+<td>重大战略、并购、资本结构</td>
+</tr>
+<tr>
+<td>控制</td>
+<td>董事会拍板</td>
+<td>董事会投入大量时间</td>
+<td>易陷入细节</td>
+<td>CEO 继任与薪酬、使命目标、董事任免</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="2">
+<li><strong>选模式的四个因素。</strong> 对长期价值的影响；利益冲突（管理层利益与其他相关方不一致时要加深参与）；是否偏离使命和目标（如进入新市场、品牌重新定位）；董事会是否具备管理层缺少的能力。</li>
+<li><strong>第一步：盘点。</strong> 董事会和管理层一起列出决策清单，为每类决策设定默认模式。文中示例：使命目标、股东关系、CEO 薪酬与继任、董事变更为控制；财务管理、审计、风险、合规、ESG、组织架构调整为伙伴；战略方向、资源配置、并购、非 CEO 高管变动为导师；研发路线图、运营、营销、人才评估、网络安全为被动。</li>
+<li><strong>第二步：管理参与度。</strong> 按议程逐项检查默认模式是否仍然合适，由董事长和 CEO 商量、必要时提交全体董事会；每年做一次系统复盘。临时切换不改变默认设置。</li>
+</ol>
+<h3>关键知识点与数据</h3>
+<ul>
+<li>样本：作者治理课程学员撰写的约 400 份董事会评估报告（过去十年），加上访谈和问卷。</li>
+<li>只有 9% 的董事会使用一种以上的模式。</li>
+<li>各模式占比：被动 46%、控制 19%、导师 14%、伙伴 12%。</li>
+<li>技术路线图的例子：一家公司技术投入不到年度资本配置的 30%、资产负债表稳健，选被动；另一家投入超过 80%、资产负债表弱、受银行契约约束，选伙伴。</li>
+<li>新冠疫情初期，敏捷的董事会从被动转向导师和伙伴模式，多数董事和 CEO 更喜欢这种方式；但之后又在回到疫情前的模式。</li>
+</ul>
+<h3>洞见</h3>
+<ul>
+<li>最危险的不是被动本身，而是"平时被动、出事后突然全面控制"：缺乏信息的董事会会偏重负面消息、急于求快，常以撤换 CEO 收场。</li>
+<li>导师和伙伴模式被严重低估，它们能让 CEO 放心暴露问题；被动和控制模式都让 CEO 不敢示弱。</li>
+<li>很多董事把职责理解为"监督管理层"，只盯财务表现和团队人选，这个理解太窄。</li>
+<li>同一类决策的合适模式取决于情境：管理团队越不成熟、交易越大、融资需求越高，董事会参与应越深。</li>
+<li>能否切换模式受董事会构成限制：缺乏业务知识和时间的董事会，想当导师或伙伴也做不到。</li>
+</ul>
+<h3>对 ABN AMRO 案例的启示</h3>
+<ul>
+<li>ABN AMRO 监事会是典型的长期被动董事会：容忍战略多年未落地、批准高价收购 Antonveneta、合规事故后仍由 CEO 主管内审。</li>
+<li>竞购期间，出售程序和报价比较同时满足"价值影响最大"和"管理层利益冲突"两个条件，按框架应切换到控制模式，由独立特别委员会主导；Martinez 没有切换。</li>
+<li>出售 LaSalle 可能阻碍更高报价，应由董事会控制或提交股东表决，而不是交给管理层作为防御手段。</li>
+<li>监事会金融专家少、"忙碌董事"多，这解释了它为什么难以进入导师或伙伴模式。</li>
+<li>结果是控制权实际落到了 TCI、VEB 和法院手里，而不是在监事会手里。</li>
+</ul>
+<p>来源：Timothy J. Rowley, Laurence Capron, "How the Best Boards Engage with Management", <em>Harvard Business Review</em>, January–February 2025.</p></section>
+<section id="governance-guide"><h2>公司治理重大理念与争论指南（A Guide to the Big Ideas and Debates in Corporate Governance）— Lynn S. Paine、Suraj Srinivasan，《哈佛商业评论》，2019年</h2>
+<p><strong>一句话结论：</strong> 公司治理最基本的问题至今没有定论：公司为何存在、谁的利益应被考虑、股东应有多大权力。作者梳理八个争论领域，主张董事会应在每个领域形成共识，而非默认股东价值至上。</p>
+<h3>方法论</h3>
+<p>本文不是单一模型，而是一张争论地图。</p>
+<ol>
+<li><strong>公司目的（股东至上与利益相关者至上）。</strong> 一派视公司为“法律拟制”，即股东间的契约，由此产生代理理论：经理人是代理人，董事会负责监督。另一派视之为“真实实体”，对员工、客户和社会负责。应最先厘清，其他选择都以此为前提。</li>
+<li><strong>股东权力。</strong> 一方欢迎股东沟通、提案和积极主义；另一方担心短期压力、积极投资者无须问责，以及被动基金和代理顾问尽责不足。用于平衡股东、董事会与管理层的权力。</li>
+<li><strong>董事会构成与职能。</strong> 董事会选任、监督 CEO 并定薪，决定控制权变更。争点包括独立性、多元化、结构（见下表）以及受托责任是否涵盖 ESG。治理与管理的界线“neither sharp nor fixed”，危机中董事会会被卷入。</li>
+<li><strong>高管薪酬。</strong> 支持者认为反映了 CEO 工作难度和股东回报；批评者指出对标棘轮、指标狭窄、高管影响自身目标、失败也获奖励。</li>
+<li><strong>资源配置与短期主义。</strong> 批评者认为市场压力挤压人才、研发和长期投资，并忽视外部性；另一方认为总体证据（包括回购）仍有争议。对策是加强战略监督、明确时间框架、改善投资者沟通。</li>
+<li><strong>业绩衡量。</strong> TSR 简单但带有短期偏差；会计指标向后看且可操纵。平衡计分卡追踪中间驱动因素，前提是有价值创造的因果假设。</li>
+<li><strong>风险监督。</strong> 义务从处理违法行为扩展到确保控制系统（1990年代），如今期望涵盖金融风险、行为、网络安全、文化和供应链。文化无法仅靠内控管理。</li>
+<li><strong>报告与披露。</strong> 争点包括 IFRS 与美国 GAAP、公允价值裁量、新商业模式和非财务报告（GRI、综合报告）。透明有益，但成本不低。</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>董事会设计变量</th>
+<th>文中选项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>层级</td>
+<td>单层制（美国）与管理董事会加监事会的双层制（德国）</td>
+</tr>
+<tr>
+<td>领导</td>
+<td>董事长兼 CEO（美国常见）与两职分离</td>
+</tr>
+<tr>
+<td>任期</td>
+<td>交错多年任期（法国、香港）与每年改选</td>
+</tr>
+<tr>
+<td>代表群体</td>
+<td>部分法域要求设员工董事</td>
+</tr>
+<tr>
+<td>委员会</td>
+<td>审计、薪酬、提名委员会，独立董事过半</td>
+</tr>
+</tbody>
+</table></div>
+<h3>关键知识点与数据</h3>
+<ul>
+<li>美国商业圆桌会议（2019年8月）：181位 CEO 承诺服务所有利益相关者，推翻1997年的表述。</li>
+<li>英国治理守则（2018年）要求董事会确立公司目的；法国《PACTE 法》要求按“公司利益”经营。</li>
+<li>美国2007–2017年：逾1.3万亿美元流入被动基金；标普500公司前十大股东持股由21%升至约30%。</li>
+<li>每年股东提案超过700项；2005–2017年针对美国上市公司的公开积极主义行动每年200–300起，欧亚也在增加。实证效果好坏参半。</li>
+<li>美国大公司离任 CEO 任期：2017年10.8年，2009年7.2年（世界大型企业联合会）。2018年《财富》500强女性 CEO 占4.8%。</li>
+<li>普华永道2018年董事调查：仅三分之一认为高管继任规划出色。</li>
+<li>美国最大350家公司 CEO 与员工薪酬比：1965年20:1，2017年312:1（经济政策研究所）。“薪酬话语权”对薪酬水平影响甚微。</li>
+<li>ISS：TSR 是标普500长期激励首要指标。Ceres 2017年对600家公司的研究：约8%将薪酬与可持续指标挂钩，2014年为3%。</li>
+<li>美国大型银行均已设董事会风险委员会和首席风险官。欧盟2002年采用 IFRS，2018年已有166国采用。</li>
+</ul>
+<h3>洞见</h3>
+<ul>
+<li>未就公司目的达成共识的董事会，无法一致地评判收购要约。</li>
+<li>股东权力扩大不等于股东更负责；积极投资者能左右结果，却对公司不负义务。</li>
+<li>独立性必要但不充分，关键在于大公司董事会是否具备监督复杂企业的能力和信息。</li>
+<li>TSR 薪酬与短期视角相互强化，使董事会偏向当下股价最高的方案。</li>
+</ul>
+<h3>对 ABN AMRO 案例的启示</h3>
+<ul>
+<li><strong>荷兰双层董事会。</strong> ABN AMRO 正是文中描述的双层结构：Groenink 领导管理董事会，Martinez 主持监事会。实际上监事会让管理层主导竞购策略，包括出售 LaSalle。控制权变更危机中，监事会本应跨过界线主动介入。</li>
+<li><strong>利益相关者授权。</strong> 荷兰法律接近“真实实体”观，董事会须兼顾公司及全体利益相关者。这为偏向巴克莱（保持银行完整）而非出价更高的财团方案（711亿欧元，对比未受影响价值约570亿欧元）提供了法律空间，但也模糊了问责：该授权可能掩护管理层偏好，而非经过论证的利益相关者判断。</li>
+<li><strong>TCI 的积极主义。</strong> TCI 符合文中对冲基金积极主义的典型：持股后迫使出售或拆分。批评者称其短视，财团2008年的崩溃佐证了这一点；支持者则指出股东获得了溢价。文章的追问适用：谁为积极投资者的长期后果负责？</li>
+<li><strong>监事会能力。</strong> 决定控制权变更与监督风险是董事会核心职责。由零售业高管任主席、银行专家少、董事兼职繁忙的监事会，正缺乏文章所怀疑的能力。称职的监事会应检验两个方案的融资与整合风险，而这正是 RBS 和富通2008年被救助的原因。</li>
+<li><strong>适用局限。</strong> 尽责管理、ESG 和风险委员会等讨论大多晚于2007年，应理解为“今天的银行董事会会怎么做”，而非当时被违反的标准。</li>
+</ul>
+<p>来源：Lynn S. Paine、Suraj Srinivasan，《A Guide to the Big Ideas and Debates in Corporate Governance》，Harvard Business Review，2019年10月14日。</p></section>
+<section id="deloitte-unlocking"><h2>释放并购的全部潜力：如何成为"价值创造冠军"（Unlocking the full potential of M&amp;A: What it takes to be a Value Creation Champion）— 圣加仑大学（HSG）与德勤瑞士，2017年</h2>
+<p><strong>一句话结论：</strong> 并购价值的成败在签约之后，取决于协同目标是否有雄心、拆得够细、跟得够严。"价值创造冠军"用基准校准目标，在 IT 和交叉销售之外，还挖掘采购、运营、定价和新市场，并让一人从尽调到交付全程负责。多数受访瑞士企业做得不够，收入协同尤为薄弱。</p>
+<h3>方法论</h3>
+<ol>
+<li><strong>价值创造冠军的八项做法。</strong> 这是研究的核心，可作为制定或审阅协同方案的检查清单。</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>做法</th>
+<th>实际含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>成本协同求全，但按价值排序</td>
+<td>筛查全部杠杆，优先做价值最大的</td>
+</tr>
+<tr>
+<td>2</td>
+<td>始终重视采购</td>
+<td>合并采购额并重谈条款，可在交割前启动</td>
+</tr>
+<tr>
+<td>3</td>
+<td>超越交叉销售</td>
+<td>同时评估定价权、新客户、新地域、新市场</td>
+</tr>
+<tr>
+<td>4</td>
+<td>细化量化收入协同</td>
+<td>杠杆具体，才能与日常业务区分</td>
+</tr>
+<tr>
+<td>5</td>
+<td>早定方向性目标，必要时调整</td>
+<td>因新信息修正，不为执行不力找借口</td>
+</tr>
+<tr>
+<td>6</td>
+<td>像冠军一样做计划</td>
+<td>计划细化、有基准、留缓冲</td>
+</tr>
+<tr>
+<td>7</td>
+<td>以跟踪保交付</td>
+<td>仪表盘加明确责任人，投入与价值相称</td>
+</tr>
+<tr>
+<td>8</td>
+<td>把执行纪律变成优势</td>
+<td>行动务实，有意识地权衡速度与精度</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="2">
+<li><strong>协同类型。</strong> 研究把协同分为三类：</li>
+</ol>
+<ul>
+<li>成本协同：来自规模、结构和效率，大多由管理层控制。</li>
+<li>收入协同：来自交叉销售、定价和新市场，取决于客户和竞争对手的反应。</li>
+<li>财务协同：来自营运资金、债务和税务。</li>
+</ul>
+<p>这一划分用于区分可控价值与依赖市场的价值。</p>
+<ol start="3">
+<li>
+<p><strong>采购的三种角色。</strong> 价值创造者：合并采购并重新谈判。赋能者：支持其他职能。加速器：提供快速见效的收益，部分可在交割前借助"洁净室"准备。</p>
+</li>
+<li>
+<p><strong>德勤五阶段协同捕获流程。</strong> 后几个阶段之间设有管理层关卡：</p>
+</li>
+</ol>
+<ul>
+<li>报价前，自上而下定目标（1–3周）。</li>
+<li>至交割日，自下而上识别机会（2–5周）。</li>
+<li>自下而上验证（6–8周）。</li>
+<li>制定行动计划并取得组织认同（3–4周）。</li>
+<li>加速交付与监控（时长未定）。</li>
+</ul>
+<p>这套流程用于把报价阶段的协同数字变成交付计划。</p>
+<ol start="5">
+<li>
+<p><strong>"双人跟踪"。</strong> 由两个职能分担跟踪，分别核查执行情况和结果的真实性。成本协同通常由财务和整合办公室负责，收入协同由财务和业务部门负责。</p>
+</li>
+<li>
+<p><strong>自测五问。</strong> 包括：协同目标的雄心、是否对所有杠杆做过基准比较、是否拆成子项目、运营假设与损益之间的联系、跟踪流程。</p>
+</li>
+</ol>
+<h3>关键知识点与数据</h3>
+<ul>
+<li>样本：2016年11月至2017年5月，访谈了40余家瑞士企业的董事、CFO、并购和整合人员。收购方均为瑞士总部企业，多数交易在1亿瑞士法郎以上，均在五年内完成。研究结果与德勤协同数据库（800余宗交易）做了对照。</li>
+<li>按2016年交易规模和30%的平均控制权溢价测算，至少需创造480亿瑞士法郎的价值。当时市盈率已接近五年前的两倍。</li>
+<li>80%的受访者认为协同是投资逻辑的基础。在竞购中，协同被用来支撑提高报价。</li>
+<li>宣布的协同占交易价值的比例：下四分位2.2%，中位数4.1%，上四分位8.4%。</li>
+<li>成本协同：57%认为非常重要，26%认为重要。通常占合并成本的1–5%（46%的交易）。约四分之一低于1%，约十分之一的目标在10%以上。</li>
+<li>收入协同：74%认为重要或非常重要。通常占目标公司收入的2–14%，前15%的交易宣布超过25%。</li>
+<li>金融服务业的成本协同最高：中位数4%，上四分位9%（占合并成本）。其收入协同区间最窄：中位数6%，上四分位10%。</li>
+<li>受访者最常用的成本杠杆依次为 IT、采购、人员，但按数据库中的价值排序，IT 只排第六。49%主动追求采购协同。</li>
+<li>把定价视为收入杠杆的瑞士企业占12%，全球为66%。交叉销售在瑞士最受青睐（瑞士77%，全球65%）。</li>
+<li>39%未量化收入协同。在做了量化的61%中，65%达到或接近目标。</li>
+<li>65%调整过收入协同目标，其中57%下调。冠军企业中只有25%调整过。</li>
+<li>50%不跟踪收入协同，36%在实施完成前就停止跟踪。</li>
+<li>不到一半的企业交付了目标的75–125%，12%低于75%，25%超过125%。44%在12个月内实现协同，36%用时超过两年。</li>
+</ul>
+<h3>洞见</h3>
+<ul>
+<li>竞购中，协同被用来论证报价，因此部分价值在整合开始前就已让给卖方。</li>
+<li>团队偏爱的杠杆往往不是价值最大的。董事会应追问：运营改进为何排在后面？</li>
+<li>收入协同最容易失去纪律。但做了量化的企业大多能兑现，说明差距主要在管理习惯，而不在测量本身。</li>
+<li>只有尽调信息被证明有误时才应修改目标。目标偏高时，冠军企业会寻找新的杠杆，而不是下调目标。</li>
+<li>局限：样本小，仅限瑞士企业，且为自我报告。作者是出售协同咨询服务的机构。研究没有讨论报价本身是否过高。</li>
+</ul>
+<h3>对 ABN AMRO 案例的启示</h3>
+<ul>
+<li><strong>财团：</strong> 711亿欧元的报价比约570亿欧元的未受影响价值高出约140亿欧元（按两数相减）。研究表明，竞购会促使买方把协同计入报价。董事会应追问：这一差额有多少依赖协同？这些协同是否参照过金融业基准（中位数4%，上四分位9%）？</li>
+<li><strong>拆分风险：</strong> 八项做法默认只有一个收购方、一个负责人。拆成三块意味着先分拆、再分别整合，削弱了端到端的责任和跟踪。富通在研究所示的1–2年以上交付期内遭遇了2008年危机。</li>
+<li><strong>监事会：</strong> 被动的 Martinez 监事会本可用"自测五问"比较两份报价的协同是否可信，即巴克莱的整体保留方案与三套整合方案的对比，而不只看报价高低和现金还是股票。</li>
+<li><strong>巴克莱与 Groenink：</strong> 在以股票为主的报价中，ABN AMRO 股东要共担协同兑现风险，因此细化、量化的协同计划更为关键。研究不涉及出售 LaSalle 这类防御措施。</li>
+<li><strong>TCI：</strong> 激进投资者的拆分逻辑依赖买方将要创造的价值。研究中关于跟踪和交付的数据提醒：不能把宣布的协同当作已到手的现金。</li>
+</ul>
+<p>来源：Tomi Laamanen, Xena Welch Guerra, Andreas Girisch (HSG); Anna Samanta, Michael van der Boom, Kristina Faddoul (Deloitte), "Unlocking the full potential of M&amp;A: What it takes to be a Value Creation Champion", Deloitte AG / University of St.Gallen, 2017（未注明月份，文件日期为2017年9月）.</p></section>
+<section id="deloitte-ducks"><h2>连续收购者：把鸭子排成一行（Serial acquirers: Getting your ducks in a row）— 德勤与圣加仑大学（Welch Guerra、Laamanen、Samanta、Koller），2015</h2>
+<p><strong>一句话结论：</strong> 瑞士的连续收购者已把交易本身做得很专业，但整合能力明显落后。多数公司有专职并购团队和标准化交易工具，却很少有整合团队、完整的整合手册或系统的协同效应跟踪。研究认为，价值在交割之后才真正实现或流失，因此整合能力、组织承载力和学习机制应获得与交易同等的投入。</p>
+<h3>方法论</h3>
+<ol>
+<li><strong>研究设计。</strong> 2014年6月至11月，对25家瑞士连续收购者进行半结构化访谈。每项发现由调查结果、匿名引语和德勤投后整合（PMI）观点组成。应视为实务证据，而非统计检验。</li>
+<li><strong>连续收购者七项能力模型。</strong> 七项发现可用作检查清单，审视收购方，或判断竞购方能否兑现方案。</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>能力</th>
+<th>良好实践</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>组织</td>
+<td>设专职整合团队或有经验的整合总监，并与并购团队频繁对接</td>
+</tr>
+<tr>
+<td>2</td>
+<td>整合流程</td>
+<td>标准化整合方法与工具，事先确定"不可谈判事项"与指导原则，同时允许按交易调整</td>
+</tr>
+<tr>
+<td>3</td>
+<td>项目来源</td>
+<td>主动管理项目储备；按战略、财务和整合标准筛选标的</td>
+</tr>
+<tr>
+<td>4</td>
+<td>早期介入</td>
+<td>尽早任命整合总监；有高管担任发起人</td>
+</tr>
+<tr>
+<td>5</td>
+<td>组织平台</td>
+<td>IT、人力、财务和报告体系稳健；增加交易前先核查承载力</td>
+</tr>
+<tr>
+<td>6</td>
+<td>协同效应</td>
+<td>协同目标与整合运营计划挂钩，并定期跟踪</td>
+</tr>
+<tr>
+<td>7</td>
+<td>学习</td>
+<td>对照商业计划做事后复盘，开展培训，指定知识负责人</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="3">
+<li><strong>整合总监角色。</strong> 由一名指定负责人统筹所有整合工作流。应尽早任命以理解交易逻辑，并把该岗位设计为晋升台阶，以吸引优秀人才。</li>
+<li><strong>项目来源渠道选择。</strong> 交易来自外部（标的、卖方、中介）或内部（业务单元或集团筛选）。集中行业多靠集团主导；分散行业多靠业务单元，后者需要严格标准和培训。</li>
+<li><strong>"可消化性"测试与承载力评估。</strong> 交易前先问：业务单元能否吸收，管理层是否有精力。再决定哪些举措加速、停止、启动或继续。</li>
+<li><strong>协同效应流程。</strong> 把协同目标与整合运营计划挂钩，用统一工具定期跟踪，并加入员工士气、客户留存等定性指标。</li>
+<li><strong>知识管理。</strong> 经验总结会、疑难问题"专家名录"、培训，以及反馈到新交易的事后复盘。</li>
+</ol>
+<h3>关键知识点与数据</h3>
+<ul>
+<li>样本：25家瑞士连续收购者，营收介于10亿至600亿瑞士法郎；"连续收购者"定义为过去12年完成8笔以上收购。受访者中，CFO/COO占27%，并购或企业发展负责人占39%。</li>
+<li>背景：瑞士并购交易额由2013年的270亿瑞士法郎升至2014年的1780亿瑞士法郎，为2008年以来最高（Mergermarket数据）。</li>
+<li>团队：48%设有专职并购团队，48%将并购职能放在其他团队中；仅9%设有专职PMI团队（78%没有）。一半并购团队向CEO汇报，44%向CFO汇报。</li>
+<li>工具：73%拥有完整的并购工具，仅23%拥有完整的PMI工具（54%部分具备，23%没有）。</li>
+<li>项目来源：业务单元39%，集团31%，混合17%，外部13%。</li>
+<li>整合由谁主导：77%由业务部门主导，专职整合团队9%，并购团队9%。</li>
+<li>承载力：67%会因管理层精力不足而推迟或放弃交易（交易少的公司为80%，交易多的公司为50%）。小交易的工作量常与大交易相当。</li>
+<li>协同效应：21%全面衡量，26%部分衡量，53%不衡量。收入协同常被认为过于复杂而难以衡量。</li>
+<li>学习：55%记录并沉淀经验，43%培训员工；37%没有知识管理方案，16%有正式方案。超过三分之一的公司未意识到这一学习潜力。</li>
+</ul>
+<h3>洞见</h3>
+<ul>
+<li>执行比价格更重要。一位受访者直言："Value is all about integration."只争论溢价的董事会，看错了变量。</li>
+<li>交易团队与整合团队"语言不通"。交易若未经交接就直接丢给整合团队，交易逻辑和协同依据就会丢失。</li>
+<li>时机悖论：整合负责人需要尽早到位，但优秀经理往往临近签约才能抽身。</li>
+<li>敢于说"不"也是一种能力。交易较少的公司更常放弃交易，因为缺少团队和流程来消化更多项目。</li>
+<li>商业计划书常常只为通过审批而写，之后无人再看。没有跟踪，协同目标就沦为谈判工具而非执行计划。</li>
+<li>局限：样本小、基于访谈，出自有PMI业务利益的咨询公司，未与实际回报挂钩。</li>
+</ul>
+<h3>对 ABN AMRO 案例的启示</h3>
+<ul>
+<li><strong>竞购方的"可消化性"测试。</strong> 三方拆分使每个财团成员都要完成各自的整合和剥离。富通尤其应自问：面对一笔比自身还大的交易，它是否具备足够的管理精力和平台（IT、财务、风险报告）。2008年的救助与研究的警示一致：平台过载会导致业绩恶化。</li>
+<li><strong>协同效应纪律。</strong> 以711亿欧元收购未受影响价值约570亿欧元的银行，依赖协同效应来支撑溢价。按本文，董事会应追问各竞购方是否把协同目标落实到运营计划和具体负责人，而不只停留在估值模型中。</li>
+<li><strong>目标公司监事会。</strong> Martinez领导的监事会主要比较报价和支付方式。本文意味着，它还应检验各竞购方的整合能力，并比较三方拆分与巴克莱"整体保留"方案的成本。</li>
+<li><strong>激进投资者与管理层。</strong> TCI着眼于通过出售释放价值，本文提醒投资者：价值在交割后才实现。Groenink若偏好巴克莱，本可以用整合可行性来论证，而非借助出售LaSalle这一防御手段。</li>
+<li><strong>适用边界。</strong> 本研究针对反复进行中小交易的瑞士连续收购者，而ABN AMRO是一次性的竞争性银行巨型交易。因此本文只是审视整合准备度的视角，而非直接证据。</li>
+</ul>
+<p>来源：Xena Welch Guerra, Tomi Laamanen, Anna Samanta, Stefan Koller, Serial acquirers: Getting your ducks in a row, Deloitte and University of St. Gallen, February 2015.</p></section>
+<section id="deloitte-transformational"><h2>瑞士转型型交易者的洞见：释放并购的全部潜力（Insights from Swiss transformational deal-makers: Unlocking the full potential of M&amp;A）— 德勤瑞士与圣加仑大学（HSG），2022年12月</h2>
+<p><strong>一句话结论 / Bottom line:</strong> 最优秀的瑞士收购方先确定公司要成为什么，再用收购和剥离加速抵达这一终局，速度远快于单靠内生变革。价值能否实现，取决于交易与转型是否同步：统一的治理结构、聚焦少数高影响领域，并借交易势能推动文化转变。</p>
+<h3>方法论</h3>
+<ol>
+<li><strong>"边交易边转型"顺序。</strong> 先定转型议程，再制定服务于它的有意识并购战略，最后按顺序或并行嵌入剥离与收购，以加速抵达终局。适用于并购旨在重塑商业模式的情形。机会型标的仍可考虑，但须用转型议程检验。</li>
+<li><strong>三视角组合审视。</strong> 将业务分为核心、非核心和中间地带。决定什么是非核心，本身就是一项转型决策。在选择买卖对象之前使用。</li>
+<li><strong>并行与顺序执行。</strong> 本质是速度与组织承载力的权衡。</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>好处</th>
+<th>适用情形</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>并行</td>
+<td>保持势能、早期见效、视野更广、可跳过过渡运营模式</td>
+<td>交易时机竞争激烈；项目执行能力强</td>
+</tr>
+<tr>
+<td>顺序</td>
+<td>留住人才、保护日常业务、团队与预算更小</td>
+<td>团队缺乏整合经验；组织已超负荷</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="4">
+<li><strong>先买后卖与先卖后买。</strong> 先收购可为核心业务筑起防护壳、降低被收购风险；先剥离可释放资金用于收购。依市场地位选择。</li>
+<li><strong>基础工作标准化、高影响领域定制化。</strong> 常规阶段用端到端标准手册；仅在回报足以覆盖额外投入时才定制。始终盯住关键路径。</li>
+<li><strong>三种治理模式。</strong> 交易办公室隶属转型办公室；或转型团队作为交易团队的"客户"；或二者合为一个团队。另设由资深负责人领导、代表CEO的中枢团队。两个办公室都充当把关者，包括"自建还是收购"的判断。</li>
+<li><strong>沟通规则。</strong> 先讲转型，再讲交易；明确哪些不可谈判；坦诚面对敏感话题；统一语言；培养意见领袖。</li>
+<li><strong>两阶段文化尽调。</strong> 早期通过私人网络非正式评估目标文化；后期访谈关键员工，梳理整合风险。</li>
+<li><strong>五问影响测试。</strong> 价值、成果、执行、复核（在当前环境下重新检验过往交易假设）、释放（交易势能是否被充分利用）。可作为董事会或管理层的定期审查工具。</li>
+</ol>
+<h3>关键知识点与数据</h3>
+<ul>
+<li>样本：2021年12月至2022年4月，向瑞士最活跃的大型收购方的150位高管发放问卷，经质量筛选保留50份；另有针对近五年交易的专家访谈，并参考约60篇学术文献。</li>
+<li>背景：德勤2022年并购趋势调查（逾1,300份回复）中，92%的受访者预计未来12个月交易量将上升。</li>
+<li>转型发生时点（图1）：交易期间53%，交易完成后47%。</li>
+<li>与交易同步开展的活动，冠军对落后者（图2）：高管更替30%对43%；重组63%对71%；战略联盟与企业风投43%对29%；产品开发47%对36%；成本优化47%对36%。</li>
+<li>交易顺序（图3）：先卖后买63%；先买后卖25%；二者并行13%。</li>
+<li>偏好标准化方法56%，偏好定制化方法44%（图4）。</li>
+<li>团队结构（图5）：一体化团队41%；集团层面转型团队、事业部执行17%；集团层面交易团队、事业部转型13%；完全分离3%；无正式结构3%。</li>
+<li>文化成果（图6）：敏捷性提升43%；更具创新文化38%；协作与网络改善24%。</li>
+<li>很少有受访者认为已充分释放文化变革潜力，文化往往是最后启动的工作流。</li>
+</ul>
+<h3>洞见</h3>
+<ul>
+<li>报告把由激进投资者或董事会压力驱动的并购视为旧式短期模式。只有与事先确定的终局挂钩，交易才产生转型价值。</li>
+<li>冠军做的破坏性变革更少而非更多：比落后者更少重组和更换高管，更多投入联盟、产品与成本。</li>
+<li>价格有吸引力不等于你是合适的所有者。害怕错过会掩盖交易的真实战略价值。</li>
+<li>速度与承载力相互冲突。竞争性拍卖可能迫使组织并行执行超出其承受能力的变革。</li>
+<li>局限：这是咨询公司主导、仅覆盖50家瑞士企业的研究，"冠军"部分为自我认定，且未与实际回报挂钩。</li>
+</ul>
+<h3>对 ABN AMRO 案例的启示</h3>
+<ul>
+<li><strong>董事会与激进投资者。</strong> 出售由TCI施压触发，而非源于既定终局，正是报告批评的被动型并购。称职的监事会应先明确银行的目标终局，再据此评估两份要约。Martinez领导的监事会却始终被动。</li>
+<li><strong>财团。</strong> 三方拆分、Fortis史上最大整合、93%现金对价，在拍卖压力下全部并行推进，是高风险、高成本模式的极端版本。报告关于承载力和专业能力不足的警示，预示了在2008年危机叠加下迫使Fortis与RBS接受国家救助的压力。</li>
+<li><strong>影响测试。</strong> "复核"一问正是RBS和Fortis所欠缺的：交割前市场已恶化，但711亿欧元的价格从未重新审视。</li>
+<li><strong>LaSalle。</strong> 向美国银行出售LaSalle是阻挡竞购方的防御性出售，而非为战略筹资，与报告的先卖后买逻辑背道而驰。</li>
+<li><strong>巴克莱。</strong> 其以股票为主、保持完整的方案符合报告对低扰动和一体化治理的偏好，但在价格上落败。本文关注交易后的执行，并不回答如何赢得竞争性收购。</li>
+</ul>
+<p>来源：Michael van der Boom, Kristina Faddoul, Roberto Micelli, Rick Taylor (Deloitte); Tomi Laamanen, Di Bian (University of St. Gallen), Insights from Swiss transformational deal-makers: Unlocking the full potential of M&amp;A, Deloitte AG Switzerland and University of St. Gallen, December 2022.</p></section>
+<section id="mckinsey-programmatic"><h2>众多小额并购如何累积成大价值（How lots of small M&amp;A deals add up to big value）— 《麦肯锡季刊》（Jeff Rudnicki、Kate Siegel、Andy West），2019年</h2>
+<p><strong>一句话结论：</strong> 在全球市值最大的1000家公司中，每年做多笔中小型交易的公司，在2007–2017年获得的超额股东回报高于依赖大型交易、选择性交易或内生增长的同行。优势来自把并购当作长期、系统化的能力，有战略蓝图、提前考虑整合、有明确运营模式，而不是一次性事件。</p>
+<h3>方法论</h3>
+<ol>
+<li><strong>四种并购战略类型。</strong> 按交易频率和所购价值占自身市值的比例划分。</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>定义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>程序化</td>
+<td>每年两笔以上中小型交易；累计收购市值占比可观（中位数15%）</td>
+</tr>
+<tr>
+<td>大型交易</td>
+<td>每年一笔或以上，目标市值不低于收购方市值的30%</td>
+</tr>
+<tr>
+<td>选择性</td>
+<td>每年两笔或更少；累计价值超过市值的2%</td>
+</tr>
+<tr>
+<td>内生</td>
+<td>每三年一笔或更少；累计价值低于市值的2%</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="2">
+<li><strong>并购蓝图（战略与寻源）。</strong> 把战略和交易寻源连接起来的文件。它检验市场趋势和对手动向、自己是否是最佳所有者、想获得哪些能力，以及交易是否现实（资产是否可得、价格、关系、监管）。应在讨论具体目标之前使用。</li>
+<li><strong>尽调与整合规划同步。</strong> 程序化收购者在交割前很久就规划岗位、流程和技术，并在尽调和整合中都评估双方文化和组织健康。一家科技公司跟踪人员任命是否与双方规模相称，两人同样合适时优先选目标公司的人。</li>
+<li><strong>端到端并购运营模式。</strong> 明确决策人、标准、绩效指标、激励和治理。一家科技公司用类似客户关系管理的数据库管理数百家被监测目标，甚至用于高管绩效考核。</li>
+</ol>
+<h3>关键知识点与数据</h3>
+<ul>
+<li>样本：按市值排名的全球1000强（不含总部在非洲和拉美的公司）；早期研究1999–2010年，更新期为2007年12月至2017年12月；数据来自汤森路透和麦肯锡公司绩效分析。</li>
+<li>程序化收购者的超额股东总回报（TRS）中位数最高。选择性和内生型公司平均为负；大型交易型中位数最低、下行区间最宽（图表1仅以图形显示数值）。</li>
+<li>在程序化收购者中，每年超过五笔交易的超额TRS中位数为0.7%（标准差5.3个百分点），两到五笔为0.5%（7.3个百分点）。</li>
+<li>程序化收购者在178家退出榜单的公司中占8%，在686家留存公司中占28%，在前250名留存公司（157家）中占48%，在前100名留存公司（65家）中占60%。</li>
+<li>选择性公司占退出者的49%，内生型占30%。</li>
+<li>2004–2014年的内生型公司到最新分析时没有一家转为程序化，且到2017年超过四分之一已跌出全球1000强。</li>
+<li>2019年麦肯锡全球并购能力调查：程序化收购者在多个阶段估算收入和成本协同的可能性是同行的两倍，为每个阶段指定明确负责人的可能性是1.4倍。</li>
+<li>案例：一家消费品公司在中国市场选址上争论数周，随后用八周回到蓝图重新梳理，很快就几家目标达成一致，其中几家此前从未被提及。</li>
+</ul>
+<h3>洞见</h3>
+<ul>
+<li>频率带来能力。每年交易越多，超额回报越高、波动越小。</li>
+<li>转换模式很难。公司很少转入程序化并购，说明能力需要多年积累。</li>
+<li>大型交易的下行风险最大，数据对"大爆炸式"押注提出警告。</li>
+<li>作者承认该模式并非人人适用：行业整合趋势和监管可能构成障碍。</li>
+<li>存在幸存者偏差：TRS比较只针对留在全球1000强中的公司。</li>
+</ul>
+<h3>对 ABN AMRO 案例的启示</h3>
+<ul>
+<li>ABN AMRO收购恰是程序化并购的反面：一笔711亿欧元的"大爆炸式"交易，目标相对每个财团成员都非常大。文中2007–2017年大型交易的较差表现，与Fortis和RBS的结局一致。</li>
+<li>财团的拆分方案是粗略的"最佳所有者"检验，各方拿走自己最看重的部分。但蓝图中关于所需资本和现实性（价格、监管）的问题才是决定性的，融资压力正出在这里。</li>
+<li>巴克莱的报价同样属于大型交易。用这一视角，董事会应要求两个竞购方证明其可复制的整合能力，而不只是比价格。</li>
+<li>对ABN AMRO董事会和Groenink而言，文章主张建立有明确负责人的常设并购能力。仓促出售LaSalle是防御性事件，不属于任何计划。</li>
+<li>适用性提醒：2007年欧洲银行业正处于强监管下的整合期，正是作者提到的障碍。小型补强收购很难改变一家银行的地位，因此这些证据提示风险，而非否定所有大型银行并购。</li>
+</ul>
+<p>来源：Jeff Rudnicki、Kate Siegel、Andy West，"How lots of small M&amp;A deals add up to big value"，McKinsey Quarterly，2019年7月。</p></section>
+<section id="bcg-synergy"><h2>协同效应规划应比你想象的更早开始（Planning for Synergies Should Start Sooner Than You Think）— 波士顿咨询公司（Edward Gore-Randall、Rahul Khubchandani、Chris Barrett、Daniel Friedman），2025年</h2>
+<p><strong>一句话结论：</strong> 协同效应能否实现，很大程度上在签约前就已决定。收购方应在尽职调查阶段就开始整合规划，让日后负责兑现协同的业务主管参与；随后设定高于公开指引的内部挑战性目标，收入协同与成本协同同样对待，以抵御价值流失并发掘额外价值。</p>
+<h3>方法论</h3>
+<ol>
+<li><strong>尽调与整合规划挂钩。</strong> 宣布交易前就形成整合思路和合并后的目标运营模式。让业务单元和职能负责人（如销售、人力资源）参与尽调，按年份和地点设定职能层面目标。派一名尽调成员进入整合管理办公室的基线与协同小组。但不要把尽调变成正式预算流程。</li>
+<li><strong>明确协同驱动因素。</strong> 写清每项节省背后的运营模式选择，让团队知道整合中这些选择一旦改变，价值获取会受何影响。</li>
+<li><strong>挑战性目标。</strong> 内部目标同时高于尽调方案和公开指引。它既是应对价值流失（计划与实际落地之间的差距）的缓冲，也促使团队寻找几周尽调冲刺中遗漏的杠杆。</li>
+<li><strong>去平均化。</strong> 以尽调假设的高端为起点，按职能区分力度。在增量空间大的地方加压（如制造良率），而非已很精简的支持职能。</li>
+<li><strong>三角验证。</strong> 综合外部基准、同业数据、以往整合结果、专家意见、专有数据库和规模曲线，判断多高的目标可信；数据越多，目标越细。</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>三角验证来源</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基准与同业数据</td>
+<td>各行业典型协同区间</td>
+</tr>
+<tr>
+<td>以往整合</td>
+<td>实际实现而非承诺的结果</td>
+</tr>
+<tr>
+<td>职能专家</td>
+<td>运营可行性</td>
+</tr>
+<tr>
+<td>协同数据库</td>
+<td>按交易规模和行业的基准，成本节省细到科目</td>
+</tr>
+<tr>
+<td>规模曲线</td>
+<td>产量翻倍时单位成本的下降（图示：90%曲线约降10%，70%曲线约降30%）</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="6">
+<li><strong>领导层认同。</strong> 合并后公司的高管团队必须理解目标如何得出并认领，否则会被视为不切实际而被搁置。</li>
+</ol>
+<h3>关键知识点与数据</h3>
+<ul>
+<li>文中列举的粗放尽调估计：基于整合或行业基准的成本节省超过20%；基于粗略份额假设的收入增长超过10%，且未考虑未来运营模式。</li>
+<li>BCG支持的设有挑战性目标的并购样本（未披露样本量）：扣除价值流失后，成本协同平均比内部尽调方案高10%，比公开指引高18%。</li>
+<li>化工合并案例：分析师质疑公开指引；领导层在采购和供应链设定更高内部目标。最终识别的成本举措超出原计划65%，收入举措超出30%，对外承诺的成本节省提前两年实现。</li>
+<li>欧洲工业企业案例：职能负责人加入尽调团队，交割前即按年份和地点设定初步目标，经理们从一开始就认领目标。</li>
+</ul>
+<h3>洞见</h3>
+<ul>
+<li>主要失败点是交接断层：时间紧迫的尽调团队给出的数字，负责兑现的经理从未参与。</li>
+<li>自信的管理层往往不加检验就接受协同数字，也不审视核心业务走势。董事会不应如此。</li>
+<li>公开指引应低于内部计划。两者相等就没有容错空间。</li>
+<li>挑战性目标必须有证据和认领，否则只是愿望。</li>
+<li>局限：证据来自BCG自身客户项目，属于选择性样本；文章不讨论收购价格和融资风险。</li>
+</ul>
+<h3>对 ABN AMRO 案例的启示</h3>
+<ul>
+<li>三方拆分意味着三套整合计划，外加共享职能的分拆。按今天的做法，财团应在承诺711亿欧元之前，在尽调中就设计好这些运营模式。</li>
+<li>没有业务主管参与的协同方案缺少缓冲。在93%现金的报价下，融资和协同流失都由财团成员承担，2008年危机冲击Fortis和RBS时这一点至关重要。</li>
+<li>报价结构决定协同风险由谁承担。巴克莱以股票为主的报价，ABN AMRO股东将分担协同兑现风险；财团的现金报价则让股东直接退出。监事会应比较两份协同方案的可信度，而不只是比报价高低。</li>
+<li>被动且缺少银行专家的董事会难以追问任一竞购方数字背后的驱动因素。文章要求明确驱动因素，为董事会提供了具体的核查清单。</li>
+<li>局限：挑战性目标无法弥补出价过高或融资冲击。财团的问题主要在融资和危机，超出本文范围。</li>
+</ul>
+<p>来源：Edward Gore-Randall、Rahul Khubchandani、Chris Barrett、Daniel Friedman，"Planning for Synergies Should Start Sooner Than You Think"，Boston Consulting Group，2025年11月26日。</p></section>
+<section id="mckinsey-genai"><h2>并购中的生成式AI：从理论到实践再到高绩效（Gen AI in M&amp;A: From theory to practice to high performance）— 麦肯锡（Kameron Kordestani、Rui Silva，Julia Berbel 参与），2026年</h2>
+<p><strong>一句话结论：</strong> 生成式AI已经在目标筛选、尽职调查和整合规划中降低成本、缩短周期，但多数并购团队用得很浅，主要靠通用聊天机器人。作者反对观望：团队应现在就培养AI能力，把战略、交易数据和整合手册整理成文，以便在未来两到五年端到端工具成熟时直接接入。</p>
+<h3>方法论</h3>
+<ol>
+<li><strong>AI辅助的目标识别。</strong> 用公司交易历史和战略资料训练大语言模型，再用机器学习按商业模式、增长和相邻市场对数千家公司聚类；语义检索按收购方标准给每个候选打分。适用于目标多、分散的市场。</li>
+<li><strong>AI辅助的尽职调查。</strong> 用自然语言检索专家访谈记录库；在虚拟数据室中检索、汇总、整理数千份文件，并补充客户和员工情绪等外部数据。用于加快尽调、减少遗漏。</li>
+<li><strong>AI支持的整合规划。</strong> 训练好的智能体可在几分钟内起草交割日准备方案、交割后整合计划和沟通材料（致客户和供应商信函、新闻稿、变革管理手册）。质量参差，仍需大量人工判断。</li>
+<li><strong>五个准备步骤。</strong> 可组合采用，做得越多，越能受益于下一代工具。</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>评估流程</td>
+<td>找出自动化最有价值的环节（分散市场重在扫描；人才或知识产权密集行业重在人员整合）</td>
+</tr>
+<tr>
+<td>培养AI能力</td>
+<td>让团队试用工具、看演示；判断哪些能力可基于现有大模型自建</td>
+</tr>
+<tr>
+<td>高层支持</td>
+<td>明确负责人和高层倡导者</td>
+</tr>
+<tr>
+<td>手册成文</td>
+<td>写下并购理念和方法，例如交割后前六个月希望实现多少价值</td>
+</tr>
+<tr>
+<td>1–2年路线图</td>
+<td>规划导入、变革管理和持续投入</td>
+</tr>
+</tbody>
+</table></div>
+<h3>关键知识点与数据</h3>
+<ul>
+<li>来源：麦肯锡并购中生成式AI工具使用调查，200名受访者，2025年。</li>
+<li>使用者报告平均成本下降约20%；40%的受访者称交易周期加快30%–50%。</li>
+<li>42%认为生成式AI具有变革性（10%）或高度差异化（32%）；48%认为有一定差异化，10%认为影响很小。</li>
+<li>采用意愿：8%想做领先者，35%逐步采用，47%谨慎探索，10%跟随他人。</li>
+<li>只有30%的受访者中度或高度使用；多数依赖现成聊天机器人而非定制工具。</li>
+<li>全流程最主要收益：更多或更好的洞察（57%），其次是流程简化（56%）。</li>
+<li>优先扩展领域：目标识别和尽调各45%，整合与分拆8%，交易谈判3%。</li>
+<li>主要障碍：缺乏专业能力（71%）、工具不成熟（58%）、技术集成（37%）、数据隐私（36%）、成本（25%）、监管不确定（17%）。</li>
+<li>在整合与分拆阶段，"与现有系统更好集成"是被提及最多的促进因素（89%）。</li>
+<li>案例：一家软件公司使用覆盖4000多万家公司的寻源平台，不到一天为500多个目标打分，筛出15条线索，几个月后完成三笔收购。</li>
+<li>预测：两到五年内出现可靠的端到端工具；两年内尽调可成为持续、互联的环节；两到三年内一半以上整合任务可自动化。大公司整合目前通常需要两到五年。</li>
+</ul>
+<h3>洞见</h3>
+<ul>
+<li>瓶颈在人，不在技术。缺乏专业能力排在工具不成熟之前。</li>
+<li>AI的效果取决于成文的输入。没有写下战略、标准和手册的公司，没有可供训练的材料。</li>
+<li>整合阶段最需要更好的工具，却最少被列为扩展重点。价值最大、最依赖判断的环节自动化最慢。</li>
+<li>筛选和尽调越快，越容易产生虚假的确定感，输出仍需人工核查。</li>
+<li>调查数据是使用者自报，预测是作者估计，只能作为方向参考。</li>
+</ul>
+<h3>对 ABN AMRO 案例的启示</h3>
+<ul>
+<li>2007年还没有这些工具。以"今天的竞购方会怎么做"来看：财团可用AI辅助审阅ABN AMRO数据室，并对拆分后的三块业务分别建模，检验融资和整合负担如何落到每个成员身上。</li>
+<li>三方拆分使整合与分拆工作量成倍增加。AI起草分拆方案和交割日沟通可以省时，但文章强调判断仍在人。拖垮Fortis和RBS的是融资和危机敞口，这不是工具能消除的。</li>
+<li>对监事会而言，分析更快不能替代银行业专长。由零售业出身主席领导、缺少银行专家的董事会，仍需要能质疑AI结果和管理层偏好巴克莱的人。</li>
+<li>今天像TCI这样的激进投资者可借助AI寻源和情绪数据更快形成拆分论点。董事会应预期对方准备更充分、自己的应对时间更短。</li>
+</ul>
+<p>来源：Kameron Kordestani、Rui Silva（Julia Berbel 参与），"Gen AI in M&amp;A: From theory to practice to high performance"，McKinsey &amp; Company，2026年1月。</p></section>
+    <footer>本页为学习笔记，内容为对原文的概括转述，不构成投资建议。原文版权归各出版方所有。</footer>
+  </main>
+</div>
+</body>
+</html>
