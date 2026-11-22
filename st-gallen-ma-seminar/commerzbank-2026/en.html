@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commerzbank Case Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deal-memo page — fixed contents rail on the left, one reading column, tables full column width */
+:root {
+  --bg: #f6f6f3;
+  --paper: #ffffff;
+  --ink: #1b2130;
+  --ink-2: #4d5566;
+  --rule: #dcdcd4;
+  --accent: #184f95;
+  --accent-soft: #e6eefa;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+    --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+    --s1: #3987e5; --s2: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+  --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+  --s1: #3987e5; --s2: #d95926;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+nav { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .navhead { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 8px; }
+nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-left: 2px solid var(--rule); }
+nav a.lang { margin-top: 14px; border-left: 0; padding-left: 0; color: var(--accent); font-weight: 700; }
+nav a:hover, nav a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--ink-2); letter-spacing: .04em; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; }
+.sub a { color: var(--accent); }
+.sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 8px; }
+.kpi { background: var(--paper); padding: 14px 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.kpi span { font-size: 13px; color: var(--ink-2); }
+section { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 24px; scroll-margin-top: 16px; }
+section > *:first-child { margin-top: 0; }
+h2 { font-family: var(--display); font-size: 24px; line-height: 1.4; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); text-wrap: balance; }
+h3 { font-size: 17px; margin: 28px 0 8px; color: var(--accent); text-wrap: balance; }
+p, li { max-width: 46em; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 1.4em; margin: 8px 0; }
+li { margin: 4px 0; }
+section > p:nth-of-type(1) strong:first-child { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+thead th { text-align: left; font-weight: 700; background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+code { font-size: .9em; }
+.fig { margin: 22px 0 6px; }
+.fig figcaption { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); }
+.sw.ref { height: 0; border-top: 2px dashed var(--ink-2); border-radius: 0; width: 16px; }
+.chart { width: 100%; max-width: 680px; height: auto; display: block; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .tick, .chart .reflab { fill: var(--ink-2); font-size: 12px; font-family: var(--body); }
+.chart .cat { fill: var(--ink); font-size: 13px; font-family: var(--body); }
+.chart .val { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--body); }
+.chart .s1 { fill: var(--s1); } .chart .s2 { fill: var(--s2); }
+.chart .ref { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar:hover path, .chart .bar:focus path { opacity: .8; }
+.chart .bar:focus { outline: none; }
+.src { font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+footer { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 16px; }
+  nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav .navhead { width: 100%; margin: 0; }
+  nav a { border: 1px solid var(--rule); padding: 4px 10px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 20px 18px; }
+  h1 { font-size: 27px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="Contents"><div class="navhead">Contents</div><a href="#summary">Executive summary</a><a href="#q1">1 · Board composition</a><a href="#q2">2 · The board&#x27;s role</a><a href="#q3">3 · Government seats</a><a href="#q4">4 · Engage earlier?</a><a href="#compare">Compare · ABN AMRO</a><a href="#facts">Appendix · Deal facts</a><a class="lang" href="index.html" hreflang="zh-CN">中文版 →</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">Case analysis · St.Gallen case "UniCredit vs Commerzbank: Strategic Control and the Role of the Board"</div>
+      <h1>Commerzbank case analysis: UniCredit's fight for control</h1>
+      <p class="sub">UniCredit's takeover of Commerzbank (2024–2026), answered question by question and compared with the <a href="../abn-amro-2007/en.html">ABN AMRO case</a>. Analysis dated 22 Nov 2026.</p>
+      <div class="kpis"><div class="kpi"><b>€45bn</b><span>Deal approved by the ECB</span></div><div class="kpi"><b>47.6%</b><span>UniCredit stake after the tender</span></div><div class="kpi"><b>10+</b><span>Special committee meetings in 2025</span></div><div class="kpi"><b>10 / 20</b><span>Shareholder seats to be replaced</span></div></div>
+    </header>
+    <section id="summary"><h2>Executive summary</h2>
+<p>UniCredit built a stake quietly from 2024 to just under the 30% mandatory-offer threshold, then bid in early 2026. When the tender closed in July 2026 it held 47.6%, giving it de facto control, and the ECB approved the €45bn deal. Commerzbank's supervisory board was the opposite of ABN AMRO's passive board: it set up a special committee in 2024 and led the defence. Its process was solid, but it did not hold the line: shareholders tendered, and the board secured no better terms.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Core answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Board composition</td>
+<td>20 members, 10 shareholder and 10 employee representatives; 40% women; 5 of the 10 shareholder representatives come from banks or central banks, so regulatory depth is strong, but there is no M&amp;A or investment-banking profile and the board appears entirely German. Power is concentrated in chair Weidmann, who besides chairing the board sits on 6 of the 8 committees and chairs 3</td>
+</tr>
+<tr>
+<td>2. The board's role</td>
+<td>Moved from passive to an active, control-style defence: the special committee met more than 10 times in 2025 and coordinated with the government and unions. Strong on process, weak on outcome: it argued the bidder had "no convincing plan" without offering an alternative value plan, and won no better terms</td>
+</tr>
+<tr>
+<td>3. Government seats</td>
+<td>Under German co-determination the board splits 10/10, and the chair, chosen by the shareholder side, breaks a tie, so every shareholder seat is pivotal. The state's &gt;10% stake is worth about one seat; two seats would be 20% of the shareholder side and could slow the planned deep cost cuts and wind-down of the international network. Per public reporting (outside the case), the compromise was that UniCredit consults Berlin on two independent members within its own slate of 10</td>
+</tr>
+<tr>
+<td>4. Engage earlier?</td>
+<td>Yes, with conditions. By the formal bid in early 2026, with UniCredit above 25%, the board should have started negotiating while keeping "not at this price" as its public line, to win price, job guarantees, headquarters and listing commitments, and governance seats. This holds if there was no rival bidder, no likely regulatory block, and no standalone plan worth more than the offer</td>
+</tr>
+</tbody>
+</table></div>
+<p>The comparison with ABN AMRO shows that whether a board is active shapes the quality of the process, but who wins control is set by the balance of the share register and shareholders' willingness to tender.</p></section>
+<section id="q1"><h2>Question 1: How do you evaluate the 2026 composition of the Commerzbank supervisory board? Consider its committees, committee composition, expertise, gender, and nationality.</h2>
+<p><strong>Bottom line:</strong> On paper this is a strong bank board. The 10 shareholder representatives are all independent, 5 of them have bank or central-bank careers (7 of 10 have finance-sector careers), and a dedicated 8-member Special Committee has existed since 09/2024. The weaknesses are concentration on the chair, who holds 7 roles, a board that appears 20 of 20 German (inferred), little visible M&amp;A or international-banking experience, and co-determination dynamics that pull the board towards defending jobs.</p>
+<h3>1. Board statistics (Tables 1 and 2, April 2026)</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Members</td>
+<td>20: 10 shareholder reps (all "Indep. Y"), 10 employee reps (all "N")</td>
+</tr>
+<tr>
+<td>Union-linked employee reps</td>
+<td>3: Leuchters (Hans Böckler Foundation), Voß and Werning (ver.di secretaries)</td>
+</tr>
+<tr>
+<td>Women</td>
+<td>8/20 (40%); 4/10 on each side</td>
+</tr>
+<tr>
+<td>Nationality</td>
+<td>20/20 German (inferred from names and careers; the case gives no nationality)</td>
+</tr>
+<tr>
+<td>Average tenure</td>
+<td>4.3 years at April 2026 (shareholder 4.4, employee 4.1); 12 of 20 joined in 2023 or later</td>
+</tr>
+<tr>
+<td>Longest-serving</td>
+<td>de Buhr 13.0 years, Dietrich 11.0 years</td>
+</tr>
+<tr>
+<td>Shareholder backgrounds</td>
+<td>Central bank/supervision 2 (Weidmann, Lautenschläger), banking 2 (Czichowski/KfW, Westhoff/DZ Bank), bank IT 1 (Gorriz/Standard Chartered), finance/investment 2 (Christ, Keese), industry 1 (Dietrich/BP), law/consulting 2 (Mattheus, Seifert)</td>
+</tr>
+<tr>
+<td>Committee seats</td>
+<td>57 in total: shareholder side 35, employee side 22</td>
+</tr>
+<tr>
+<td>Committee chairs</td>
+<td>All 7 chaired committees led by shareholder reps; 2 of 7 by women</td>
+</tr>
+<tr>
+<td>Weidmann</td>
+<td>Board chair plus 6 of 8 committees, chairing 3 (Presiding, Compensation, Special)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Table 1 and Table 2 agree on all committee memberships; my script found no mismatches.</p>
+<h3>2. Committee by committee</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Committee</th>
+<th>Chair</th>
+<th>Members</th>
+<th>Shareholder : employee</th>
+<th>Notable expertise</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Presiding &amp; Nomination</td>
+<td>Weidmann</td>
+<td>7</td>
+<td>4:3</td>
+<td>Bundesbank, DZ Bank, two investors</td>
+</tr>
+<tr>
+<td>Compensation Control</td>
+<td>Weidmann</td>
+<td>5</td>
+<td>3:2</td>
+<td>Bundesbank, ECB, KfW</td>
+</tr>
+<tr>
+<td>Audit</td>
+<td>Keese</td>
+<td>8</td>
+<td>5:3</td>
+<td>Finance (Artemis), KfW treasurer as deputy</td>
+</tr>
+<tr>
+<td>Risk</td>
+<td>Westhoff</td>
+<td>7</td>
+<td>6:1</td>
+<td>DZ Bank, KfW, ECB, Bundesbank, Standard Chartered CIO</td>
+</tr>
+<tr>
+<td>ESG</td>
+<td>Mattheus</td>
+<td>9</td>
+<td>5:4</td>
+<td>Law/consulting; union deputy (Leuchters)</td>
+</tr>
+<tr>
+<td>Digital Transformation</td>
+<td>Dietrich</td>
+<td>9</td>
+<td>5:4</td>
+<td>BP, Standard Chartered CIO, transformation consultant</td>
+</tr>
+<tr>
+<td>Special (since 09/2024)</td>
+<td>Weidmann</td>
+<td>8</td>
+<td>5:3</td>
+<td>Bundesbank, ECB, KfW, DZ Bank, Artemis; vice chair Uebel; union-side Leuchters</td>
+</tr>
+<tr>
+<td>Mediation (§27(3) MitbestG)</td>
+<td>none listed</td>
+<td>4</td>
+<td>2:2</td>
+<td>Chair, vice chair, Lautenschläger, Werning</td>
+</tr>
+</tbody>
+</table></div>
+<p>Czichowski is deputy chair of three committees (Audit, Risk, Special). He, Weidmann and Lautenschläger hold 16 of the 35 shareholder-side seats.</p>
+<h3>3. Strengths</h3>
+<ul>
+<li><strong>Regulatory and central-bank depth.</strong> A former Bundesbank president and a former ECB Executive Board member sit together on Risk, Compensation and Special. For a fight that ran through the ECB, BaFin and Berlin, few European bank boards could match this.</li>
+<li><strong>Independent, renewed shareholder side.</strong> All 10 shareholder reps are independent, and 4 of them, including the chair, joined in 2023 or later. The board is not captured by long tenure.</li>
+<li><strong>A dedicated Special Committee.</strong> It was set up in 09/2024, reportedly met more than ten times in 2025, and 5 of its 8 members have finance or central-bank careers. This is the "control mode" that Rowley &amp; Capron (HBR 2025) recommend when value impact is high and management may be conflicted. ABN AMRO's board never made that switch.</li>
+<li><strong>Gender.</strong> 40% women overall and on each side, above the 30% statutory minimum (outside the case: §96(2) AktG).</li>
+</ul>
+<h3>4. Weaknesses</h3>
+<ul>
+<li><strong>Chair concentration.</strong> Weidmann holds 7 roles and chairs the committees that matter most in a takeover fight: Presiding, Compensation and Special. Under §29 MitbestG (outside the case), he also holds the casting vote after a repeated tie. That gives the board one clear voice, but also a single point of failure and little independent challenge to the defence line. His Bundesbank background also makes the board look aligned with Berlin.</li>
+<li><strong>Gaps in expertise.</strong> Table 1 shows no M&amp;A, investment-banking or capital-markets dealmaker. International banking rests on one bank CIO (Gorriz) and one supranational supervisor. Valuing a share-exchange offer, whose premium moved with UniCredit's share price, called for exactly the skills that are missing.</li>
+<li><strong>Nationality.</strong> The board appears entirely German, facing an Italian acquirer in a cross-border European deal. That likely reinforced a national framing of the contest.</li>
+<li><strong>Hard committees are male-led.</strong> Women chair only ESG and Digital. The five power committees (Presiding, Compensation, Audit, Risk, Special) all have male chairs, and only 2 of the 8 Special Committee members are women.</li>
+<li><strong>Co-determination dynamics.</strong> Half the board represents employees, 3 of them union-linked, and 3 employee reps sit on the Special Committee. With unions claiming 15,000 job losses (against UniCredit's 7,000), employee incentives point to resisting the deal, whatever the premium. Paine &amp; Srinivasan (HBR 2019) list employee directors as a deliberate stakeholder choice. That choice helps legitimacy but weakens the board's shareholder-value lens in a change-of-control decision. The Risk Committee, at 6:1, is the only body where the shareholder side dominates clearly.</li>
+<li><strong>Fresh hands in the middle of the fight.</strong> Lautenschläger and Gorriz joined in 05/2025, after UniCredit had already built its stake.</li>
+</ul>
+<h3>5. Contrast with ABN AMRO 2007</h3>
+<p>ABN AMRO's Supervisory Board had 12 members, only 3 with finance backgrounds, a chair from retail and 5 busy directors. Commerzbank's shareholder side has 7 of 10 with finance-sector careers, a chair who is a former central banker, and a standing special committee. Commerzbank's board therefore had the capacity for partner or control mode, which Rowley &amp; Capron say a thin board lacks. Its risk was the reverse of ABN AMRO's: too much homogeneity and alignment around a defensive, regulatory and national view, rather than too little engagement.</p>
+<p><strong>From an adviser's perspective:</strong> Commerzbank's board was built to supervise a bank, not to price a bid. In a contested deal, a target board should add independent M&amp;A and valuation advice to its special committee. It should separate the chair from the committee leading the bid response, or at least give that committee a strong independent deputy with deal experience. It should also bring in at least one cross-border voice. Regulatory depth wins arguments with Frankfurt and Berlin; it does not win a tender when shareholders see the premium.</p>
+<p>Sources: §7 MitbestG (10+10 board, 3 union seats) https://www.gesetze-im-internet.de/mitbestg/__7.html; §§27, 29 MitbestG (mediation committee, chair's casting vote) https://www.gesetze-im-internet.de/mitbestg/BJNR011530976.html; §96(2) AktG (30% gender minimum) https://www.gesetze-im-internet.de/aktg/__96.html</p></section>
+<section id="q2"><h2>Question 2: How do you evaluate the role of the Commerzbank supervisory board in this battle?</h2>
+<p><strong>Bottom line:</strong> The supervisory board ran a disciplined, well-staffed defence. It was the opposite of ABN AMRO's passive board in 2007. But it was a good defender and a weak negotiator: it fought on "no convincing plan" without its own value alternative, and shareholders took the decision away from it. Investors holding 17.6% tendered, UniCredit reached 47.6%, and the board conceded with no visible improvement in terms.</p>
+<h3>1. Timeline: from cooperation to concession</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>When</th>
+<th>Event</th>
+<th>Board posture (Rowley &amp; Capron mode)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2024</td>
+<td>UniCredit signals cooperation while quietly building a stake</td>
+<td>Passive, monitoring</td>
+</tr>
+<tr>
+<td>09/2024</td>
+<td>Special Committee set up: 8 members, chaired by Jens Weidmann (5 shareholder, 3 employee representatives)</td>
+<td>Shift to control</td>
+</tr>
+<tr>
+<td>2025</td>
+<td>Committee meets more than 10 times; coordinates defence and aligns with the German government</td>
+<td>Control</td>
+</tr>
+<tr>
+<td>Early 2026</td>
+<td>UniCredit launches formal €35bn bid</td>
+<td>Control; Orlopp: "no convincing combination plan"</td>
+</tr>
+<tr>
+<td>2026</td>
+<td>Public clash: Orcel attacks performance; BaFin criticises UniCredit's communication; unions claim 15,000 job cuts vs UniCredit's 7,000</td>
+<td>Control, battle of narratives</td>
+</tr>
+<tr>
+<td>Pre-offer</td>
+<td>UniCredit just below 30% (Figure 1, April 2026: &gt;25%)</td>
+<td>Few blocking tools left</td>
+</tr>
+<tr>
+<td>July 2026</td>
+<td>17.6% tendered (€44bn bid); stake reaches 47.6%; UniCredit's share-price rally widens the implied premium</td>
+<td>Defence fails</td>
+</tr>
+<tr>
+<td>After July</td>
+<td>Weidmann concedes: the balance of power at the next AGM "is clear"</td>
+<td>Late switch to partner</td>
+</tr>
+<tr>
+<td>By Nov 2026</td>
+<td>ECB approves €45bn deal; HQ stays in Frankfurt; listing kept; Berlin drops its claim to two seats</td>
+<td>Terms set by bidder and state</td>
+</tr>
+<tr>
+<td>End Feb 2027</td>
+<td>UniCredit to replace all 10 shareholder members of the 20-person board</td>
+<td>Shareholder side replaced</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2. Engagement mode: passive to control, the reverse of ABN AMRO</h3>
+<p>Applied to Rowley &amp; Capron's four factors (HBR 2025), the bid called for deep board involvement. Value impact was maximal, since control of the bank was at stake. Conflicts were acute, because management's jobs were at risk. The mission was in play: an independent German bank versus a UniCredit subsidiary with its international network wound down. And the board's skills were unusually strong. Its members include a former Bundesbank president (Weidmann), a former ECB Executive Board member (Lautenschläger-Peiter), a former KfW treasurer (Czichowski) and a former DZ Bank board member (Westhoff, who chairs the Risk Committee).</p>
+<p>The board did what the ABN AMRO board failed to do. It moved early into control mode, through a special committee, rather than leaving the defence to management. It also avoided the trap Rowley &amp; Capron warn about, a sudden jump from passivity to control: it built up information for about 16–18 months before the bid.</p>
+<h3>3. Legal frame</h3>
+<p>German law gives the board its shape. Commerzbank has a two-tier board, with the supervisory board overseeing management. Under co-determination its 20 seats split 10/10 between shareholders and employees, and Table 1 shows three union-linked members (Leuchters, Voß, Werning). Paine &amp; Srinivasan place this model near the "real entity" view, in which the board serves the company's interest, not only its shareholders.</p>
+<p>Outside the case, takeover law sets the limits. Under §27 WpÜG, both boards must publish a reasoned statement on the price, the bidder's aims, and the effects on employees and sites. Under §33 WpÜG, management may not frustrate an offer except through ordinary-course acts, a search for a competing bid, or acts the supervisory board approves. Supervisory board approval is therefore the legal gateway for any defence, which makes the board's own judgement the key control point.</p>
+<h3>4. What it did well, and its limits</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Did well</th>
+<th>Limits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Structured process: a dedicated committee since 09/2024 with more than 10 meetings in 2025</td>
+<td>Shareholders decided the outcome: 17.6% tendered and the AGM majority followed</td>
+</tr>
+<tr>
+<td>Rigorous test of value creation: it demanded detail on synergies and integration, the gap BCG and Deloitte treat as decisive</td>
+<td>"No convincing plan" is a critique, not a plan. No standalone value case or white knight is on record</td>
+</tr>
+<tr>
+<td>Aligned stakeholders: government, unions and BaFin put public pressure on the bidder</td>
+<td>Alignment with Berlin and the unions sits uneasily with the duty to all shareholders; institutional and private investors held about 51% (Figure 1)</td>
+</tr>
+<tr>
+<td>Gave the market a clear signal: no deal without a superior proposal</td>
+<td>No better terms secured. The bid's value rose from €35bn to €44–45bn because UniCredit's own shares rallied, not because of anything the board negotiated</td>
+</tr>
+</tbody>
+</table></div>
+<p>The real test is what the defence bought. HQ and listing are preserved, but the case presents these as post-defeat terms with Berlin. Job protection is unresolved, with a "radical restructuring" and a 15,000 vs 7,000 gap still open. Every shareholder seat will be replaced.</p>
+<p><strong>Case inconsistencies:</strong> The bid is valued at €35bn (launch), €44bn (tender) and €45bn (ECB approval). The text says 17.6% tendered, while Figure 2 shows 18.36%. The 47.6% stake implies a pre-offer stake of 30.0% (47.6 − 17.6), or 29.2% using 18.36%. Figure 2 still shows only "&gt;25%" for UniCredit.</p>
+<h3>5. Verdict</h3>
+<p>On process the board scores high. It was active, expert and independent-led: what ABN AMRO's board should have been. On outcome it scores low. Control mode suits a board that holds the decision. Here the decision sat with tendering shareholders once UniCredit was near 30%. The board kept defending when it should have been bargaining. Active governance beat passive governance on process, but not on value captured.</p>
+<p><strong>From an adviser's perspective:</strong> A target board's leverage is highest before the bidder controls the register, and it is worth only what it can trade. A defence built on "the bidder has no plan" must come with a costed standalone plan, or with a negotiating mandate on price, jobs and governance. Without either, the board shapes the narrative but not the deal.</p>
+<p>Sources (outside the case): §27 WpÜG https://www.gesetze-im-internet.de/wp_g/__27.html; §33 WpÜG https://www.gesetze-im-internet.de/wp_g/__33.html; §7 MitbestG https://www.gesetze-im-internet.de/mitbestg/__7.html</p></section>
+<section id="q3"><h2>Question 3: Why did UniCredit not accept the German government's claim to name two members to the Commerzbank supervisory board?</h2>
+<p><strong>Bottom line:</strong> Under German co-determination, UniCredit controls Commerzbank's 20-person supervisory board only if all 10 shareholder seats vote with it. Two state-appointed members would turn a 10/10 split, which the chair's casting vote breaks, into a contested 8 vs 12. A stake of just over 10% (13.3% in public reporting) justifies about one seat proportionally, not two. Berlin dropped the demand on 19 November 2026 because, after a tender that took UniCredit to 47.6%, it had little leverage left.</p>
+<h3>1. The arithmetic of control</h3>
+<p>At 47.6%, UniCredit carries any simple-majority AGM vote; the next holder is the state at just over 10%. The weak point is the board, not the AGM.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Scenario (20 seats)</th>
+<th>UniCredit-aligned</th>
+<th>Employee reps</th>
+<th>State appointees</th>
+<th>Result on a contested vote</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UniCredit names all 10 (agreed outcome)</td>
+<td>10</td>
+<td>10</td>
+<td>0</td>
+<td>10–10 tie; the chair's casting vote decides, so UniCredit wins</td>
+</tr>
+<tr>
+<td>One state seat</td>
+<td>9</td>
+<td>10</td>
+<td>1</td>
+<td>9 vs 11 if the state votes with labour: UniCredit loses</td>
+</tr>
+<tr>
+<td>Two state seats (Berlin's claim)</td>
+<td>8</td>
+<td>10</td>
+<td>2</td>
+<td>8 vs 12: UniCredit loses</td>
+</tr>
+</tbody>
+</table></div>
+<p>Outside the case: under §27 MitbestG the shareholder side elects the chair if no one wins two-thirds, so 8 seats would still pick the chair. But under §29 the chair's second vote only breaks a repeated tie. Split the shareholder bench and there is no tie to break. Every shareholder seat is pivotal.</p>
+<p>Table 1 shows an organised labour bench: Commerzbank employees, two of them ver.di union secretaries, plus a Hans Böckler Foundation official. With the unions claiming 15,000 job cuts against UniCredit's 7,000, a state bloc and labour would share an interest on restructuring votes.</p>
+<h3>2. Proportionality does not support two seats</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>State stake</td>
+<td>&gt;10% (case); 13.3% (outside the case)</td>
+</tr>
+<tr>
+<td>Proportional share of 10 shareholder seats</td>
+<td>about 1.0–1.3 seats</td>
+</tr>
+<tr>
+<td>Two seats as a share of the shareholder bench</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>Two seats as a share of the full board</td>
+<td>10%</td>
+</tr>
+</tbody>
+</table></div>
+<p>Two seats would give the state 1.5–2 times its economic weight. Because the acquirer's majority rests on the 10/10 split, they would also carry blocking power far beyond their size. A control premium is paid so that the buyer sets the whole shareholder slate.</p>
+<h3>3. Protecting the integration plan</h3>
+<p>The case expects a "radical restructuring": drastic cost cuts and a wind-down of the international network. That is where the synergies behind a €45bn price come from; BCG and McKinsey (bcg-synergy.md, mckinsey-programmatic.md) both stress capturing them fast. In Rowley &amp; Capron's terms (hbr-boards.md), integration, job cuts and the appointment of a new management board are high-impact decisions with conflicts of interest. UniCredit needs a board that partners with the acquirer, not one that slides back into the defensive control mode of 2024–26, with its special committee (over ten meetings in 2025) aligned with "political stakeholders, including the German government". State appointees would bring that coalition back into the boardroom.</p>
+<h3>4. Political risk, precedent and confidentiality</h3>
+<ul>
+<li><strong>Precedent.</strong> Orcel dropped Banco BPM after Italian government opposition. Berlin opposed this bid from 2024 onwards (outside the case: the finance ministry called it "aggressive and hostile"). Board seats would make that opposition permanent and institutional.</li>
+<li><strong>Conflicts and confidentiality.</strong> A state director owes duties to the company but also carries fiscal, employment and industrial-policy goals. That makes it awkward to share confidential plans on branch closures, headcount and capital allocation.</li>
+<li><strong>Exit.</strong> A state with board seats has less reason to sell its 13%. Outside the case: Orcel's 18 November letter set out a basis for a sale.</li>
+</ul>
+<h3>5. What UniCredit gave instead (outside the case)</h3>
+<p>Reporting on the 19 November agreement, based on Orcel's letter to Finance Minister Klingbeil, lists:</p>
+<ul>
+<li>Frankfurt as main German HQ of the merged Commerzbank/HypoVereinsbank; listing and AG form kept.</li>
+<li>Key decisions stay in Germany; stronger SME focus; existing employee agreements respected.</li>
+<li>Seats on UniCredit's executive committee; German nominees for UniCredit's board in 2027.</li>
+<li>Berlin stops appointing supervisory board members; UniCredit consulted it on two independent members within its own slate of 10.</li>
+</ul>
+<p>That is the real compromise: a voice in who the directors are, without a separate state bloc.</p>
+<h3>6. Why Berlin gave up</h3>
+<ul>
+<li>After the July tender, UniCredit held 47.6%, and Weidmann conceded that "the balance of power at the next annual general meeting is clear".</li>
+<li>The ECB approved the deal. Outside the case: the European Commission cleared it unconditionally on 16 November and warned governments not to obstruct it.</li>
+<li>Outside the case: politicians found no obvious legal way to block the deal and disagreed over spending money to raise the state's stake. Berlin could still bargain for location and listing commitments, but not for control.</li>
+</ul>
+<p><strong>From an adviser's perspective:</strong> Owning shares is not the same as controlling the board. Under parity co-determination, the chair's casting vote only works if the acquirer holds every shareholder seat. One seat conceded to a political holder can give a state–labour coalition a veto over integration. Advise the bidder to trade soft commitments (HQ, listing, consultation on independent nominees) but never the seat count. ABN AMRO shows the limit: the 2007 consortium had full control and still failed. Board control is necessary for integration, not sufficient.</p>
+<p>Sources: Reuters via <a href="https://globalbankingandfinance.com/exclusive-unicredit-germany-reach-broad-agreement">Global Banking &amp; Finance</a>; <a href="https://www.democrata.es/en/economy/unicredit-reaches-an-agreement-with-the-german-government-on-the-future-of-commerzbank-after-its-takeover-bid/">Demócrata</a>; <a href="https://euronews.com/2026/11/19/commerzbank-welcomes-unicredit-commitments-after-berlin-agreement">Euronews</a>; <a href="https://euobserver.com/249074/eu-commission-clears-unicredits-commerzbank-takeover-tells-berlin-not-to-stand-in-the-way/">EUobserver</a>; <a href="https://live.euronext.com/en/financial-news/how-unicredit-ceo-outmanoeuvred-germany-commerzbank">Euronext/Reuters</a>; <a href="https://www.gesetze-im-internet.de/mitbestg/__27.html">§27 MitbestG</a>; <a href="https://www.gesetze-im-internet.de/mitbestg/__29.html">§29 MitbestG</a>.</p></section>
+<section id="q4"><h2>Question 4: Should the Commerzbank board have shifted earlier to constructive engagement?</h2>
+<p><strong>Bottom line:</strong> Yes, though not in 2024. It should have shifted in early 2026, once UniCredit held more than 25% and launched its formal €35bn bid. From that point the register, not the board, decided the outcome. Only 17.6% of shares needed to tender to lift UniCredit to 47.6%, and the board was left with nothing to trade. Engagement would have cost little and could have bought price, jobs and governance commitments.</p>
+<h3>1. The register made the outcome likely</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Holder (Figure 1, April 2026)</th>
+<th>Share</th>
+<th>Likely behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UniCredit</td>
+<td>&gt;25% (text: almost 30% before the offer)</td>
+<td>Bidder</td>
+</tr>
+<tr>
+<td>Federal Republic of Germany</td>
+<td>&gt;10%</td>
+<td>Opposed; did not tender (still &gt;10% in Figure 2)</td>
+</tr>
+<tr>
+<td>Institutional investors</td>
+<td>~31%</td>
+<td>Price-driven</td>
+</tr>
+<tr>
+<td>Private investors</td>
+<td>~20%</td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td>BlackRock</td>
+<td>&gt;5% (&gt;3% by November)</td>
+<td>Price-driven, index</td>
+</tr>
+<tr>
+<td>Commerzbank buyback</td>
+<td>&gt;3%</td>
+<td>Cannot tender</td>
+</tr>
+</tbody>
+</table></div>
+<p>My computation: about 57% of shares were realistically available to tender (100 − 30 − 10 − 3). The 17.6% tendered is only about 31% of that pool (32% using Figure 2's 18.36%). Roughly two-thirds of the available shares did not tender, yet UniCredit still won. A 47.6% stake carries a majority at any AGM where turnout is below about 95% of share capital, which explains Weidmann's remark that the balance of power "is clear".</p>
+<p>Outside the case: under German takeover law, control starts at 30% and triggers a mandatory offer (§§29, 35 WpÜG). Below that line UniCredit could creep up without paying a premium. Above 25% it also held a blocking minority against any AGM authorisation of defensive measures, which needs three-quarters of the capital represented (§33(2) WpÜG).</p>
+<h3>2. The case for fighting on</h3>
+<ul>
+<li><strong>Politics could have won.</strong> Orcel had dropped Banco BPM after Italian government opposition. With Berlin opposed and BaFin criticising UniCredit, betting on a political block was rational in 2024–25.</li>
+<li><strong>Engaging signals the bank is for sale.</strong> Early talks risk capping the price at the bidder's €35bn anchor.</li>
+<li><strong>Stakeholder mandate.</strong> Half the board is employee-elected. The union estimate of 15,000 job cuts against UniCredit's 7,000 made defending jobs a legitimate concern for the company as a whole (Paine &amp; Srinivasan's "real entity" view).</li>
+<li><strong>The plan was thin.</strong> Orlopp's "no convincing combination plan" was a fair challenge. The BCG reading shows that synergy plans built without line managers leak value.</li>
+</ul>
+<h3>3. The case for engaging earlier</h3>
+<ul>
+<li><strong>The board did not control the decision.</strong> Rowley &amp; Capron's control mode assumes the board decides. Once the shareholder balance shifted, the right mode was partner: negotiating terms jointly with management and the bidder. Only 9% of boards in their sample ever switch modes. Commerzbank's board stayed in one.</li>
+<li><strong>Share-price dynamics worked against it.</strong> The bid's value rose from €35bn to €44bn (+26%) and then €45bn (+29%) because UniCredit's own shares rallied, which widened the implied premium. The board could only bank this, not stop it.</li>
+<li><strong>The missing plan was partly self-inflicted.</strong> The BCG and Deloitte readings show that a credible synergy and integration plan needs diligence access, line-manager input, a named integration director and tracking. A hostile bidder without access cannot produce one. Engagement was the way to obtain the plan the board said was missing.</li>
+<li><strong>Fighting to the end bought little.</strong> HQ in Frankfurt and the listing were kept anyway. All 10 shareholder seats will be replaced, the restructuring and the wind-down of the international network follow UniCredit's design, and no job cap is binding.</li>
+</ul>
+<h3>4. Trigger points and what was on the table</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Trigger</th>
+<th>Timing</th>
+<th>Rational move</th>
+<th>Could have extracted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stake building; Special Committee set up</td>
+<td>09/2024</td>
+<td>Fight, but set conditions for talks</td>
+<td>Standstill, information protocol</td>
+</tr>
+<tr>
+<td>UniCredit &gt;25%, nearing 30%</td>
+<td>By April 2026</td>
+<td>Switch to partner mode, two-track</td>
+<td>Price floor, job cap near 7,000, seats</td>
+</tr>
+<tr>
+<td>Formal €35bn bid</td>
+<td>Early 2026</td>
+<td>Trade a positive §27 statement for a binding agreement</td>
+<td>Higher exchange ratio or cash component; protection of capital returns</td>
+</tr>
+<tr>
+<td>Tender period plus UniCredit rally</td>
+<td>Before July 2026</td>
+<td>Last chance for binding commitments</td>
+<td>Integration plan, named integration director, retained independent board members</td>
+</tr>
+<tr>
+<td>47.6% reached</td>
+<td>July 2026</td>
+<td>None left</td>
+<td>Concession only</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Case inconsistencies:</strong> The text gives 17.6% tendered, Figure 2 18.36%. The bid is valued at €35bn, €44bn and €45bn at different dates. And 47.6% minus 17.6% implies a 30.0% pre-offer stake, against "just below 30%" in the text.</p>
+<h3>5. Recommendation</h3>
+<p><strong>Yes, conditionally.</strong> The board should have opened negotiations no later than the formal bid in early 2026, while keeping the public line "not at this price". The trigger should have applied if three conditions held: (1) no competing bidder had emerged, a search §33(1) WpÜG expressly allows; (2) Berlin and the ECB were unlikely to block the deal; and (3) the board's own standalone plan could not credibly beat the implied offer value. In hindsight, (1) and (3) held by spring 2026. Condition (2) was the judgement call, and Berlin's later agreement with UniCredit suggests it held too. The asks: a better exchange ratio, a binding job ceiling tied to a published integration plan, protection of distributions, independent seats for a transition period, and HQ and listing commitments in writing.</p>
+<p><strong>From an adviser's perspective:</strong> Defend while the register still gives you a veto. Negotiate once it does not. The best moment to switch is when the bidder crosses the blocking-minority line, not after the tender result. A board that cannot stop a deal should shape it.</p>
+<p>Sources (outside the case): §29 WpÜG https://www.gesetze-im-internet.de/wp_g/__29.html; §35 WpÜG https://www.gesetze-im-internet.de/wp_g/__35.html; §33 WpÜG https://www.gesetze-im-internet.de/wp_g/__33.html</p></section>
+<section id="compare"><h2>Comparison: Commerzbank 2026 vs ABN AMRO 2007</h2>
+<p><strong>Bottom line:</strong> The two supervisory boards took opposite paths. ABN AMRO's stayed passive and left the defence to management; Commerzbank's set up a special committee in 2024, met often and led the defence. Yet both ended the same way: shareholders, not the board, decided who took control. An active board can run a better process, but it cannot change the balance of the share register.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>ABN AMRO (2007)</th>
+<th>Commerzbank (2024–2026)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Source of pressure</td>
+<td>Activist hedge fund TCI (about 1% stake), via a public letter</td>
+<td>Strategic acquirer UniCredit, building a stake to just under 30% before bidding</td>
+</tr>
+<tr>
+<td>Board structure</td>
+<td>Dutch two-tier board; 12-member Supervisory Board</td>
+<td>German two-tier board with co-determination; 20 members (10 shareholder, 10 employee representatives)</td>
+</tr>
+<tr>
+<td>Chair's background</td>
+<td>Martinez, ex-retail (Sears), no banking background</td>
+<td>Weidmann, former Bundesbank president, holding 7 roles</td>
+</tr>
+<tr>
+<td>Engagement mode (Rowley &amp; Capron)</td>
+<td>Passive: management ran the sale process and sold LaSalle as a defence</td>
+<td>Active defence, close to control mode: special committee from 09/2024, more than 10 meetings in 2025</td>
+</tr>
+<tr>
+<td>Stakeholders</td>
+<td>Dutch stakeholder model gave legal room to favour Barclays</td>
+<td>Aligned with the German government and unions; BaFin publicly criticised UniCredit's communication</td>
+</tr>
+<tr>
+<td>Core argument</td>
+<td>Keep the bank whole, no break-up</td>
+<td>The acquirer had "no convincing combination plan"; value creation unclear</td>
+</tr>
+<tr>
+<td>What decided it</td>
+<td>Shareholders took the higher, 93%-cash consortium offer</td>
+<td>17.6% of shares were tendered, lifting UniCredit to 47.6%; its own share-price rally widened the implied premium</td>
+</tr>
+<tr>
+<td>Outcome</td>
+<td>Consortium won; ABN AMRO broken up</td>
+<td>UniCredit gains de facto control and will replace all 10 shareholder members</td>
+</tr>
+<tr>
+<td>Afterwards</td>
+<td>Fortis and RBS needed state rescues in 2008</td>
+<td>Still open: UniCredit plans deep cost cuts and a wind-down of the international network</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Lessons from the comparison:</strong></p>
+<ol>
+<li><strong>Active is not the same as effective.</strong> The HBR framework says the mode should follow the decision. Commerzbank's board ran the process ABN AMRO's never did, but it stayed in control-style defence instead of moving to partner-style negotiation once the balance of power shifted.</li>
+<li><strong>The share register sets the ceiling.</strong> ABN AMRO's shareholders voted for cash and a premium; Commerzbank's tendered once UniCredit's share-price rally widened the implied premium. In both cases the board's influence over price was limited.</li>
+<li><strong>Stakeholder alliances have a cost.</strong> Aligning with the government and unions added leverage, but it also made the board look more focused on independence than on the best terms for all shareholders.</li>
+<li><strong>Control really sits in the boardroom.</strong> At ABN AMRO, control effectively passed to TCI, VEB and the courts. At Commerzbank, UniCredit's refusal to let the government name two board members shows that controlling the supervisory board is what lets an acquirer execute its integration plan.</li>
+</ol></section>
+<section id="facts"><h2>Deal facts and data notes</h2>
+<p><strong>Bottom line:</strong> UniCredit's bid was valued at €35bn when launched in early 2026, €44bn during the July tender and €45bn when approved. The headline value rose about 29% largely because UniCredit's own shares rallied. Starting from almost 30%, UniCredit ended the tender with 47.6%, and it will replace all 10 shareholder members of the 20-person supervisory board by end-February 2027. This analysis uses 47.6% for the stake and €45bn for the deal value. Where the case's figures differ, this memo says which one it uses.</p>
+<h3>1. Key deal facts</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Figure</th>
+<th>Source in case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Initial offer</td>
+<td>€35bn formal bid, early 2026</td>
+<td>Text</td>
+</tr>
+<tr>
+<td>Value in tender period</td>
+<td>€44bn (FT, July 2026)</td>
+<td>Text</td>
+</tr>
+<tr>
+<td>Approved deal</td>
+<td>€45bn, approved by the ECB; "Europe's biggest banking takeover since the financial crisis"</td>
+<td>Text</td>
+</tr>
+<tr>
+<td>Change in headline value</td>
+<td>+€10bn, about +29% from €35bn</td>
+<td>Computed</td>
+</tr>
+<tr>
+<td>Stake before the offer</td>
+<td>"just below" / "almost" 30% (the mandatory-offer threshold)</td>
+<td>Text</td>
+</tr>
+<tr>
+<td>Shares tendered</td>
+<td>17.6% (text, FT) / 18.36% (Figure 2)</td>
+<td>Text, Figure 2</td>
+</tr>
+<tr>
+<td>Stake after the tender</td>
+<td>47.6% (text); the FT headline says "48%"</td>
+<td>Text, sources</td>
+</tr>
+<tr>
+<td>Job cuts claimed</td>
+<td>Unions 15,000; UniCredit 7,000</td>
+<td>Text</td>
+</tr>
+<tr>
+<td>Supervisory board</td>
+<td>20 members: 10 shareholder, 10 employee representatives (Table 1)</td>
+<td>Text, Table 1</td>
+</tr>
+<tr>
+<td>Board change</td>
+<td>UniCredit to replace all 10 shareholder members by end-February 2027</td>
+<td>Text</td>
+</tr>
+<tr>
+<td>Commitments</td>
+<td>HQ stays in Frankfurt; German listing retained</td>
+<td>Text</td>
+</tr>
+<tr>
+<td>State board seats</td>
+<td>Berlin gave up its claim to name 2 members</td>
+<td>Text</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2. Ownership, April vs November 2026</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Holder</th>
+<th>April 2026 (Figure 1)</th>
+<th>November 2026 (Figure 2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UniCredit</td>
+<td>&gt;25%</td>
+<td>&gt;25%, plus 18.36% tendered shares</td>
+</tr>
+<tr>
+<td>Federal Republic of Germany</td>
+<td>&gt;10%</td>
+<td>&gt;10%</td>
+</tr>
+<tr>
+<td>BlackRock</td>
+<td>&gt;5%</td>
+<td>&gt;3%</td>
+</tr>
+<tr>
+<td>Institutional investors</td>
+<td>~31%</td>
+<td>~21% (other institutional)</td>
+</tr>
+<tr>
+<td>Private investors</td>
+<td>~20%</td>
+<td>~16%</td>
+</tr>
+<tr>
+<td>Commerzbank share buyback</td>
+<td>&gt;3%</td>
+<td>not shown</td>
+</tr>
+</tbody>
+</table></div>
+<p>In November the tendered shares are still shown separately. They will move to UniCredit at closing. Institutional plus private holdings fell from about 51% to about 37%. That 14 pp drop, plus BlackRock (about 2 pp) and the buyback line (about 3 pp), roughly accounts for the 18.36% tendered.</p>
+<h3>3. Timeline</h3>
+<ul>
+<li>2024: cooperative approach while quietly building a stake. Commerzbank's board sets up a special committee (from 09/2024).</li>
+<li>Early 2026: €35bn formal bid. Public dispute follows; BaFin criticises UniCredit's communication.</li>
+<li>July 2026: tender closes at 47.6%. Weidmann concedes and opens talks.</li>
+<li>After that: the ECB approves the €45bn deal.</li>
+<li>End-February 2027: full control and a new shareholder bench.</li>
+</ul>
+<p>Outside the case: the ECB approved in October, the European Commission cleared the deal unconditionally on 16 November, and UniCredit and Berlin reached their agreement on 19 November 2026. The state's stake is 13.3%. Commerzbank has more than 40,000 staff, so the claimed cuts are at most about 17.5% (7,000) or 37.5% (15,000) of the workforce.</p>
+<h3>4. Case inconsistencies and the figure used</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Figures in case</th>
+<th>Figure used here</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bid value</td>
+<td>€35bn / €44bn / €45bn</td>
+<td>€45bn (deal); €44bn (tender)</td>
+<td>Same offer at different dates. The case links the rise to UniCredit's share rally, which implies share-based consideration (our inference).</td>
+</tr>
+<tr>
+<td>Tendered shares</td>
+<td>17.6% (text) / 18.36% (Figure 2)</td>
+<td>17.6% for the tender result</td>
+<td>The gap is 0.76 pp. Late acceptances are a possible cause but are not stated.</td>
+</tr>
+<tr>
+<td>Stake after tender</td>
+<td>47.6% (text) vs "&gt;25% + 18.36%" (Figure 2)</td>
+<td>47.6%</td>
+<td>The text implies about 30.0% before the offer; Figure 2 implies 29.24% (47.6 − 18.36). The FT headline rounds to 48%; Euronews says "just under 50%" of voting rights.</td>
+</tr>
+<tr>
+<td>State stake</td>
+<td>&gt;10%</td>
+<td>&gt;10% (13.3% outside the case)</td>
+<td>The case gives only a band.</td>
+</tr>
+<tr>
+<td>BlackRock</td>
+<td>&gt;5% (April) / &gt;3% (November)</td>
+<td>as shown</td>
+<td>The case gives no explanation.</td>
+</tr>
+<tr>
+<td>Job cuts</td>
+<td>15,000 vs 7,000</td>
+<td>both, attributed</td>
+<td>Claims by interested parties, not plans.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>From an adviser's perspective:</strong> Every number in this case depends on its date and its source. A share-based offer's value floats, and a tender result is not settled ownership until closing. When briefing a board, quote the figure together with its date and source. The control analysis should rest on what decides votes: 47.6% at the AGM and 10 of 10 shareholder seats on the board.</p>
+<p>Sources: <a href="https://euronews.com/2026/11/19/commerzbank-welcomes-unicredit-commitments-after-berlin-agreement">Euronews</a>; <a href="https://euobserver.com/249074/eu-commission-clears-unicredits-commerzbank-takeover-tells-berlin-not-to-stand-in-the-way/">EUobserver</a>; <a href="https://live.euronext.com/en/financial-news/how-unicredit-ceo-outmanoeuvred-germany-commerzbank">Euronext/Reuters</a>; Reuters via <a href="https://globalbankingandfinance.com/exclusive-unicredit-germany-reach-broad-agreement">Global Banking &amp; Finance</a>.</p></section>
+    <footer>Based only on the case materials and clearly labelled outside information. For study purposes; not investment advice.</footer>
+  </main>
+</div>
+</body>
+</html>

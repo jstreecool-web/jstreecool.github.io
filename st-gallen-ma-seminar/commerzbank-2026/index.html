@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commerzbank 案例分析</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deal-memo page — fixed contents rail on the left, one reading column, tables full column width */
+:root {
+  --bg: #f6f6f3;
+  --paper: #ffffff;
+  --ink: #1b2130;
+  --ink-2: #4d5566;
+  --rule: #dcdcd4;
+  --accent: #184f95;
+  --accent-soft: #e6eefa;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+    --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+    --s1: #3987e5; --s2: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+  --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+  --s1: #3987e5; --s2: #d95926;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+nav { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .navhead { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 8px; }
+nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-left: 2px solid var(--rule); }
+nav a.lang { margin-top: 14px; border-left: 0; padding-left: 0; color: var(--accent); font-weight: 700; }
+nav a:hover, nav a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--ink-2); letter-spacing: .04em; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; }
+.sub a { color: var(--accent); }
+.sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 8px; }
+.kpi { background: var(--paper); padding: 14px 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.kpi span { font-size: 13px; color: var(--ink-2); }
+section { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 24px; scroll-margin-top: 16px; }
+section > *:first-child { margin-top: 0; }
+h2 { font-family: var(--display); font-size: 24px; line-height: 1.4; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); text-wrap: balance; }
+h3 { font-size: 17px; margin: 28px 0 8px; color: var(--accent); text-wrap: balance; }
+p, li { max-width: 46em; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 1.4em; margin: 8px 0; }
+li { margin: 4px 0; }
+section > p:nth-of-type(1) strong:first-child { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+thead th { text-align: left; font-weight: 700; background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+code { font-size: .9em; }
+.fig { margin: 22px 0 6px; }
+.fig figcaption { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); }
+.sw.ref { height: 0; border-top: 2px dashed var(--ink-2); border-radius: 0; width: 16px; }
+.chart { width: 100%; max-width: 680px; height: auto; display: block; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .tick, .chart .reflab { fill: var(--ink-2); font-size: 12px; font-family: var(--body); }
+.chart .cat { fill: var(--ink); font-size: 13px; font-family: var(--body); }
+.chart .val { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--body); }
+.chart .s1 { fill: var(--s1); } .chart .s2 { fill: var(--s2); }
+.chart .ref { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar:hover path, .chart .bar:focus path { opacity: .8; }
+.chart .bar:focus { outline: none; }
+.src { font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+footer { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 16px; }
+  nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav .navhead { width: 100%; margin: 0; }
+  nav a { border: 1px solid var(--rule); padding: 4px 10px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 20px 18px; }
+  h1 { font-size: 27px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="目录"><div class="navhead">目录</div><a href="#summary">执行摘要</a><a href="#q1">一 · 董事会构成</a><a href="#q2">二 · 董事会的角色</a><a href="#q3">三 · 政府席位</a><a href="#q4">四 · 是否应更早转向合作</a><a href="#compare">对照 · ABN AMRO</a><a href="#facts">附录 · 交易要点与数据口径</a><a class="lang" href="en.html" hreflang="en">English version →</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">案例分析 · St.Gallen 案例 "UniCredit vs Commerzbank: Strategic Control and the Role of the Board"</div>
+      <h1>Commerzbank 案例分析：UniCredit 的控制权之争</h1>
+      <p class="sub">UniCredit 收购 Commerzbank（2024–2026），按案例四道题逐一作答，并与 <a href="../abn-amro-2007/index.html">ABN AMRO 案例</a>对照。分析日期 2026-11-22。</p>
+      <div class="kpis"><div class="kpi"><b>€45bn</b><span>ECB 批准的交易规模</span></div><div class="kpi"><b>47.6%</b><span>要约期结束后 UniCredit 持股</span></div><div class="kpi"><b>10 次以上</b><span>特别委员会 2025 年会议次数</span></div><div class="kpi"><b>10 / 20</b><span>将被替换的股东代表监事席位</span></div></div>
+    </header>
+    <section id="summary"><h2>执行摘要</h2>
+<p>UniCredit 先在 2024 年悄悄建仓，持股逼近 30% 的强制要约门槛，再于 2026 年初发起要约。2026 年 7 月要约期结束时持股达到 47.6%，取得事实控制，ECB 批准了这笔 €45bn 的交易。Commerzbank 监事会与 ABN AMRO 那种被动的董事会正好相反，从 2024 年起就成立特别委员会、主导防御。它的流程做得扎实，结果却没有守住：要约期内股东接受要约，监事会也没有换来更好的条件。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>核心结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. 监事会构成</td>
+<td>20 人，股东代表与员工代表各 10 人；女性占 40%；股东代表中有 5 人出身银行或央行，银行监管专长很强，但没有并购或投行背景，成员看起来全是德国人。权力高度集中在主席 Weidmann 身上：除主席外还在 8 个委员会中的 6 个任职、主持其中 3 个</td>
+</tr>
+<tr>
+<td>2. 监事会的角色</td>
+<td>从被动转为接近"控制"模式的主动防御：特别委员会 2025 年开会 10 次以上，并与政府、工会协调。流程强、结果弱：只说对方"没有令人信服的方案"，自己却没有替代的价值方案，最终也没有争取到更好的条款</td>
+</tr>
+<tr>
+<td>3. 政府提名两席</td>
+<td>在德国共同决定制下，股东代表与员工代表 10:10，平票时由股东方选出的主席投决定票，所以每个股东席位都关键。政府只持股 10% 以上，按比例只值约 1 席，要两席就是要了股东席位的 20%，可能拖住大幅削减成本、收缩国际网络等整合计划。据公开报道（案例外信息），最终的妥协是两名独立监事由 UniCredit 征求柏林意见后提名，但算在 UniCredit 自己的 10 席之内</td>
+</tr>
+<tr>
+<td>4. 是否应更早转向合作</td>
+<td>应该，但有条件。最晚在 2026 年初正式要约、UniCredit 持股超过 25% 时，就应在对外坚持"不是这个价格"的同时开始谈判，以争取价格、就业保障、总部和上市地位、治理席位等条件。前提是没有竞争性收购方、监管不会阻止、也没有一个比要约更好的独立发展方案</td>
+</tr>
+</tbody>
+</table></div>
+<p>与 ABN AMRO 的对照说明：董事会主动与否，决定了流程的质量；但谁拿到控制权，最终取决于股东名册上的力量对比和股东接受要约的意愿。</p></section>
+<section id="q1"><h2>问题1：如何评价2026年德国商业银行（Commerzbank）监事会的构成？请考虑其委员会、委员会构成、专业背景、性别与国籍。</h2>
+<p><strong>结论：</strong> 纸面上，这是一个很强的银行监事会。10名股东代表全部独立，其中5人有银行或央行从业经历（广义金融背景10人中有7人），2024年9月起还设有8人的专门委员会。主要弱点有四：权力集中于主席（一人身兼7个职位）；20人推断均为德国籍；缺乏可见的并购和国际银行经验；共同决定制使监事会倾向于保就业。</p>
+<h3>一、监事会统计（表1、表2，2026年4月）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>成员</td>
+<td>20人：股东代表10人（均为"独立"），员工代表10人（均为"非独立"）</td>
+</tr>
+<tr>
+<td>工会背景员工代表</td>
+<td>3人：Leuchters（汉斯·伯克勒基金会）、Voß与Werning（ver.di工会书记）</td>
+</tr>
+<tr>
+<td>女性</td>
+<td>8/20（40%）；股东方、员工方各4/10</td>
+</tr>
+<tr>
+<td>国籍</td>
+<td>20/20德国籍（据姓名与履历推断，案例未给出国籍）</td>
+</tr>
+<tr>
+<td>平均任期</td>
+<td>截至2026年4月为4.3年（股东方4.4年，员工方4.1年）；12人于2023年及以后加入</td>
+</tr>
+<tr>
+<td>任期最长</td>
+<td>de Buhr 13.0年，Dietrich 11.0年</td>
+</tr>
+<tr>
+<td>股东方背景</td>
+<td>央行/监管2人（Weidmann、Lautenschläger），银行2人（Czichowski/KfW、Westhoff/DZ Bank），银行IT 1人（Gorriz/渣打），金融投资2人（Christ、Keese），实业1人（Dietrich/BP），法律/咨询2人（Mattheus、Seifert）</td>
+</tr>
+<tr>
+<td>委员会席位</td>
+<td>共57席：股东方35席，员工方22席</td>
+</tr>
+<tr>
+<td>委员会主席</td>
+<td>7个设主席的委员会全部由股东代表担任，其中女性2人</td>
+</tr>
+<tr>
+<td>Weidmann</td>
+<td>监事会主席，另在8个委员会中占6席，并主持其中3个（主席团、薪酬、专门委员会）</td>
+</tr>
+</tbody>
+</table></div>
+<p>表1与表2的委员会成员完全一致，脚本核对无出入。</p>
+<h3>二、各委员会</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>委员会</th>
+<th>主席</th>
+<th>人数</th>
+<th>股东方：员工方</th>
+<th>主要专长</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主席团与提名</td>
+<td>Weidmann</td>
+<td>7</td>
+<td>4:3</td>
+<td>德国央行、DZ Bank、两名投资人</td>
+</tr>
+<tr>
+<td>薪酬监控</td>
+<td>Weidmann</td>
+<td>5</td>
+<td>3:2</td>
+<td>德国央行、欧洲央行、KfW</td>
+</tr>
+<tr>
+<td>审计</td>
+<td>Keese</td>
+<td>8</td>
+<td>5:3</td>
+<td>金融投资（Artemis），KfW前司库任副主席</td>
+</tr>
+<tr>
+<td>风险</td>
+<td>Westhoff</td>
+<td>7</td>
+<td>6:1</td>
+<td>DZ Bank、KfW、欧洲央行、德国央行、渣打前CIO</td>
+</tr>
+<tr>
+<td>ESG</td>
+<td>Mattheus</td>
+<td>9</td>
+<td>5:4</td>
+<td>法律/咨询；副主席为工会方的Leuchters</td>
+</tr>
+<tr>
+<td>数字化转型</td>
+<td>Dietrich</td>
+<td>9</td>
+<td>5:4</td>
+<td>BP、渣打前CIO、转型顾问</td>
+</tr>
+<tr>
+<td>专门委员会（2024年9月起）</td>
+<td>Weidmann</td>
+<td>8</td>
+<td>5:3</td>
+<td>德国央行、欧洲央行、KfW、DZ Bank、Artemis；另有副主席Uebel与工会方Leuchters</td>
+</tr>
+<tr>
+<td>调解委员会（MitbestG第27(3)条）</td>
+<td>未列明</td>
+<td>4</td>
+<td>2:2</td>
+<td>主席、副主席、Lautenschläger、Werning</td>
+</tr>
+</tbody>
+</table></div>
+<p>Czichowski同时任审计、风险、专门三个委员会的副主席。他与Weidmann、Lautenschläger三人合计占股东方35席中的16席。</p>
+<h3>三、优势</h3>
+<ul>
+<li><strong>监管与央行背景深厚。</strong> 前德国央行行长和前欧洲央行执行委员同时在风险、薪酬和专门委员会任职。这场博弈要与欧洲央行、BaFin和柏林周旋，欧洲少有银行监事会具备同等配置。</li>
+<li><strong>股东方独立且新近更新。</strong> 10名股东代表全部独立，其中4人（含主席）于2023年后加入，不存在任期过长导致的"俘获"。</li>
+<li><strong>设立专门委员会。</strong> 该委员会2024年9月成立，据报道2025年开会十余次，8名成员中5人有金融或央行背景。这正是Rowley &amp; Capron（HBR 2025）所说的"控制模式"：价值影响大、管理层可能有利益冲突时应采用。ABN AMRO监事会始终未完成这一转换。</li>
+<li><strong>性别。</strong> 女性占比在全体和两方均为40%，高于30%的法定下限（案例外：《股份法》第96(2)条）。</li>
+</ul>
+<h3>四、弱点</h3>
+<ul>
+<li><strong>主席过度集权。</strong> Weidmann身兼7职，主持收购战中最关键的三个委员会（主席团、薪酬、专门委员会）。按MitbestG第29条（案例外），重复表决仍为平票时他还握有决定票。好处是监事会对外口径统一；坏处是形成单点依赖，防御路线缺乏独立的内部挑战。其德国央行背景也使监事会显得与柏林立场一致。</li>
+<li><strong>专业缺口。</strong> 表1中没有并购、投行或资本市场交易背景的成员。国际银行经验只有一名银行CIO（Gorriz）和一名超国家监管者。换股要约的溢价随UniCredit股价浮动，评估它恰恰需要这些缺失的能力。</li>
+<li><strong>国籍单一。</strong> 监事会看来全为德国人，面对的却是意大利收购方和一笔跨境交易，这很可能强化了把收购战"国家化"的叙事。</li>
+<li><strong>核心委员会由男性主导。</strong> 女性只主持ESG和数字化两个委员会。主席团、薪酬、审计、风险、专门五个权力委员会的主席均为男性，专门委员会8人中女性仅2人。</li>
+<li><strong>共同决定制的影响。</strong> 一半席位属员工代表，其中3人有工会背景，3名员工代表进入专门委员会。工会称收购将裁员1.5万人（UniCredit称7,000人），员工方的激励必然倾向于反对交易，不论溢价高低。Paine &amp; Srinivasan（HBR 2019）把员工董事视为一种有意识的利益相关方安排：它增强了正当性，却削弱了监事会在控制权变更决策中的股东价值视角。风险委员会（6:1）是唯一由股东方明显主导的机构。</li>
+<li><strong>战时换人。</strong> Lautenschläger与Gorriz于2025年5月才加入，彼时UniCredit已在建仓。</li>
+</ul>
+<h3>五、与ABN AMRO 2007年的对比</h3>
+<p>ABN AMRO监事会共12人，仅3人有金融背景，主席来自零售业，另有5名身兼多职的"忙碌董事"。Commerzbank股东方10人中7人有金融背景，主席是前央行行长，并设常设专门委员会。按Rowley &amp; Capron的框架，后者具备进入"伙伴"或"控制"模式的能力，而单薄的监事会做不到。Commerzbank的风险与ABN AMRO恰好相反：问题不是参与太少，而是成员过于同质，围绕防御、监管和本国立场高度一致。</p>
+<p><strong>从投行/顾问角度：</strong> Commerzbank的监事会是为监督一家银行而设计的，而非为一份要约定价。在敌意收购中，目标方监事会应为专门委员会引入独立的并购与估值顾问。主席最好不兼任应对要约的委员会主席，至少应配一位有交易经验的强势独立副主席。还应至少吸纳一位跨境视角的成员。监管深度能在法兰克福和柏林赢得辩论，但股东看到溢价时，赢不了要约。</p>
+<p>来源：MitbestG第7条（10+10监事会，3个工会席位）https://www.gesetze-im-internet.de/mitbestg/__7.html；MitbestG第27、29条（调解委员会、主席决定票）https://www.gesetze-im-internet.de/mitbestg/BJNR011530976.html；《股份法》第96(2)条（30%性别下限）https://www.gesetze-im-internet.de/aktg/__96.html</p></section>
+<section id="q2"><h2>问题2：如何评价商业银行（Commerzbank）监事会在这场收购战中的角色？</h2>
+<p><strong>结论：</strong> 监事会组织了一场纪律严明、专业力量充足的防御，与2007年荷兰银行（ABN AMRO）的被动监事会截然相反。但它是好的防守者，却是弱的谈判者：以"没有令人信服的方案"为由抵抗，自己却拿不出替代的价值方案。最终由股东作出决定：17.6%的股份接受要约，裕信（UniCredit）持股升至47.6%，监事会认输，条件未见改善。</p>
+<h3>一、时间线：从"合作"到认输</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>时间</th>
+<th>事件</th>
+<th>监事会姿态（Rowley &amp; Capron模式）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2024年</td>
+<td>裕信释放合作信号，同时悄然增持</td>
+<td>被动、观察</td>
+</tr>
+<tr>
+<td>2024年9月</td>
+<td>设立特别委员会：8人，魏德曼（Weidmann）任主席（股东代表5人、员工代表3人）</td>
+<td>转向控制</td>
+</tr>
+<tr>
+<td>2025年</td>
+<td>委员会开会10次以上；协调防御，与德国政府立场一致</td>
+<td>控制</td>
+</tr>
+<tr>
+<td>2026年初</td>
+<td>裕信正式发出350亿欧元要约</td>
+<td>控制；奥尔洛普（Orlopp）："没有令人信服的合并方案"</td>
+</tr>
+<tr>
+<td>2026年</td>
+<td>公开交锋：奥塞尔（Orcel）批评业绩；BaFin批评裕信的沟通方式；工会称将裁员1.5万人，裕信称7,000人</td>
+<td>控制，叙事之战</td>
+</tr>
+<tr>
+<td>要约前</td>
+<td>裕信持股略低于30%（图1，2026年4月：&gt;25%）</td>
+<td>可用的阻挡工具所剩无几</td>
+</tr>
+<tr>
+<td>2026年7月</td>
+<td>17.6%接受要约（440亿欧元），持股达47.6%；裕信股价相对走强，隐含溢价扩大</td>
+<td>防御失败</td>
+</tr>
+<tr>
+<td>7月之后</td>
+<td>魏德曼认输："下届股东大会的力量对比已很清楚"</td>
+<td>迟到的伙伴模式</td>
+</tr>
+<tr>
+<td>至2026年11月</td>
+<td>欧央行批准450亿欧元交易；总部留在法兰克福，保留上市；柏林放弃两个席位的要求</td>
+<td>条件由收购方和政府决定</td>
+</tr>
+<tr>
+<td>2027年2月底</td>
+<td>裕信将更换20人监事会中全部10名股东代表</td>
+<td>股东方被整体替换</td>
+</tr>
+</tbody>
+</table></div>
+<h3>二、参与模式：从被动到控制，与荷兰银行相反</h3>
+<p>按Rowley &amp; Capron（HBR 2025）的四个因素，这次要约要求监事会深度介入。价值影响最大：涉及控制权。利益冲突尖锐：管理层的职位受到威胁。使命也受影响：是独立的德国银行，还是收缩国际网络的裕信子公司。而且董事能力突出：前德国央行行长魏德曼、前欧央行执委劳滕施莱格（Lautenschläger-Peiter）、前KfW司库奇霍夫斯基（Czichowski）、前DZ银行董事韦斯特霍夫（Westhoff，风险委员会主席）。</p>
+<p>荷兰银行监事会没做到的，商业银行做到了：通过特别委员会尽早进入控制模式，而不是把防御交给管理层。它也避开了该文警告的"从被动突然跳到控制"：要约前已积累约16至18个月的信息。</p>
+<h3>三、法律框架</h3>
+<p>德国法律决定了这个监事会的形态。商业银行实行双层制，监事会监督管理层。依据共同决定制度，20个席位由股东与员工各占10席；表1显示有3名与工会相关的成员（Leuchters、Voß、Werning）。Paine &amp; Srinivasan把这种模式归入"实体"观：监事会服务于公司整体利益，而非只服务于股东。</p>
+<p>案例之外，收购法设定了边界。《证券收购法》（WpÜG）第27条要求管理层和监事会就对价、收购方目的以及对员工和经营地点的影响发表附理由意见。第33条禁止管理层阻挠要约，例外只有三种：日常经营行为、寻找竞争要约、经监事会批准的行为。因此，任何防御都要经过监事会批准，监事会自身的判断是关键控制点。</p>
+<h3>四、做得好的地方与局限</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>做得好</th>
+<th>局限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>流程规范：2024年9月起设专门委员会，2025年开会10次以上</td>
+<td>结果由股东决定：17.6%接受要约，股东大会多数随之易手</td>
+</tr>
+<tr>
+<td>严格检验价值创造：追问协同与整合细节，正是BCG与德勤视为关键的环节</td>
+<td>"没有令人信服的方案"只是批评，不是方案；没有公开的独立价值方案，也没有白衣骑士</td>
+</tr>
+<tr>
+<td>利益相关方协同：政府、工会、BaFin对收购方形成舆论压力</td>
+<td>与柏林、工会结盟，同对全体股东的义务存在张力；机构和散户合计约51%（图1）</td>
+</tr>
+<tr>
+<td>向市场传递清晰信号：没有更优方案就不谈</td>
+<td>未争取到更好条件：要约价值从350亿升至440至450亿欧元，靠的是裕信自身股价上涨，而非谈判</td>
+</tr>
+</tbody>
+</table></div>
+<p>真正的检验是：这场防御换来了什么？总部和上市地位得以保留，但案例将其写成认输后与柏林达成的条件。就业保障悬而未决："大幅重组"仍在前方，1.5万人与7,000人之间的差距没有解决。全部股东代表席位都将被更换。</p>
+<p><strong>案例数据不一致：</strong> 要约价值有350亿（发起）、440亿（要约期）、450亿欧元（欧央行批准）三个口径。正文称17.6%接受要约，图2为18.36%。按47.6%倒推，要约前持股为30.0%（47.6−17.6）；按18.36%倒推则为29.2%。图2中裕信持股仍标为"&gt;25%"。</p>
+<h3>五、总体评价</h3>
+<p>论流程，监事会得分高：积极、专业、由独立成员主导，正是荷兰银行监事会应有的样子。论结果，得分低。控制模式适合手握决定权的监事会；而裕信逼近30%之后，决定权已在接受要约的股东手中。监事会在应当讨价还价的时候仍在防守。积极治理在流程上胜过被动治理，在获取价值上却没有。</p>
+<p><strong>从投行/顾问角度：</strong> 目标公司监事会的筹码在收购方掌控股东名册之前最大，而筹码只有拿去交换才有价值。以"对方没有方案"为核心的防御，必须配有经过测算的独立发展方案，或者一份就价格、就业和治理进行谈判的授权。两者都没有，监事会就只能影响舆论，影响不了交易。</p>
+<p>来源（案例之外）：WpÜG第27条 https://www.gesetze-im-internet.de/wp_g/__27.html ；WpÜG第33条 https://www.gesetze-im-internet.de/wp_g/__33.html ；MitbestG第7条 https://www.gesetze-im-internet.de/mitbestg/__7.html</p></section>
+<section id="q3"><h2>问题3：为什么UniCredit不接受德国政府提名两名Commerzbank监事会成员的要求？</h2>
+<p><strong>结论：</strong> 在德国共同决定制下，UniCredit要控制Commerzbank 20人监事会，前提是10个股东席位全部与其一致。如果国家提名两人，原本10比10、由主席决定票打破的格局，就会变成8对12的对抗。国家持股略超10%（公开报道为13.3%），按比例只够约1席，不够2席。UniCredit经要约持股达到47.6%后，柏林已无多少筹码，于2026年11月19日放弃了这一要求。</p>
+<h3>一、控制权算术</h3>
+<p>持股47.6%时，UniCredit可以决定所有普通多数的股东大会决议；第二大股东是国家，持股略超10%。真正的薄弱环节在监事会，不在股东大会。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>情形（20席）</th>
+<th>UniCredit一方</th>
+<th>员工代表</th>
+<th>国家提名</th>
+<th>有争议表决结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10席全部由UniCredit提名（最终结果）</td>
+<td>10</td>
+<td>10</td>
+<td>0</td>
+<td>10比10平票，主席决定票，UniCredit胜</td>
+</tr>
+<tr>
+<td>国家1席</td>
+<td>9</td>
+<td>10</td>
+<td>1</td>
+<td>若国家与员工同票则9对11，UniCredit败</td>
+</tr>
+<tr>
+<td>国家2席（柏林诉求）</td>
+<td>8</td>
+<td>10</td>
+<td>2</td>
+<td>8对12，UniCredit败</td>
+</tr>
+</tbody>
+</table></div>
+<p>案例外资料：按《共同决定法》第27条，两轮无人获三分之二多数时，由股东代表选举主席，所以8席仍能选出主席。但按第29条，主席的第二票只在两次平票后才起作用。股东席位一旦分裂，就没有平票可打破。每一个股东席位都是关键票。</p>
+<p>表1显示员工席位组织严密：含两名ver.di工会书记和一名Hans Böckler基金会人士。工会称裁员15,000人，UniCredit称7,000人。在重组议题上，国家席位与员工席位天然利益一致。</p>
+<h3>二、比例原则不支持两席</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>国家持股</td>
+<td>&gt;10%（案例）；13.3%（案例外）</td>
+</tr>
+<tr>
+<td>10个股东席位按比例</td>
+<td>约1.0–1.3席</td>
+</tr>
+<tr>
+<td>2席占股东席位</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>2席占全体监事会</td>
+<td>10%</td>
+</tr>
+</tbody>
+</table></div>
+<p>两席相当于国家经济权重的1.5–2倍。而且收购方的多数完全依赖10比10的结构，这两席的否决力远超其规模。收购方支付控制权溢价，买的正是提名全部股东代表的权利。</p>
+<h3>三、保护整合方案</h3>
+<p>案例预计UniCredit将推动"激进重组"：大幅削减成本，收缩国际网络。这正是€45bn对价背后协同效应的来源；BCG和McKinsey（bcg-synergy.md、mckinsey-programmatic.md）都强调协同要尽快兑现。按Rowley &amp; Capron（hbr-boards.md）的框架，整合、裁员和任命新管理层都是价值影响大、存在利益冲突的决策。UniCredit需要一个与收购方协作的"伙伴"型监事会，而不是回到2024–26年的防御性"控制"模式：当时的特别委员会2025年开会十余次，并与"包括德国政府在内的政治利益相关方"协调。国家提名人会把这一联盟带回董事会内部。</p>
+<h3>四、政治风险、先例与保密</h3>
+<ul>
+<li><strong>先例。</strong> Orcel曾因意大利政府反对放弃Banco BPM。柏林自2024年起反对本次收购（案例外：财政部称其"具有攻击性和敌意"）。给国家席位，等于把这种反对制度化、常态化。</li>
+<li><strong>利益冲突与保密。</strong> 国家提名人对公司负有义务，但同时带着财政、就业和产业政策目标。网点关闭、编制和资本配置等保密方案难以充分讨论。</li>
+<li><strong>退出。</strong> 有了监事会席位，国家出售13%股份的动力更小。案例外：Orcel 11月18日的信函为出售奠定了基础。</li>
+</ul>
+<h3>五、UniCredit的替代让步（案例外）</h3>
+<p>据对11月19日协议的报道（基于Orcel致财政部长Klingbeil的信函），内容包括：</p>
+<ul>
+<li>法兰克福为合并后Commerzbank/HypoVereinsbank的德国主要总部；保留上市地位和股份公司形式。</li>
+<li>关键决策留在德国；加强中小企业业务；尊重现有员工协议。</li>
+<li>在UniCredit执行委员会中占有席位；2027年考虑德国人选进入UniCredit董事会。</li>
+<li>柏林不再委派监事；UniCredit就其10人名单中的两名独立监事征询了政府意见。</li>
+</ul>
+<p>这才是真正的妥协：政府对人选有发言权，但不构成独立的国家阵营。</p>
+<h3>六、柏林为何放弃</h3>
+<ul>
+<li>7月要约期结束后，UniCredit持股47.6%，Weidmann承认"下届股东大会的力量对比已十分清楚"。</li>
+<li>ECB已批准交易。案例外：欧盟委员会11月16日无条件批准，并警告各国政府不得阻挠。</li>
+<li>案例外：政界找不到明显的法律手段阻止交易，对花钱增持也意见不一。柏林只能就总部和上市地位讨价还价，已无法争取控制权。</li>
+</ul>
+<p><strong>从投行/顾问角度：</strong> 持股不等于控制监事会。在对等共同决定制下，只有收购方掌握全部股东席位，主席决定票才有效。哪怕让出一席给有政治诉求的股东，都可能让"国家+员工"联盟对整合方案拥有否决权。建议收购方用软性承诺（总部、上市地位、就独立人选征询意见）换取让步，但席位数量绝不让。ABN AMRO案例说明了另一面：2007年财团拿到完全控制权，最终仍然失败。监事会控制权是整合的必要条件，而非充分条件。</p>
+<p>来源：Reuters（经<a href="https://globalbankingandfinance.com/exclusive-unicredit-germany-reach-broad-agreement">Global Banking &amp; Finance</a>）；<a href="https://www.democrata.es/en/economy/unicredit-reaches-an-agreement-with-the-german-government-on-the-future-of-commerzbank-after-its-takeover-bid/">Demócrata</a>；<a href="https://euronews.com/2026/11/19/commerzbank-welcomes-unicredit-commitments-after-berlin-agreement">Euronews</a>；<a href="https://euobserver.com/249074/eu-commission-clears-unicredits-commerzbank-takeover-tells-berlin-not-to-stand-in-the-way/">EUobserver</a>；<a href="https://live.euronext.com/en/financial-news/how-unicredit-ceo-outmanoeuvred-germany-commerzbank">Euronext/Reuters</a>；<a href="https://www.gesetze-im-internet.de/mitbestg/__27.html">《共同决定法》第27条</a>；<a href="https://www.gesetze-im-internet.de/mitbestg/__29.html">第29条</a>。</p></section>
+<section id="q4"><h2>问题4：商业银行监事会是否应该更早转向建设性接触？</h2>
+<p><strong>结论：</strong> 应该，但不是在2024年，而是在2026年初：裕信持股超过25%并正式发出350亿欧元要约之时。从那一刻起，决定结果的是股东名册，而不是监事会。只需17.6%的股份接受要约，裕信持股就升至47.6%，监事会手里已没有可交换的筹码。转向接触代价很小，却可能换来价格、就业和治理承诺。</p>
+<h3>一、股东结构使结果几乎注定</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>股东（图1，2026年4月）</th>
+<th>持股</th>
+<th>可能行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>裕信</td>
+<td>&gt;25%（正文：要约前接近30%）</td>
+<td>收购方</td>
+</tr>
+<tr>
+<td>德国联邦政府</td>
+<td>&gt;10%</td>
+<td>反对；未接受要约（图2仍为&gt;10%）</td>
+</tr>
+<tr>
+<td>机构投资者</td>
+<td>约31%</td>
+<td>看价格</td>
+</tr>
+<tr>
+<td>散户</td>
+<td>约20%</td>
+<td>分化</td>
+</tr>
+<tr>
+<td>贝莱德</td>
+<td>&gt;5%（11月&gt;3%）</td>
+<td>看价格、指数化</td>
+</tr>
+<tr>
+<td>商业银行回购股份</td>
+<td>&gt;3%</td>
+<td>不能接受要约</td>
+</tr>
+</tbody>
+</table></div>
+<p>本文测算：可实际参与要约的股份约57%（100−30−10−3）。17.6%只占这部分的约31%（按图2的18.36%为32%）。约三分之二可参与股份未接受要约，裕信照样胜出。持股47.6%时，只要股东大会出席率低于股本的约95%，就能拿下多数票，这正是魏德曼所说"力量对比已很清楚"的原因。</p>
+<p>案例之外：依据德国收购法，持股达30%即构成控制，须发出强制要约（WpÜG第29、35条）。在此之下，裕信可以逐步增持而无需支付溢价。持股超过25%还意味着，任何事先授权防御措施的股东大会决议都会被它否决，因为此类决议需要出席股本的四分之三（WpÜG第33条第2款）。</p>
+<h3>二、坚持抵抗的理由</h3>
+<ul>
+<li><strong>政治有可能取胜。</strong> 奥塞尔曾因意大利政府反对而放弃Banco BPM。柏林反对、BaFin批评裕信，在2024至2025年押注政治阻拦是理性的。</li>
+<li><strong>接触等于挂牌出售。</strong> 过早谈判，价格可能被锁定在裕信350亿欧元的锚点上。</li>
+<li><strong>利益相关方授权。</strong> 监事会一半席位由员工选出。工会称裁员1.5万人，裕信称7,000人，从公司整体利益出发保护就业是正当关切（Paine &amp; Srinivasan的"实体"观）。</li>
+<li><strong>方案确实单薄。</strong> 奥尔洛普"没有令人信服的合并方案"的质疑站得住。BCG指出，没有一线管理者参与的协同方案容易流失价值。</li>
+</ul>
+<h3>三、更早接触的理由</h3>
+<ul>
+<li><strong>决定权已不在监事会。</strong> Rowley &amp; Capron的控制模式以"监事会做决定"为前提。股东力量对比改变后，正确的模式是伙伴模式：与管理层、收购方共同谈判条件。样本中只有9%的董事会会切换模式，商业银行停留在了单一模式。</li>
+<li><strong>股价走势不利。</strong> 因裕信自身股价上涨、隐含溢价扩大，要约价值从350亿升至440亿欧元（+26%），再到450亿（+29%）。监事会挡不住这一趋势，只能把它变现。</li>
+<li><strong>"缺少方案"部分是自己造成的。</strong> BCG和德勤的阅读材料显示，可信的协同与整合方案需要尽调权限、一线管理者参与、指定整合负责人和持续追踪。敌意收购方没有尽调权限，拿不出这样的方案；接触才是拿到"缺失方案"的途径。</li>
+<li><strong>抵抗到底收获甚少。</strong> 总部和上市地位最终本来就会保留；而10个股东代表席位全部被更换，重组和国际网络收缩按裕信的设计推进，裁员上限没有约束力。</li>
+</ul>
+<h3>四、触发点与当时可争取的条件</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>触发点</th>
+<th>时间</th>
+<th>理性做法</th>
+<th>可争取</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>增持开始；设立特别委员会</td>
+<td>2024年9月</td>
+<td>抵抗，但设定谈判前提</td>
+<td>停止增持协议、信息交换规则</td>
+</tr>
+<tr>
+<td>裕信&gt;25%，逼近30%</td>
+<td>至2026年4月</td>
+<td>转向伙伴模式，双轨推进</td>
+<td>价格底线、裁员上限接近7,000人、席位</td>
+</tr>
+<tr>
+<td>正式350亿欧元要约</td>
+<td>2026年初</td>
+<td>以正面的第27条意见换取有约束力的协议</td>
+<td>更高换股比例或现金部分；保护资本回报</td>
+</tr>
+<tr>
+<td>要约期开启、裕信股价上涨</td>
+<td>2026年7月前</td>
+<td>争取有约束力承诺的最后窗口</td>
+<td>整合方案、指定整合负责人、保留独立董事</td>
+</tr>
+<tr>
+<td>持股达47.6%</td>
+<td>2026年7月</td>
+<td>已无筹码</td>
+<td>只能认输</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>案例数据不一致：</strong> 正文称17.6%接受要约，图2为18.36%。要约价值在不同时点为350亿、440亿、450亿欧元。47.6%减17.6%意味着要约前持股30.0%，与正文"略低于30%"不符。</p>
+<h3>五、建议</h3>
+<p><strong>应该，但有条件。</strong> 监事会最迟应在2026年初正式要约发出时开启谈判，对外仍坚持"此价格不行"。触发需满足三个条件：(1) 没有出现竞争性收购方（WpÜG第33条第1款明确允许寻找）；(2) 柏林和欧央行不太可能阻止交易；(3) 自身的独立发展方案无法可信地超过要约隐含价值。事后看，条件(1)和(3)在2026年春已满足；条件(2)需要判断，而柏林后来与裕信达成协议，说明它同样成立。谈判清单：更好的换股比例、与公开整合方案挂钩且有约束力的裁员上限、保护分红与回购、过渡期内保留独立董事席位、书面承诺总部和上市地位。</p>
+<p><strong>从投行/顾问角度：</strong> 股东名册还给你否决权时，就抵抗；不再给你时，就谈判。最佳切换时点是收购方跨过否决性少数（25%）之时，而不是要约结果公布之后。挡不住的交易，就要去塑造它。</p>
+<p>来源（案例之外）：WpÜG第29条 https://www.gesetze-im-internet.de/wp_g/__29.html ；WpÜG第35条 https://www.gesetze-im-internet.de/wp_g/__35.html ；WpÜG第33条 https://www.gesetze-im-internet.de/wp_g/__33.html</p></section>
+<section id="compare"><h2>对照：Commerzbank 2026 与 ABN AMRO 2007</h2>
+<p><strong>结论：</strong> 两家银行的监事会走了相反的路：ABN AMRO 监事会长期被动，把防御交给管理层；Commerzbank 监事会从 2024 年起就成立特别委员会、高频开会，主导了防御。但两者结局相同，控制权都由股东用脚投票决定，而不是由监事会决定。主动的董事会能把程序做好，却改变不了股东名册的力量对比。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>ABN AMRO（2007）</th>
+<th>Commerzbank（2024–2026）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>压力来源</td>
+<td>激进对冲基金 TCI（约 1% 持股）公开信</td>
+<td>战略收购方 UniCredit 逐步建仓至近 30%，再发起要约</td>
+</tr>
+<tr>
+<td>董事会结构</td>
+<td>荷兰双层制，监事会 12 人</td>
+<td>德国双层制加员工共同决定，监事会 20 人（股东代表、员工代表各 10 人）</td>
+</tr>
+<tr>
+<td>主席背景</td>
+<td>Martinez，零售业（Sears）出身，无银行背景</td>
+<td>Weidmann，前德国央行行长，身兼 7 个职务</td>
+</tr>
+<tr>
+<td>董事会参与模式（Rowley &amp; Capron）</td>
+<td>被动：让管理层主导出售程序，出售 LaSalle 作为防御</td>
+<td>主动防御、接近"控制"模式：2024 年 9 月成立特别委员会，2025 年开会 10 次以上</td>
+</tr>
+<tr>
+<td>与利益相关方的关系</td>
+<td>荷兰利益相关者模式为偏向 Barclays 提供法律空间</td>
+<td>与德国政府、工会结盟；BaFin 公开批评 UniCredit 的沟通方式</td>
+</tr>
+<tr>
+<td>核心论点</td>
+<td>不拆分、保持整体</td>
+<td>收购方"没有令人信服的整合方案"，价值创造不清楚</td>
+</tr>
+<tr>
+<td>决定结局的因素</td>
+<td>股东接受价格更高、93% 现金的银团报价</td>
+<td>要约期内 17.6% 的股份接受要约，UniCredit 持股升至 47.6%；其自身股价相对走强扩大了隐含溢价</td>
+</tr>
+<tr>
+<td>结局</td>
+<td>银团胜出，ABN AMRO 被拆分</td>
+<td>UniCredit 取得事实控制，将替换全部 10 名股东代表监事</td>
+</tr>
+<tr>
+<td>事后</td>
+<td>Fortis 与 RBS 在 2008 年需要国家救助</td>
+<td>尚未可知：UniCredit 计划大幅削减成本、收缩国际网络</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>对照的启示：</strong></p>
+<ol>
+<li><strong>主动不等于有效。</strong> HBR 框架提醒，模式要跟着决策性质切换。Commerzbank 监事会在流程上做到了 ABN AMRO 没做到的事，但始终停留在"控制式防御"，没有在力量对比改变后转向"伙伴式谈判"。</li>
+<li><strong>股东名册决定上限。</strong> ABN AMRO 的股东为现金和溢价投票；Commerzbank 的股东在 UniCredit 股价走强、隐含溢价扩大后接受要约。两个案例里，董事会对价格的影响都有限。</li>
+<li><strong>利益相关者联盟有代价。</strong> 与政府和工会结盟增强了谈判筹码，但也让董事会显得更像在保护独立地位，而不是为全体股东争取最好的条件。</li>
+<li><strong>控制权的真正落点是监事会席位。</strong> ABN AMRO 的控制权实际落到了 TCI、VEB 和法院手里；在 Commerzbank 案例中，UniCredit 拒绝政府提名两席的要求，正说明控制董事会才是执行整合计划的前提。</li>
+</ol></section>
+<section id="facts"><h2>交易要点与数据口径</h2>
+<p><strong>结论：</strong> UniCredit的报价在2026年初发起时为€35bn，7月要约期间为€44bn，获批时为€45bn。名义价值上升约29%，主要来自UniCredit自身股价上涨。UniCredit要约前持股近30%，要约后达到47.6%，并将在2027年2月底前更换20人监事会中的全部10名股东代表。本分析持股采用47.6%，交易价值采用€45bn；案例数据不一致之处，下文均注明所用口径。</p>
+<h3>一、交易要点</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数据</th>
+<th>案例出处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>初始报价</td>
+<td>2026年初正式要约€35bn</td>
+<td>正文</td>
+</tr>
+<tr>
+<td>要约期价值</td>
+<td>€44bn（FT，2026年7月）</td>
+<td>正文</td>
+</tr>
+<tr>
+<td>获批交易</td>
+<td>€45bn，ECB批准；金融危机以来欧洲最大银行收购</td>
+<td>正文</td>
+</tr>
+<tr>
+<td>名义价值变化</td>
+<td>+€10bn，较€35bn上升约29%</td>
+<td>计算</td>
+</tr>
+<tr>
+<td>要约前持股</td>
+<td>"略低于"/"接近"30%（强制要约门槛）</td>
+<td>正文</td>
+</tr>
+<tr>
+<td>接受要约股份</td>
+<td>17.6%（正文，FT）/ 18.36%（图2）</td>
+<td>正文、图2</td>
+</tr>
+<tr>
+<td>要约后持股</td>
+<td>47.6%（正文）；FT标题为"48%"</td>
+<td>正文、来源</td>
+</tr>
+<tr>
+<td>裁员说法</td>
+<td>工会15,000人；UniCredit 7,000人</td>
+<td>正文</td>
+</tr>
+<tr>
+<td>监事会</td>
+<td>20人：股东代表10人、员工代表10人（表1）</td>
+<td>正文、表1</td>
+</tr>
+<tr>
+<td>监事会更替</td>
+<td>2027年2月底前更换全部10名股东代表</td>
+<td>正文</td>
+</tr>
+<tr>
+<td>承诺</td>
+<td>总部留在法兰克福；保留德国上市地位</td>
+<td>正文</td>
+</tr>
+<tr>
+<td>国家席位</td>
+<td>柏林放弃提名两名监事的要求</td>
+<td>正文</td>
+</tr>
+</tbody>
+</table></div>
+<h3>二、股权结构：2026年4月与11月对比</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>股东</th>
+<th>2026年4月（图1）</th>
+<th>2026年11月（图2）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UniCredit</td>
+<td>&gt;25%</td>
+<td>&gt;25%，另有18.36%已接受要约股份</td>
+</tr>
+<tr>
+<td>德意志联邦共和国</td>
+<td>&gt;10%</td>
+<td>&gt;10%</td>
+</tr>
+<tr>
+<td>BlackRock</td>
+<td>&gt;5%</td>
+<td>&gt;3%</td>
+</tr>
+<tr>
+<td>机构投资者</td>
+<td>~31%</td>
+<td>~21%（其他机构）</td>
+</tr>
+<tr>
+<td>个人投资者</td>
+<td>~20%</td>
+<td>~16%</td>
+</tr>
+<tr>
+<td>Commerzbank回购</td>
+<td>&gt;3%</td>
+<td>未列示</td>
+</tr>
+</tbody>
+</table></div>
+<p>11月图中，已接受要约的股份仍单独列示，交割时才转入UniCredit。机构加个人持股从约51%降至约37%，降幅14个百分点；再加上BlackRock（约2个百分点）和回购项（约3个百分点），大致对应18.36%的要约股份。</p>
+<h3>三、时间线</h3>
+<ul>
+<li>2024年：UniCredit以合作姿态出现，同时悄然建仓；Commerzbank监事会自2024年9月设立特别委员会。</li>
+<li>2026年初：发起€35bn正式要约；双方公开交锋，BaFin批评UniCredit的沟通方式。</li>
+<li>2026年7月：要约结束，持股47.6%；Weidmann认输并开启谈判。</li>
+<li>此后：ECB批准€45bn交易。</li>
+<li>2027年2月底：UniCredit取得完全控制，股东代表全部更换。</li>
+</ul>
+<p>案例外资料：ECB于10月批准，欧盟委员会11月16日无条件批准，UniCredit与柏林11月19日达成协议。国家持股13.3%。Commerzbank员工超过40,000人，按此计算，两种裁员说法分别最多约占员工总数的17.5%（7,000人）和37.5%（15,000人）。</p>
+<h3>四、案例不一致之处及所用口径</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>案例数据</th>
+<th>本文口径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>报价金额</td>
+<td>€35bn / €44bn / €45bn</td>
+<td>交易用€45bn；要约期用€44bn</td>
+<td>同一要约在不同时点的价值。案例把上升归因于UniCredit股价上涨，可推断对价以股票为主（本文推断）。</td>
+</tr>
+<tr>
+<td>接受要约比例</td>
+<td>17.6%（正文）/ 18.36%（图2）</td>
+<td>要约结果用17.6%</td>
+<td>相差0.76个百分点。可能包括后续接受期，但案例未说明。</td>
+</tr>
+<tr>
+<td>要约后持股</td>
+<td>47.6%（正文）vs "&gt;25% + 18.36%"（图2）</td>
+<td>47.6%</td>
+<td>正文隐含要约前约30.0%，图2隐含29.24%（47.6 − 18.36）。FT标题取整为48%，Euronews称投票权"略低于50%"。</td>
+</tr>
+<tr>
+<td>国家持股</td>
+<td>&gt;10%</td>
+<td>&gt;10%（案例外13.3%）</td>
+<td>案例只给区间。</td>
+</tr>
+<tr>
+<td>BlackRock</td>
+<td>&gt;5%（4月）/ &gt;3%（11月）</td>
+<td>照录</td>
+<td>案例未解释。</td>
+</tr>
+<tr>
+<td>裁员</td>
+<td>15,000 vs 7,000</td>
+<td>两者并列并注明出处</td>
+<td>均为利益相关方说法，不是既定方案。</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>从投行/顾问角度：</strong> 本案每个数字都取决于时点和出处。股票对价的价值随股价浮动，要约结果在交割前也不等于最终持股。向董事会汇报时，数字必须注明日期和来源。控制权分析应以真正决定表决的数字为准：股东大会上的47.6%，以及监事会上10个股东席位全部到手。</p>
+<p>来源：<a href="https://euronews.com/2026/11/19/commerzbank-welcomes-unicredit-commitments-after-berlin-agreement">Euronews</a>；<a href="https://euobserver.com/249074/eu-commission-clears-unicredits-commerzbank-takeover-tells-berlin-not-to-stand-in-the-way/">EUobserver</a>；<a href="https://live.euronext.com/en/financial-news/how-unicredit-ceo-outmanoeuvred-germany-commerzbank">Euronext/Reuters</a>；Reuters（经<a href="https://globalbankingandfinance.com/exclusive-unicredit-germany-reach-broad-agreement">Global Banking &amp; Finance</a>）。</p></section>
+    <footer>本页仅基于案例材料及标注的案例外信息，用于学习练习，不构成投资建议。</footer>
+  </main>
+</div>
+</body>
+</html>
