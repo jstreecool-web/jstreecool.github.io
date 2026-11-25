@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sunrise / UPC Case Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deal-memo page — fixed contents rail on the left, one reading column, tables full column width */
+:root {
+  --bg: #f6f6f3;
+  --paper: #ffffff;
+  --ink: #1b2130;
+  --ink-2: #4d5566;
+  --rule: #dcdcd4;
+  --accent: #184f95;
+  --accent-soft: #e6eefa;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+    --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+    --s1: #3987e5; --s2: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+  --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+  --s1: #3987e5; --s2: #d95926;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+nav { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .navhead { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 8px; }
+nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-left: 2px solid var(--rule); }
+nav a.lang { margin-top: 14px; border-left: 0; padding-left: 0; color: var(--accent); font-weight: 700; }
+nav a:hover, nav a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--ink-2); letter-spacing: .04em; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; }
+.sub a { color: var(--accent); }
+.sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 8px; }
+.kpi { background: var(--paper); padding: 14px 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.kpi span { font-size: 13px; color: var(--ink-2); }
+section { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 24px; scroll-margin-top: 16px; }
+section > *:first-child { margin-top: 0; }
+h2 { font-family: var(--display); font-size: 24px; line-height: 1.4; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); text-wrap: balance; }
+h3 { font-size: 17px; margin: 28px 0 8px; color: var(--accent); text-wrap: balance; }
+p, li { max-width: 46em; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 1.4em; margin: 8px 0; }
+li { margin: 4px 0; }
+section > p:nth-of-type(1) strong:first-child { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+thead th { text-align: left; font-weight: 700; background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+code { font-size: .9em; }
+.fig { margin: 22px 0 6px; }
+.fig figcaption { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); }
+.sw.ref { height: 0; border-top: 2px dashed var(--ink-2); border-radius: 0; width: 16px; }
+.chart { width: 100%; max-width: 680px; height: auto; display: block; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .tick, .chart .reflab { fill: var(--ink-2); font-size: 12px; font-family: var(--body); }
+.chart .cat { fill: var(--ink); font-size: 13px; font-family: var(--body); }
+.chart .val { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--body); }
+.chart .s1 { fill: var(--s1); } .chart .s2 { fill: var(--s2); }
+.chart .ref { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar:hover path, .chart .bar:focus path { opacity: .8; }
+.chart .bar:focus { outline: none; }
+.src { font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+footer { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 16px; }
+  nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav .navhead { width: 100%; margin: 0; }
+  nav a { border: 1px solid var(--rule); padding: 4px 10px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 20px 18px; }
+  h1 { font-size: 27px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="Contents"><div class="navhead">Contents</div><a href="#summary">Executive summary</a><a href="#q1">1 · Deal rationale</a><a href="#q2">2 · Where the value comes from</a><a href="#q3">3 · Perspectives</a><a href="#q4">4 · Integration and timeline</a><a href="#facts">Appendix · Deal facts and sources</a><a class="lang" href="index.html" hreflang="zh-CN">中文版 →</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">Case analysis · Swiss telecoms: Sunrise, UPC Switzerland and Liberty Global (2019–2020)</div>
+      <h1>Sunrise / UPC case analysis: same logic, two outcomes</h1>
+      <p class="sub">The four case questions answered from the three press releases, compared with the <a href="../abn-amro-2007/en.html">ABN AMRO</a> and <a href="../commerzbank-2026/en.html">Commerzbank</a> cases. Analysis dated 26 Nov 2026.</p>
+      <div class="kpis"><div class="kpi"><b>CHF 6.8bn</b><span>2020 enterprise value</span></div><div class="kpi"><b>32%</b><span>Premium to 60-day VWAP</span></div><div class="kpi"><b>CHF 3.1bn</b><span>Synergy NPV</span></div><div class="kpi"><b>~4 yrs</b><span>Closing to spin-off</span></div></div>
+    </header>
+    <section id="summary"><h2>Executive summary</h2>
+<p>Sunrise, Switzerland's #2 mobile operator, and UPC Switzerland, the cable network owned by Liberty Global, were combined twice on paper. In February 2019 Sunrise agreed to buy UPC for an enterprise value (EV) of CHF 6.3bn, but its own shareholders blocked the CHF 4.1bn rights issue needed to pay for it. In August 2020 the deal was reversed: Liberty Global bought 100% of Sunrise for CHF 110 per share in cash (EV CHF 6.8bn). The industrial logic never changed. What changed was who bore the risk and who kept the synergies.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Core answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Deal rationale</td>
+<td>Fixed-mobile convergence: create a national challenger to Swisscom across mobile, broadband, TV and fixed voice. Sunrise had the mobile network but rented fixed access; UPC had the cable network but rented mobile access. Each was paying a competitor for what the other owned</td>
+</tr>
+<tr>
+<td>2. Why, for whom, value source</td>
+<td>Synergies of CHF 275m a year run-rate, worth CHF 3.1bn NPV, of which about CHF 2.6bn is low-risk cost and capex. As buyer, Liberty paid a premium of about CHF 1.2bn and kept about CHF 1.9bn of synergy value, plus leverage benefits. In 2019, most synergy value went to the seller through the price</td>
+</tr>
+<tr>
+<td>3. Perspectives</td>
+<td>Liberty and Sunrise's board were supportive both times. Sunrise's shareholders (led by Freenet, about 25%) rejected the 2019 price and dilution but accepted a 32% cash premium in 2020. Customers gain converged offers but face migration disruption. The regulator was not an obstacle</td>
+</tr>
+<tr>
+<td>4. Integration</td>
+<td>Full absorption under the Sunrise brand, UPC's network and TV as the fixed backbone. Capture wholesale-cost synergies first, then migrate IT and billing in waves. Cost synergies at run-rate by year 3, revenue synergies by year 4. Actual: closed 2020, delisted 2021, 88% of customers migrated by 2024, relisted as a spin-off in November 2024</td>
+</tr>
+</tbody>
+</table></div>
+<p>The lesson: the same strategy can fail or succeed depending on the deal structure. A small-cap buyer funding a deal with a rights issue worth 130% of its market value lost its shareholders; a cash-rich parent paying a 32% premium won them.</p></section>
+<section id="q1"><h2>1 · What is the underlying deal rationale?</h2>
+<p><strong>Answer:</strong> fixed-mobile convergence (FMC). The deal turns two half-challengers into one full national challenger to Swisscom across all four products: mobile, broadband, TV and fixed voice.</p>
+<h3>The two businesses complement each other</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>Sunrise</th>
+<th>UPC Switzerland</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strength</td>
+<td>Best-in-class 4G network, 5G spectrum (3.5 GHz), strong brand and store network</td>
+<td>Cable network passing 2.3m homes (about 60% of Switzerland), 17,500 km fibre backbone, leading TV platform (UPC TV, 4K, MySports content)</td>
+</tr>
+<tr>
+<td>Gap</td>
+<td>No own fixed network: rents fixed access from Swisscom; own FTTH covers only about 30% of homes</td>
+<td>Weak in mobile: about 0.1m subscribers, served as an MVNO on another operator's network</td>
+</tr>
+<tr>
+<td>2018 revenue</td>
+<td>CHF 1,876m, +1.2%</td>
+<td>CHF 1,296m, −3.7%</td>
+</tr>
+<tr>
+<td>2018 adj. EBITDA margin</td>
+<td>32.0%</td>
+<td>49.1%</td>
+</tr>
+<tr>
+<td>B2B</td>
+<td>Growing mobile-led B2B</td>
+<td>#2 in fixed B2B behind Swisscom</td>
+</tr>
+</tbody>
+</table></div>
+<p>Each side was paying a competitor for what the other side owned: Sunrise paid wholesale fees for fixed access, UPC paid MVNO fees for mobile access. Removing these is the core of the deal.</p>
+<h3>What the combination creates</h3>
+<ul>
+<li>About CHF 3.1bn revenue and about 30% share in mobile post-paid, broadband and TV, a clear #2 in every segment.</li>
+<li>Its own gigabit fixed network: UPC's network covering about 75% of homes, plus Sunrise's FTTH partnerships covering over 30%, so 90% of Swiss homes get 1 Gbps by 2021, with a roadmap to 10 Gbps (DOCSIS 3.1).</li>
+<li>A converged bundle (mobile plus broadband plus TV) to reduce churn and raise revenue per household.</li>
+<li>For Liberty Global: the same "national FMC champion" strategy it pursues in its other core markets (e.g. VodafoneZiggo in the Netherlands, Virgin Media O2 in the UK).</li>
+</ul></section>
+<section id="q2"><h2>2 · Why does the deal make sense, for whom, and where does the value come from?</h2>
+<h3>Where the value comes from (2020 figures)</h3>
+<p>Total synergies are worth CHF 3.1bn NPV after integration costs, on a run-rate of CHF 275m a year.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Run-rate (CHF m)</th>
+<th>What it is</th>
+<th>Risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cost synergies</td>
+<td>187</td>
+<td>Removing wholesale fees on both sides; merging IT, network, procurement and marketing; cutting duplicate management and admin</td>
+<td>Low: in-market, under management's control</td>
+</tr>
+<tr>
+<td>Capex synergies</td>
+<td>42</td>
+<td>One network roadmap and one IT stack instead of two</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>Revenue synergies</td>
+<td>46</td>
+<td>Cross-selling mobile to UPC customers and broadband/TV to Sunrise customers; B2B scale</td>
+<td>Higher</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>275</strong></td>
+<td>About CHF 2.6bn of the CHF 3.1bn NPV is cost and capex</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Cost synergies alone equal about 15% of the combined 2018 adjusted EBITDA (CHF 1,238m). That is why the deal looks expensive before synergies (10.0x EBITDA in 2020) and cheap after them (7.5x).</p>
+<h3>Who captures the value: the structure decides</h3>
+<p><strong>2019, Sunrise as buyer</strong></p>
+<ul>
+<li>Sunrise paid 9.9x UPC's 2018 adjusted EBITDA before synergies (8.0x after) for a business whose revenue was shrinking about 4% a year.</li>
+<li>It needed a CHF 4.1bn rights issue, about 130% of its own market value.</li>
+<li>Synergies were worth about CHF 2.8bn NPV (CHF 2.4bn cost/capex plus CHF 0.4bn revenue), but much of that went to the seller through the price: Liberty would receive about CHF 2.6bn cash and close to 4x its original investment.</li>
+<li>Sunrise's shareholders would bear the execution risk and heavy dilution.</li>
+</ul>
+<p><strong>2020, Liberty Global as buyer</strong></p>
+<ul>
+<li>Premium paid: (CHF 110 − CHF 83.17 60-day VWAP) × 45.4m shares ≈ CHF 1.2bn.</li>
+<li>Synergy NPV ≈ CHF 3.1bn, so Liberty paid away about 40% of the synergies and kept about CHF 1.9bn.</li>
+<li>Extra financial value: Liberty used existing cash (about CHF 3.5bn) and moved Sunrise into its UPC borrowing group at 5.0x leverage, versus Sunrise's planned 3.0x, and removed a listed minority.</li>
+</ul>
+<h3>For whom does it make sense?</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Party</th>
+<th>Verdict</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Liberty Global</td>
+<td>Yes</td>
+<td>Owns 100% of the synergies; fits its national-champion strategy; efficient use of cash and leverage</td>
+</tr>
+<tr>
+<td>Sunrise shareholders, 2020</td>
+<td>Yes</td>
+<td>32% cash premium, no integration risk</td>
+</tr>
+<tr>
+<td>Swiss consumers</td>
+<td>Probably yes</td>
+<td>A stronger #2 can compete harder with Swisscom on price and gigabit speeds</td>
+</tr>
+<tr>
+<td>Sunrise shareholders, 2019</td>
+<td>Questionable</td>
+<td>They would have paid the seller for the synergies and borne the risk, which is why they voted it down</td>
+</tr>
+</tbody>
+</table></div></section>
+<section id="q3"><h2>3 · Perspectives on the deal</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Stakeholder</th>
+<th>View</th>
+<th>Key points</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Acquirer: Liberty Global (2020)</strong></td>
+<td>Strongly positive</td>
+<td>Converts a shrinking cable asset into an FMC champion; keeps most synergies; deploys cash and adds leverage. In 2019 it was equally happy to sell: its real goal was Swiss consolidation either way</td>
+</tr>
+<tr>
+<td><strong>Target board and management: Sunrise</strong></td>
+<td>Supportive both times</td>
+<td>In 2019 the board championed buying UPC and, after the vote collapsed, still called the rationale "compelling". In 2020 it unanimously recommended Liberty's offer, trading independence for a certain outcome</td>
+</tr>
+<tr>
+<td><strong>Sunrise shareholders</strong></td>
+<td>Opposed in 2019, accepted in 2020</td>
+<td>Freenet (about 25%) said the price for UPC was too high; proxy adviser ISS recommended voting against. Sunrise cancelled the EGM in October 2019, terminated the deal and paid a CHF 50m break fee plus CHF 70–75m of other costs. In 2020 Freenet committed to tender at CHF 110. They did not reject the logic, only paying for it</td>
+</tr>
+<tr>
+<td><strong>Liberty Global shareholders</strong></td>
+<td>Positive</td>
+<td>Value crystallised; in 2024 Liberty spun Sunrise off and relisted it on SIX so shareholders could hold it directly</td>
+</tr>
+<tr>
+<td><strong>Customers</strong></td>
+<td>Mixed short term, positive long term</td>
+<td>Gains: converged bundles, gigabit coverage, UPC TV for Sunrise customers, better mobile for UPC customers. Risks: migration disruption; long term, less competitive pressure if three players behave cosily</td>
+</tr>
+<tr>
+<td><strong>Employees</strong></td>
+<td>Concern</td>
+<td>Cuts fall mainly on duplicate management and admin; frontline impact expected to be moderate because UPC had few stores</td>
+</tr>
+<tr>
+<td><strong>Competitors</strong></td>
+<td>Swisscom faces a stronger rival; Salt is left as the only player without its own fixed network</td>
+<td>Swisscom also loses Sunrise's wholesale fixed-access fees. Salt had been rumoured as an alternative partner for UPC</td>
+</tr>
+<tr>
+<td><strong>Regulator: COMCO</strong></td>
+<td>Not an obstacle</td>
+<td>Cleared the 2019 deal, finding no undue market dominance. It is rare in European M&amp;A for shareholders, not regulators, to block a deal</td>
+</tr>
+<tr>
+<td><strong>Debt holders</strong></td>
+<td>Different leverage profile</td>
+<td>Under Liberty, Sunrise sits in a 5.0x leverage pool instead of the 3.0x and investment-grade ambition of the 2019 plan</td>
+</tr>
+</tbody>
+</table></div></section>
+<section id="q4"><h2>4 · Integration strategy and timeline</h2>
+<h3>Recommended strategy: full absorption, best of both</h3>
+<ul>
+<li><strong>One company, Sunrise as the main brand:</strong> it is stronger and growing, while the UPC brand was declining. Keep the low-cost flanker brand yallo for price-sensitive segments.</li>
+<li><strong>UPC's cable network and TV platform</strong> become the fixed backbone.</li>
+<li><strong>Sunrise's mobile network</strong> takes over UPC's MVNO customers.</li>
+<li><strong>Sequencing principle:</strong> capture the wholesale-cost synergies first, because they are quick, large and in the company's control. Then do the riskiest workstream, IT and billing migration, in waves.</li>
+</ul>
+<h3>Indicative timeline</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Timing</th>
+<th>Key actions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pre-close</td>
+<td>Announcement to closing (about 4 months)</td>
+<td>Clean-team synergy validation, integration office (IMO), regulatory filing, Day-1 organisation design, brand-architecture decision</td>
+</tr>
+<tr>
+<td>Day 1–100</td>
+<td>Months 0–3</td>
+<td>Name the leadership team and governance cadence; communicate with employees and customers. Quick wins: begin moving UPC mobile customers onto Sunrise's network; launch the first converged bundle</td>
+</tr>
+<tr>
+<td>Year 1</td>
+<td>Months 3–12</td>
+<td>Merge management and admin functions; consolidate procurement; combine B2B sales; squeeze-out and delisting; start network upgrades</td>
+</tr>
+<tr>
+<td>Years 1–3</td>
+<td>Core integration</td>
+<td>Migrate billing and IT in waves; move Sunrise fixed customers off Swisscom wholesale onto cable where it reaches them; integrate the networks; migrate the UPC brand to Sunrise. Cost and capex synergies reach run-rate by the third full year</td>
+</tr>
+<tr>
+<td>Years 3–4</td>
+<td>Completion</td>
+<td>Finish customer migration; revenue synergies reach run-rate by the fourth full year; switch off legacy systems</td>
+</tr>
+<tr>
+<td>Year 4+</td>
+<td>Next phase</td>
+<td>Prepare a standalone equity story (in the event: spin-off and relisting)</td>
+</tr>
+</tbody>
+</table></div>
+<h3>What actually happened (outside the press releases)</h3>
+<ul>
+<li>The 2020 offer succeeded; Sunrise was delisted from SIX in 2021.</li>
+<li>By Liberty Global's 2024 investor day, brands and systems were harmonised and 88% of customer migrations were complete.</li>
+<li>Liberty spun Sunrise off; it relisted on SIX on 15 November 2024 at CHF 44.75 per Class A share, presented as the challenger after a successful integration and synergy delivery.</li>
+</ul>
+<p>The full cycle ran about four years from closing to relisting, consistent with the three-to-four-year synergy plan.</p>
+<h3>Main integration risks</h3>
+<ul>
+<li>Customer churn during migration, with UPC's revenue already falling about 4% a year.</li>
+<li>IT and billing migration delays.</li>
+<li>Culture clash between a lean mobile challenger and a cable operator run under a US parent.</li>
+<li>Service quality slipping while costs are cut.</li>
+</ul></section>
+<section id="facts"><h2>Deal facts and sources</h2>
+<h3>Two transactions compared</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>2019: Sunrise buys UPC (failed)</th>
+<th>2020: Liberty Global buys Sunrise (completed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Announced</td>
+<td>27 February 2019</td>
+<td>11 August 2020</td>
+</tr>
+<tr>
+<td>Enterprise value</td>
+<td>CHF 6.3bn</td>
+<td>CHF 6.8bn</td>
+</tr>
+<tr>
+<td>Consideration</td>
+<td>Assume CHF 3.6bn UPC debt + CHF 2.7bn cash; Liberty net proceeds about CHF 2.6bn</td>
+<td>CHF 110 per share in cash, equity CHF 5.0bn (45.4m shares)</td>
+</tr>
+<tr>
+<td>Premium</td>
+<td>n/a (private target)</td>
+<td>32% to 60-day VWAP of CHF 83.17</td>
+</tr>
+<tr>
+<td>Multiple before synergies</td>
+<td>9.9x 2018 adj. EBITDA; 16.1x OpFCF</td>
+<td>10.0x adj. EBITDA; 17.6x OpFCF</td>
+</tr>
+<tr>
+<td>Multiple after synergies</td>
+<td>8.0x adj. EBITDA; 10.9x OpFCF</td>
+<td>7.5x adj. EBITDA; 10.3x OpFCF</td>
+</tr>
+<tr>
+<td>Run-rate synergies</td>
+<td>CHF 190m cost/capex (year 3) + CHF 45m revenue (year 4)</td>
+<td>CHF 275m: 187 cost, 42 capex, 46 revenue</td>
+</tr>
+<tr>
+<td>Synergy NPV</td>
+<td>About CHF 2.8bn (2.4 + 0.4)</td>
+<td>CHF 3.1bn (2.6 cost/capex)</td>
+</tr>
+<tr>
+<td>Funding</td>
+<td>CHF 4.1bn fully underwritten rights issue (later cut to CHF 2.8bn)</td>
+<td>About CHF 3.5bn Liberty cash + CHF 3.2bn new debt</td>
+</tr>
+<tr>
+<td>Leverage</td>
+<td>About 3.0x net debt/EBITDA (2.7x with synergies)</td>
+<td>UPC credit pool target 5.0x</td>
+</tr>
+<tr>
+<td>Key condition</td>
+<td>Sunrise EGM approval of the rights issue</td>
+<td>Two-thirds acceptance; regulatory approval</td>
+</tr>
+<tr>
+<td>Break fee</td>
+<td>CHF 50m payable by Sunrise</td>
+<td>Not stated</td>
+</tr>
+<tr>
+<td>Transitional services</td>
+<td>Liberty to Sunrise, up to 4 years (+1), about CHF 90m in year 1</td>
+<td>Not needed (same group)</td>
+</tr>
+<tr>
+<td>Outcome</td>
+<td>EGM cancelled October 2019; terminated November 2019</td>
+<td>Completed; delisted 2021; spun off November 2024</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2018 financials (CHF m)</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>Sunrise</th>
+<th>UPC Switzerland</th>
+<th>Combined</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Revenue</td>
+<td>1,876</td>
+<td>1,296</td>
+<td>3,173</td>
+</tr>
+<tr>
+<td>Growth</td>
+<td>+1.2%</td>
+<td>−3.7%</td>
+<td>−0.9%</td>
+</tr>
+<tr>
+<td>Adj. EBITDA (post central allocations)</td>
+<td>601</td>
+<td>637</td>
+<td>1,238</td>
+</tr>
+<tr>
+<td>Margin</td>
+<td>32.0%</td>
+<td>49.1%</td>
+<td>39.0%</td>
+</tr>
+<tr>
+<td>Recurring capex</td>
+<td>243</td>
+<td>245</td>
+<td>488</td>
+</tr>
+<tr>
+<td>Adj. OpFCF</td>
+<td>358</td>
+<td>392</td>
+<td>750</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Calculations in this analysis</h3>
+<ul>
+<li>2020 premium paid: (110 − 83.17) × 45.4m ≈ CHF 1.2bn; versus CHF 3.1bn synergy NPV, Liberty keeps about CHF 1.9bn (about 60%).</li>
+<li>Cost synergies as share of combined EBITDA: 187 / 1,238 ≈ 15%.</li>
+</ul>
+<h3>Sources</h3>
+<ul>
+<li>Press releases: Sunrise, "Sunrise to acquire UPC Switzerland for CHF 6.3 billion" (27 Feb 2019); Liberty Global, "Liberty Global to sell UPC Switzerland to Sunrise" (27 Feb 2019); Liberty Global, "Liberty Global to acquire 100% of Sunrise Communications Group by tender offer" (11 Aug 2020).</li>
+<li><a href="https://www.investing.com/news/stock-market-news/sunrises-64-billion-takeover-of-upc-teeters-as-rights-issue-collapses-2000863">Reuters via Investing.com: investor revolt scuppers the 2019 deal</a></li>
+<li><a href="https://telecompaper.com/news/sunrise-says-upc-switzerland-takeover-deal-dead--1313048">Telecompaper: Sunrise says UPC deal "dead"</a></li>
+<li><a href="https://digitaltveurope.com/2019/11/13/sunrise-puts-end-to-upc-acquisition">DTVE: Sunrise ends UPC acquisition, CHF 50m penalty</a></li>
+<li><a href="https://telecomtv.com/content/mobile/regulators-not-to-blame-for-once-as-sunrise-upc-deal-collapses-36690">TelecomTV: COMCO cleared the deal; shareholders blocked it</a></li>
+<li><a href="https://quartr.com/events/liberty-global-plc-lbtya-investor-day-2024_3P2hwrpF">Liberty Global investor day 2024 summary (Quartr)</a></li>
+<li><a href="https://www.six-group.com/en/newsroom/news/the-swiss-stock-exchange/2024/sunrise-listing.html">SIX: Sunrise listing, 15 Nov 2024</a></li>
+</ul></section>
+    <footer>Based on the three transaction press releases and clearly labelled public reporting. For study purposes; not investment advice.</footer>
+  </main>
+</div>
+</body>
+</html>
