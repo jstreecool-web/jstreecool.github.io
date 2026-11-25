@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BASF / Evonik 案例分析</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deal-memo page — fixed contents rail on the left, one reading column, tables full column width */
+:root {
+  --bg: #f6f6f3;
+  --paper: #ffffff;
+  --ink: #1b2130;
+  --ink-2: #4d5566;
+  --rule: #dcdcd4;
+  --accent: #184f95;
+  --accent-soft: #e6eefa;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+    --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+    --s1: #3987e5; --s2: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+  --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+  --s1: #3987e5; --s2: #d95926;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+nav { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .navhead { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 8px; }
+nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-left: 2px solid var(--rule); }
+nav a.lang { margin-top: 14px; border-left: 0; padding-left: 0; color: var(--accent); font-weight: 700; }
+nav a:hover, nav a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--ink-2); letter-spacing: .04em; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; }
+.sub a { color: var(--accent); }
+.sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 8px; }
+.kpi { background: var(--paper); padding: 14px 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.kpi span { font-size: 13px; color: var(--ink-2); }
+section { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 24px; scroll-margin-top: 16px; }
+section > *:first-child { margin-top: 0; }
+h2 { font-family: var(--display); font-size: 24px; line-height: 1.4; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); text-wrap: balance; }
+h3 { font-size: 17px; margin: 28px 0 8px; color: var(--accent); text-wrap: balance; }
+p, li { max-width: 46em; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 1.4em; margin: 8px 0; }
+li { margin: 4px 0; }
+section > p:nth-of-type(1) strong:first-child { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+thead th { text-align: left; font-weight: 700; background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+code { font-size: .9em; }
+.fig { margin: 22px 0 6px; }
+.fig figcaption { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); }
+.sw.ref { height: 0; border-top: 2px dashed var(--ink-2); border-radius: 0; width: 16px; }
+.chart { width: 100%; max-width: 680px; height: auto; display: block; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .tick, .chart .reflab { fill: var(--ink-2); font-size: 12px; font-family: var(--body); }
+.chart .cat { fill: var(--ink); font-size: 13px; font-family: var(--body); }
+.chart .val { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--body); }
+.chart .s1 { fill: var(--s1); } .chart .s2 { fill: var(--s2); }
+.chart .ref { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar:hover path, .chart .bar:focus path { opacity: .8; }
+.chart .bar:focus { outline: none; }
+.src { font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+footer { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 16px; }
+  nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav .navhead { width: 100%; margin: 0; }
+  nav a { border: 1px solid var(--rule); padding: 4px 10px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 20px 18px; }
+  h1 { font-size: 27px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="目录"><div class="navhead">目录</div><a href="#summary">执行摘要</a><a href="#timeline">时间线</a><a href="#criteria">六项标准</a><a href="#value">价值与启示</a><a href="#facts">附录 · 交易要点与来源</a><a class="lang" href="en.html" hreflang="en">English version →</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">案例分析 · 德国化工：BASF 对 Evonik 的收购尝试（2026）</div>
+      <h1>BASF / Evonik：六项并购成功标准下的失败收购</h1>
+      <p class="sub">BASF 两次报价、最终退出的全过程，按六项并购成功标准逐一评估，并与 <a href="../abn-amro-2007/index.html">ABN AMRO</a>、<a href="../commerzbank-2026/index.html">Commerzbank</a>、<a href="../sunrise-upc/index.html">Sunrise / UPC</a> 对照。分析日期 2026-11-26。</p>
+      <div class="kpis"><div class="kpi"><b>€24</b><span>最终每股报价</span></div><div class="kpi"><b>~38%</b><span>较未受干扰股价溢价</span></div><div class="kpi"><b>~43%</b><span>RAG 基金会持股</span></div><div class="kpi"><b>−16%</b><span>BASF 退出当日 Evonik 股价</span></div></div>
+    </header>
+    <section id="summary"><h2>执行摘要</h2>
+<p>2026 年 11 月 19 日，BASF 宣布放弃收购 Evonik。此前 Evonik 执行董事会拒绝了两份不具约束力的全现金方案：9 月约每股 22.15 欧元（约 103 亿欧元），10 月每股 24 欧元（约 112 亿欧元，较未受干扰股价溢价约 38%）。BASF 表示愿意再小幅加价，但 Evonik 董事会始终没有实质接触，而 BASF 对 Evonik 独立前景的评估也不足以支持更高估值。Evonik 股价当天下跌 16%。</p>
+<p>按六项并购成功标准评估：交易的产业逻辑成立，价格纪律到位，但在协同证据、审批路径，尤其是利益相关方管理上失败。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>标准</th>
+<th>评价</th>
+<th>核心理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>战略逻辑</td>
+<td>部分满足</td>
+<td>一体化基地和特种化学品的逻辑说得通，但有争议，也从未让目标方信服</td>
+</tr>
+<tr>
+<td>2</td>
+<td>估值与价格纪律</td>
+<td>满足</td>
+<td>溢价从约 29% 提到约 38%，然后选择退出而不是多付</td>
+</tr>
+<tr>
+<td>3</td>
+<td>协同效应论证</td>
+<td>未满足</td>
+<td>从未公布或向目标方提出协同数字</td>
+</tr>
+<tr>
+<td>4</td>
+<td>交易结构与审批路径</td>
+<td>未满足</td>
+<td>绕不开不愿谈判的董事会和 RAG 基金会 25.1% 的否决性少数股权</td>
+</tr>
+<tr>
+<td>5</td>
+<td>利益相关方与治理管理</td>
+<td>未满足</td>
+<td>州政府、工会和目标董事会都反对；锚定股东始终没有争取到位</td>
+</tr>
+<tr>
+<td>6</td>
+<td>整合准备与社会许可</td>
+<td>部分满足</td>
+<td>承诺到 2032 年不强制裁员，但这削弱了本要获得的协同</td>
+</tr>
+</tbody>
+</table></div>
+<p>启示：在德国的双层董事会和共同决策体制下，政治、工会和锚定股东的分量可能超过溢价本身。对 BASF 股东来说，退出是成功的；而 Evonik 拒绝谈判，可能让自己的股东少拿了约 26 亿欧元。</p></section>
+<section id="timeline"><h2>时间线（2026 年）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>日期</th>
+<th>事件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8 月 27 日</td>
+<td>Evonik CEO Christian Kullmann 因病休假；亚洲业务负责人 Claus Rettig 自 9 月 1 日起任临时 CEO</td>
+</tr>
+<tr>
+<td>9 月下旬</td>
+<td>BASF 与 Evonik 确认存在关于自愿公开要约的非约束性接触，BASF 同时接触 RAG 基金会。首份方案据报约每股 22.15 欧元（约 103 亿欧元），溢价近 29%。Evonik 认为不足以开启谈判或尽职调查，予以拒绝</td>
+</tr>
+<tr>
+<td>9 月</td>
+<td>Evonik 宣布 "Tailor Made" 重组计划：全球裁员 3,200 人，其中德国约 2,150 人</td>
+</tr>
+<tr>
+<td>10 月 22 日</td>
+<td>BASF 致函表达提出自愿公开要约的意向；CEO Markus Kamieth 发布视频，承诺遵守现有基地协议，并在 2032 年前不在德国强制裁员</td>
+</tr>
+<tr>
+<td>10 月 23 日</td>
+<td>方案据报提高到每股 24 欧元（约 112 亿欧元），较约 17.40 欧元的未受干扰股价溢价约 38%</td>
+</tr>
+<tr>
+<td>10 月 30 日</td>
+<td>Evonik 执行董事会决定，基于现有信息不进入谈判；只提出保密信息交流，并要求 BASF 解释战略逻辑</td>
+</tr>
+<tr>
+<td>11 月初</td>
+<td>双方高管在一个周末会面，Evonik 仍然反对。北威州州长 Hendrik Wüst 公开反对收购，获得 IG BCE 工会支持</td>
+</tr>
+<tr>
+<td>11 月 19 日</td>
+<td>BASF 宣布退出；Evonik 股价下跌 16%</td>
+</tr>
+<tr>
+<td>11 月 20–23 日</td>
+<td>RAG 基金会对结果表示遗憾，重申将约 43% 的持股降至 25.1%；IG BCE 要求重新界定 RAG 对 Evonik 的责任；Evonik 也因价格和石棉风险退出 Ashland 竞购</td>
+</tr>
+</tbody>
+</table></div></section>
+<section id="criteria"><h2>六项标准</h2>
+<h3>1. 战略逻辑：部分满足</h3>
+<ul>
+<li><strong>BASF 的理由：</strong> Kamieth 认为欧洲化工整合不可避免，Evonik 可以通过 BASF 的一体化基地（Verbund）更便宜、更稳定地获得原料。交易还能让 BASF 转向利润率更高的特种化学品（添加剂、胶粘剂原料、高性能塑料），减少对波动较大的基础化学品的依赖。BASF 第二大基地、也是 Evonik 德国以外最大基地的安特卫普将归入同一集团。</li>
+<li><strong>质疑：</strong> 行业顾问认为其战略逻辑远不清晰，与 BASF 自身的增长和降本战略不一致；分析师认为地域协同有限。</li>
+<li><strong>真正的失败：</strong> Evonik 正式要求 BASF 解释战略逻辑，说明这个战略故事从未打动目标方。</li>
+</ul>
+<h3>2. 估值与价格纪律：满足</h3>
+<ul>
+<li>BASF 的溢价从约 29% 提高到约 38%，然后停止。它表示 Evonik 的独立前景和风险不足以支持更高估值，并强调在其 "Winning Ways" 战略下，收购是"可以做"，而不是"必须做"。</li>
+<li>价格不合适时选择退出，对收购方股东来说就是成功的并购结果。</li>
+</ul>
+<h3>3. 协同效应论证：未满足</h3>
+<ul>
+<li>从未公布协同估算。BASF 称只有在 Evonik 配合下才能可靠量化协同。</li>
+<li>顾问看得到生产、人员和总部层面的协同，但认为社会层面的代价"巨大"。</li>
+<li>没有数字，BASF 既无法向自己的股东证明加价合理，也无法向 Evonik 股东说明他们拿到的溢价对应什么。</li>
+</ul>
+<h3>4. 交易结构与审批路径：未满足</h3>
+<ul>
+<li>BASF 选择了友好、非约束性的路径，这需要 Evonik 董事会配合。</li>
+<li>即使绕过董事会直接向股东发起敌意要约，也离不开持股约 43–44% 的 RAG 基金会。RAG 长期表示会保留 25.1% 的否决性少数股权，这一比例足以在收购后阻止控制协议。</li>
+<li>所以 BASF 没有任何路径能同时绕开董事会和基金会，非约束性信函已经是它能做的极限。</li>
+</ul>
+<h3>5. 利益相关方与治理管理：未满足（决定性因素）</h3>
+<ul>
+<li><strong>州政府：</strong> 北威州州长 Wüst 反对交易，同时他也在共同决定 RAG 出售 Evonik 股份的机构中任职，等于反对者掌握着关键股份。</li>
+<li><strong>工会：</strong> IG BCE 支持反对立场，并且担任 Evonik 监事会副主席。</li>
+<li><strong>目标方领导层：</strong> 临时 CEO 很少有出售公司的授权。</li>
+<li><strong>锚定股东：</strong> RAG 私下倾向于深入谈判，但 BASF 把精力放在董事会上，而没有先争取 RAG 理事会和州政府。</li>
+</ul>
+<h3>6. 整合准备与社会许可：部分满足</h3>
+<ul>
+<li>承诺有力：遵守基地和集体协议，2032 年前不在德国强制裁员，在埃森和北威州保持重要存在，评估 Marl 和 Wesseling 化工园区。</li>
+<li>但这些承诺削弱了本要获得的协同，而 Evonik 自己正在德国裁减约 2,150 个岗位。</li>
+<li>两家在美容和个人护理原料上的重叠还可能引发反垄断审查。</li>
+</ul></section>
+<section id="value"><h2>谁损失了价值</h2>
+<p>自行测算，按 112 亿欧元 ÷ 24 欧元 ≈ 4.66 亿股：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最终方案</td>
+<td>每股 24.00 欧元</td>
+</tr>
+<tr>
+<td>Evonik 股价（11 月 23 日）</td>
+<td>约 18.50 欧元</td>
+</tr>
+<tr>
+<td>每股差额</td>
+<td>约 5.50 欧元</td>
+</tr>
+<tr>
+<td>Evonik 股东未获得的价值</td>
+<td>约 26 亿欧元</td>
+</tr>
+<tr>
+<td>其中 RAG 基金会部分（约 43%）</td>
+<td>约 11 亿欧元</td>
+</tr>
+</tbody>
+</table></div>
+<p>这解释了为什么 RAG 基金会公开表示遗憾，也说明由临时 CEO 领导的 Evonik 董事会，为何会因拒绝谈判而受到质疑。</p>
+<h2>启示</h2>
+<ol>
+<li><strong>先争取利益相关方，再谈价格。</strong> 在双层董事会和共同决策体制下，政治、工会和锚定股东可能比溢价更重要，Commerzbank 案例也是如此。</li>
+<li><strong>拿出协同数字。</strong> 没有数字，收购方既无法加价，也无法给目标方施压。</li>
+<li><strong>退出也可以是成功的</strong>，对收购方股东而言。</li>
+<li><strong>拒绝谈判的董事会同样有风险：</strong> BASF 退出后股价下跌 16%，说明 Evonik 的立场可能让自己的股东付出了代价。</li>
+</ol>
+<h2>与其他案例对照</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>ABN AMRO（2007）</th>
+<th>Commerzbank（2026）</th>
+<th>Sunrise / UPC（2019–20）</th>
+<th>BASF / Evonik（2026）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>决定结果的因素</td>
+<td>股东接受更高报价</td>
+<td>股东接受要约；收购方持股达 47.6%</td>
+<td>买方自己的股东否决融资，之后接受现金要约</td>
+<td>目标董事会和锚定股东背后的政治因素</td>
+</tr>
+<tr>
+<td>董事会角色</td>
+<td>被动</td>
+<td>积极防御</td>
+<td>两次都支持交易</td>
+<td>拒绝接触</td>
+</tr>
+<tr>
+<td>收购方纪律</td>
+<td>财团出价过高</td>
+<td>耐心建仓</td>
+<td>2019 年买方出价过高；2020 年买方保留大部分协同</td>
+<td>主动退出</td>
+</tr>
+</tbody>
+</table></div></section>
+<section id="facts"><h2>交易要点与来源</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>收购方</td>
+<td>BASF SE（市值约 470 亿欧元）</td>
+</tr>
+<tr>
+<td>目标方</td>
+<td>Evonik Industries AG（约 3.1 万名员工；接触前市值约 80–90 亿欧元）</td>
+</tr>
+<tr>
+<td>第一份方案</td>
+<td>约每股 22.15 欧元，约 103 亿欧元；溢价近 29%</td>
+</tr>
+<tr>
+<td>第二份方案</td>
+<td>每股 24 欧元，约 112 亿欧元；较未受干扰股价约 17.40 欧元溢价约 38%</td>
+</tr>
+<tr>
+<td>隐含企业价值</td>
+<td>含债务约 120–140 亿欧元（媒体估算）</td>
+</tr>
+<tr>
+<td>形式</td>
+<td>非约束性、全现金，拟发起自愿公开要约</td>
+</tr>
+<tr>
+<td>锚定股东</td>
+<td>RAG 基金会，持股约 43–44%；计划降至 25.1%</td>
+</tr>
+<tr>
+<td>就业承诺</td>
+<td>2032 年前不在德国强制裁员</td>
+</tr>
+<tr>
+<td>结果</td>
+<td>BASF 于 2026 年 11 月 19 日退出；Evonik 当天下跌 16%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>来源</h3>
+<ul>
+<li><a href="https://www.basf.com/global/en/media/news-releases/2026/11/p-26-202">BASF 新闻稿，2026-11-19</a></li>
+<li><a href="https://www.basf.com/global/en/evonik">BASF 关于可能合并的信息页</a></li>
+<li><a href="https://www.pcimag.com/articles/115431-basf-ends-evonik-takeover-pursuit">PCI Magazine：BASF 接触时间线</a></li>
+<li><a href="https://cen.acs.org/business/mergers-&amp;-acquisitions/basf-drops-plan-acquire-evonik/104/web/2026/11">C&amp;EN：BASF 放弃收购 Evonik</a></li>
+<li><a href="https://businessmodelanalyst.com/basf-evonik-bid-rag-foundation-veto/">Business Model Analyst：溢价与 RAG 的否决性少数股权</a></li>
+<li><a href="https://ionanalytics.com/insights/mergermarket/evonik-basf-outlook-clouded-by-strategic-confusion-political-pitfalls/">ION Analytics / Mergermarket：战略逻辑混乱与政治障碍</a></li>
+<li><a href="https://de.nachrichten.yahoo.com/keine-pommesbude-w%C3%BCst-stemmt-gegen-151545475.html">Yahoo / Merkur：Wüst 反对收购</a></li>
+<li><a href="https://www.handelsblatt.com/unternehmen/industrie/evonik-ig-bce-fordert-nach-basf-rueckzug-kurswechsel-bei-rag-stiftung/100271617.html">Handelsblatt：IG BCE 矛头指向 RAG 基金会</a></li>
+<li><a href="https://www.evonik.com/en/news/press-releases/2026/08/claus-rettig-interim-ceo-evonik.html">Evonik：Claus Rettig 出任临时 CEO</a></li>
+<li><a href="https://www.evonik.com/en/news/press-releases/2026/09/evonik-sharpens-growth-strategy.html">Evonik：增长战略与裁员</a></li>
+</ul></section>
+    <footer>本页基于公开新闻报道和公司公告，用于学习练习，不构成投资建议。</footer>
+  </main>
+</div>
+</body>
+</html>

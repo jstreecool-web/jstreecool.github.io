@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BASF / Evonik Case Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deal-memo page — fixed contents rail on the left, one reading column, tables full column width */
+:root {
+  --bg: #f6f6f3;
+  --paper: #ffffff;
+  --ink: #1b2130;
+  --ink-2: #4d5566;
+  --rule: #dcdcd4;
+  --accent: #184f95;
+  --accent-soft: #e6eefa;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+    --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+    --s1: #3987e5; --s2: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+  --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+  --s1: #3987e5; --s2: #d95926;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+nav { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .navhead { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 8px; }
+nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-left: 2px solid var(--rule); }
+nav a.lang { margin-top: 14px; border-left: 0; padding-left: 0; color: var(--accent); font-weight: 700; }
+nav a:hover, nav a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--ink-2); letter-spacing: .04em; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; }
+.sub a { color: var(--accent); }
+.sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 8px; }
+.kpi { background: var(--paper); padding: 14px 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.kpi span { font-size: 13px; color: var(--ink-2); }
+section { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 24px; scroll-margin-top: 16px; }
+section > *:first-child { margin-top: 0; }
+h2 { font-family: var(--display); font-size: 24px; line-height: 1.4; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); text-wrap: balance; }
+h3 { font-size: 17px; margin: 28px 0 8px; color: var(--accent); text-wrap: balance; }
+p, li { max-width: 46em; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 1.4em; margin: 8px 0; }
+li { margin: 4px 0; }
+section > p:nth-of-type(1) strong:first-child { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+thead th { text-align: left; font-weight: 700; background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+code { font-size: .9em; }
+.fig { margin: 22px 0 6px; }
+.fig figcaption { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); }
+.sw.ref { height: 0; border-top: 2px dashed var(--ink-2); border-radius: 0; width: 16px; }
+.chart { width: 100%; max-width: 680px; height: auto; display: block; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .tick, .chart .reflab { fill: var(--ink-2); font-size: 12px; font-family: var(--body); }
+.chart .cat { fill: var(--ink); font-size: 13px; font-family: var(--body); }
+.chart .val { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--body); }
+.chart .s1 { fill: var(--s1); } .chart .s2 { fill: var(--s2); }
+.chart .ref { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar:hover path, .chart .bar:focus path { opacity: .8; }
+.chart .bar:focus { outline: none; }
+.src { font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+footer { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 16px; }
+  nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav .navhead { width: 100%; margin: 0; }
+  nav a { border: 1px solid var(--rule); padding: 4px 10px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 20px 18px; }
+  h1 { font-size: 27px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="Contents"><div class="navhead">Contents</div><a href="#summary">Executive summary</a><a href="#timeline">Timeline</a><a href="#criteria">The six criteria</a><a href="#value">Value and lessons</a><a href="#facts">Appendix · Deal facts and sources</a><a class="lang" href="index.html" hreflang="zh-CN">中文版 →</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">Case analysis · German chemicals: BASF's approach to Evonik (2026)</div>
+      <h1>BASF / Evonik: a failed bid against six M&A success criteria</h1>
+      <p class="sub">BASF's two proposals and withdrawal, scored against six M&A success criteria and compared with the <a href="../abn-amro-2007/en.html">ABN AMRO</a>, <a href="../commerzbank-2026/en.html">Commerzbank</a> and <a href="../sunrise-upc/en.html">Sunrise / UPC</a> cases. Analysis dated 26 Nov 2026.</p>
+      <div class="kpis"><div class="kpi"><b>€24</b><span>Final proposal per share</span></div><div class="kpi"><b>~38%</b><span>Premium to undisturbed price</span></div><div class="kpi"><b>~43%</b><span>RAG-Stiftung stake</span></div><div class="kpi"><b>−16%</b><span>Evonik shares on withdrawal day</span></div></div>
+    </header>
+    <section id="summary"><h2>Executive summary</h2>
+<p>On 19 November 2026 BASF ended its pursuit of Evonik after Evonik's executive board rejected two non-binding all-cash proposals: about €22.15 per share (≈€10.3bn) in September and €24 per share (≈€11.2bn, about a 38% premium to the undisturbed price) in October. BASF said it was ready to raise the price moderately, but Evonik's board never engaged and BASF's own view of Evonik's standalone prospects did not justify paying more. Evonik's shares fell 16% the same day.</p>
+<p>Scored against six M&amp;A success criteria, the deal had a sound industrial logic and a disciplined price, but failed on synergy evidence, the route to approval and, above all, stakeholder management.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Criterion</th>
+<th>Rating</th>
+<th>Core reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Strategic rationale</td>
+<td>Partly met</td>
+<td>Plausible Verbund and specialty logic, but contested and never convincingly explained to the target</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Valuation and price discipline</td>
+<td>Met</td>
+<td>Raised from about 29% to about 38% premium, then walked away rather than overpay</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Synergy case</td>
+<td>Not met</td>
+<td>No synergy number disclosed or put to the target</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Deal structure and route to approval</td>
+<td>Not met</td>
+<td>No path around a non-engaging board and RAG-Stiftung's 25.1% blocking minority</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Stakeholder and governance management</td>
+<td>Not met</td>
+<td>State government, union and target board all opposed; the anchor shareholder was never lined up</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Integration readiness and social licence</td>
+<td>Partly met</td>
+<td>Strong job pledges to 2032, but they erode the very synergies being bought</td>
+</tr>
+</tbody>
+</table></div>
+<p>The lesson: in Germany's two-tier, co-determined system, politics, unions and anchor shareholders can matter more than the premium. Walking away was a success for BASF's shareholders; refusing to negotiate may have cost Evonik's about €2.6bn.</p></section>
+<section id="timeline"><h2>Timeline (2026)</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>27 Aug</td>
+<td>Evonik CEO Christian Kullmann on medical leave; Claus Rettig, head of Asia, named interim CEO from 1 September</td>
+</tr>
+<tr>
+<td>Late Sep</td>
+<td>BASF and Evonik confirm a non-binding approach about a voluntary public offer; BASF also approaches RAG-Stiftung. First proposal reported at about €22.15 per share (≈€10.3bn), a premium of nearly 29%. Evonik rejects it as no basis for talks or due diligence</td>
+</tr>
+<tr>
+<td>Sep</td>
+<td>Evonik announces its "Tailor Made" restructuring: 3,200 jobs cut worldwide, about 2,150 in Germany</td>
+</tr>
+<tr>
+<td>22 Oct</td>
+<td>BASF writes to express interest in a voluntary public offer; CEO Markus Kamieth publishes a video pledging to honour site agreements and rule out compulsory redundancies in Germany until 2032</td>
+</tr>
+<tr>
+<td>23 Oct</td>
+<td>Proposal reported raised to €24 per share (≈€11.2bn), about 38% above the undisturbed price of about €17.40</td>
+</tr>
+<tr>
+<td>30 Oct</td>
+<td>Evonik's executive board decides not to negotiate on the information available; offers only a confidential information exchange and asks BASF to explain its strategic rationale</td>
+</tr>
+<tr>
+<td>Early Nov</td>
+<td>Executives meet over a weekend; Evonik stays opposed. North Rhine-Westphalia's premier Hendrik Wüst publicly opposes the takeover, backed by IG BCE</td>
+</tr>
+<tr>
+<td>19 Nov</td>
+<td>BASF ends its pursuit; Evonik shares fall 16%</td>
+</tr>
+<tr>
+<td>20–23 Nov</td>
+<td>RAG-Stiftung regrets the outcome and restates its plan to cut its about 43% stake to 25.1%; IG BCE demands a reordering of RAG's responsibility for Evonik; Evonik also exits the Ashland auction over price and asbestos risk</td>
+</tr>
+</tbody>
+</table></div></section>
+<section id="criteria"><h2>The six criteria</h2>
+<h3>1. Strategic rationale: partly met</h3>
+<ul>
+<li><strong>BASF's case:</strong> Kamieth called European chemicals consolidation unavoidable and argued Evonik would gain cheaper, more secure access to precursors through BASF's integrated Verbund. The deal would also shift BASF towards higher-margin specialty chemicals (additives, adhesive raw materials, high-performance plastics) and reduce its exposure to volatile bulk chemicals. Antwerp, BASF's second-largest site and Evonik's largest outside Germany, would come under one group.</li>
+<li><strong>The doubts:</strong> sector advisers said the rationale was far from clear and sat poorly with BASF's own growth and cost-cutting strategy; analysts saw limited geographic synergies.</li>
+<li><strong>The real failure:</strong> Evonik formally asked BASF to explain its rationale. The strategy story never landed with the target.</li>
+</ul>
+<h3>2. Valuation and price discipline: met</h3>
+<ul>
+<li>BASF went from about a 29% premium to about 38%, then stopped. It said Evonik's standalone prospects and risks did not justify a higher valuation, and that under its "Winning Ways" strategy acquisitions are a "could do", not a "must do".</li>
+<li>Walking away when the price no longer works is a successful M&amp;A outcome for the bidder's shareholders.</li>
+</ul>
+<h3>3. Synergy case: not met</h3>
+<ul>
+<li>No synergy estimate was published. BASF argued synergies could only be quantified reliably with Evonik's cooperation.</li>
+<li>Advisers could see production, staff and headquarters synergies, but called the social dimensions "immense".</li>
+<li>Without a number, BASF could neither justify a higher price to its own shareholders nor show Evonik's shareholders what they were being paid for.</li>
+</ul>
+<h3>4. Deal structure and route to approval: not met</h3>
+<ul>
+<li>BASF chose a friendly, non-binding route, which required Evonik's board to engage.</li>
+<li>A hostile bid direct to shareholders would still have needed RAG-Stiftung (about 43–44%). RAG has long said it will keep 25.1% as a blocking minority, the level that blocks a domination agreement after a takeover.</li>
+<li>So there was no route around both the board and the foundation; non-binding letters were the most BASF could do.</li>
+</ul>
+<h3>5. Stakeholder and governance management: not met (the decisive factor)</h3>
+<ul>
+<li><strong>State government:</strong> NRW premier Wüst opposed the deal and also sits on the body that co-decides the sale of RAG's Evonik shares, so an opponent controlled the key shares.</li>
+<li><strong>Union:</strong> IG BCE backed the opposition; it also holds the deputy chair of Evonik's supervisory board.</li>
+<li><strong>Target leadership:</strong> an interim CEO rarely has a mandate to sell the company.</li>
+<li><strong>Anchor shareholder:</strong> RAG privately favoured deeper talks, but BASF pursued the board instead of first lining up RAG's board and the state government.</li>
+</ul>
+<h3>6. Integration readiness and social licence: partly met</h3>
+<ul>
+<li>Strong commitments: honour site and collective agreements, no compulsory redundancies in Germany until 2032, significant presence in Essen and NRW, review of the Marl and Wesseling chemical parks.</li>
+<li>But the pledges remove part of the synergies being bought, and Evonik was itself cutting about 2,150 German jobs.</li>
+<li>Antitrust overlap in beauty and personal-care ingredients was a further open question.</li>
+</ul></section>
+<section id="value"><h2>Who lost value</h2>
+<p>Own calculation, using €11.18bn ÷ €24 ≈ 466m shares:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Figure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Final proposal</td>
+<td>€24.00 per share</td>
+</tr>
+<tr>
+<td>Evonik share price, 23 Nov</td>
+<td>about €18.50</td>
+</tr>
+<tr>
+<td>Gap per share</td>
+<td>about €5.50</td>
+</tr>
+<tr>
+<td>Value Evonik shareholders did not receive</td>
+<td>about €2.6bn</td>
+</tr>
+<tr>
+<td>RAG-Stiftung's share (about 43%)</td>
+<td>about €1.1bn</td>
+</tr>
+</tbody>
+</table></div>
+<p>This explains why RAG-Stiftung publicly regrets the outcome, and why Evonik's board, led by an interim CEO, faces hard questions about refusing even to negotiate.</p>
+<h2>Lessons</h2>
+<ol>
+<li><strong>Win the stakeholders before the price.</strong> In a two-tier, co-determined system, politics, unions and anchor shareholders can matter more than the premium, as at Commerzbank.</li>
+<li><strong>Bring a synergy number.</strong> Without one, a bidder can neither raise its price nor put pressure on the target.</li>
+<li><strong>Walking away can be a success</strong> for the bidder's shareholders.</li>
+<li><strong>A board that refuses to negotiate is a risk too:</strong> the 16% fall after BASF withdrew suggests Evonik's stance cost its own shareholders.</li>
+</ol>
+<h2>Comparison with the other cases</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>ABN AMRO (2007)</th>
+<th>Commerzbank (2026)</th>
+<th>Sunrise / UPC (2019–20)</th>
+<th>BASF / Evonik (2026)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>What decided it</td>
+<td>Shareholders tendered to the higher bid</td>
+<td>Shareholders tendered; bidder reached 47.6%</td>
+<td>Buyer's own shareholders blocked financing, then accepted a cash bid</td>
+<td>Target board and anchor shareholder politics</td>
+</tr>
+<tr>
+<td>Board role</td>
+<td>Passive</td>
+<td>Active defence</td>
+<td>Supportive of the deal both times</td>
+<td>Refused to engage</td>
+</tr>
+<tr>
+<td>Bidder discipline</td>
+<td>Consortium overpaid</td>
+<td>Patient stake-building</td>
+<td>2019 buyer overpaid; 2020 buyer kept most synergies</td>
+<td>Walked away</td>
+</tr>
+</tbody>
+</table></div></section>
+<section id="facts"><h2>Deal facts and sources</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Figure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bidder</td>
+<td>BASF SE (market cap about €47bn)</td>
+</tr>
+<tr>
+<td>Target</td>
+<td>Evonik Industries AG (about 31,000 employees; market cap about €8–9bn before the approach)</td>
+</tr>
+<tr>
+<td>First proposal</td>
+<td>About €22.15 per share, ≈€10.3bn; premium nearly 29%</td>
+</tr>
+<tr>
+<td>Second proposal</td>
+<td>€24 per share, ≈€11.2bn; about 38% premium to undisturbed ≈€17.40</td>
+</tr>
+<tr>
+<td>Enterprise value implied</td>
+<td>About €12–14bn including debt (press estimates)</td>
+</tr>
+<tr>
+<td>Form</td>
+<td>Non-binding, all-cash, voluntary public offer intended</td>
+</tr>
+<tr>
+<td>Anchor shareholder</td>
+<td>RAG-Stiftung, about 43–44%; plans to reduce to 25.1%</td>
+</tr>
+<tr>
+<td>Job pledge</td>
+<td>No compulsory redundancies in Germany until 2032</td>
+</tr>
+<tr>
+<td>Outcome</td>
+<td>BASF withdrew 19 Nov 2026; Evonik −16% that day</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sources</h3>
+<ul>
+<li><a href="https://www.basf.com/global/en/media/news-releases/2026/11/p-26-202">BASF press release, 19 Nov 2026</a></li>
+<li><a href="https://www.basf.com/global/en/evonik">BASF information page on a possible combination</a></li>
+<li><a href="https://www.pcimag.com/articles/115431-basf-ends-evonik-takeover-pursuit">PCI Magazine: timeline of BASF's approach</a></li>
+<li><a href="https://cen.acs.org/business/mergers-&amp;-acquisitions/basf-drops-plan-acquire-evonik/104/web/2026/11">C&amp;EN: BASF drops plan to acquire Evonik</a></li>
+<li><a href="https://businessmodelanalyst.com/basf-evonik-bid-rag-foundation-veto/">Business Model Analyst: premium and RAG's blocking minority</a></li>
+<li><a href="https://ionanalytics.com/insights/mergermarket/evonik-basf-outlook-clouded-by-strategic-confusion-political-pitfalls/">ION Analytics / Mergermarket: strategic confusion, political pitfalls</a></li>
+<li><a href="https://de.nachrichten.yahoo.com/keine-pommesbude-w%C3%BCst-stemmt-gegen-151545475.html">Yahoo / Merkur: Wüst opposes the takeover</a></li>
+<li><a href="https://www.handelsblatt.com/unternehmen/industrie/evonik-ig-bce-fordert-nach-basf-rueckzug-kurswechsel-bei-rag-stiftung/100271617.html">Handelsblatt: IG BCE targets RAG-Stiftung</a></li>
+<li><a href="https://www.evonik.com/en/news/press-releases/2026/08/claus-rettig-interim-ceo-evonik.html">Evonik: Claus Rettig interim CEO</a></li>
+<li><a href="https://www.evonik.com/en/news/press-releases/2026/09/evonik-sharpens-growth-strategy.html">Evonik: sharpened growth strategy and job cuts</a></li>
+</ul></section>
+    <footer>Based on public news reporting and company announcements. For study purposes; not investment advice.</footer>
+  </main>
+</div>
+</body>
+</html>
