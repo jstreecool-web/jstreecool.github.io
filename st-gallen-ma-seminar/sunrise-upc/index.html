@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sunrise / UPC 案例分析</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deal-memo page — fixed contents rail on the left, one reading column, tables full column width */
+:root {
+  --bg: #f6f6f3;
+  --paper: #ffffff;
+  --ink: #1b2130;
+  --ink-2: #4d5566;
+  --rule: #dcdcd4;
+  --accent: #184f95;
+  --accent-soft: #e6eefa;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+    --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+    --s1: #3987e5; --s2: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+  --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+  --s1: #3987e5; --s2: #d95926;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+nav { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .navhead { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 8px; }
+nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-left: 2px solid var(--rule); }
+nav a.lang { margin-top: 14px; border-left: 0; padding-left: 0; color: var(--accent); font-weight: 700; }
+nav a:hover, nav a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--ink-2); letter-spacing: .04em; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; }
+.sub a { color: var(--accent); }
+.sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 8px; }
+.kpi { background: var(--paper); padding: 14px 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.kpi span { font-size: 13px; color: var(--ink-2); }
+section { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 24px; scroll-margin-top: 16px; }
+section > *:first-child { margin-top: 0; }
+h2 { font-family: var(--display); font-size: 24px; line-height: 1.4; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); text-wrap: balance; }
+h3 { font-size: 17px; margin: 28px 0 8px; color: var(--accent); text-wrap: balance; }
+p, li { max-width: 46em; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 1.4em; margin: 8px 0; }
+li { margin: 4px 0; }
+section > p:nth-of-type(1) strong:first-child { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+thead th { text-align: left; font-weight: 700; background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+code { font-size: .9em; }
+.fig { margin: 22px 0 6px; }
+.fig figcaption { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); }
+.sw.ref { height: 0; border-top: 2px dashed var(--ink-2); border-radius: 0; width: 16px; }
+.chart { width: 100%; max-width: 680px; height: auto; display: block; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .tick, .chart .reflab { fill: var(--ink-2); font-size: 12px; font-family: var(--body); }
+.chart .cat { fill: var(--ink); font-size: 13px; font-family: var(--body); }
+.chart .val { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--body); }
+.chart .s1 { fill: var(--s1); } .chart .s2 { fill: var(--s2); }
+.chart .ref { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar:hover path, .chart .bar:focus path { opacity: .8; }
+.chart .bar:focus { outline: none; }
+.src { font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+footer { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 16px; }
+  nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav .navhead { width: 100%; margin: 0; }
+  nav a { border: 1px solid var(--rule); padding: 4px 10px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 20px 18px; }
+  h1 { font-size: 27px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="目录"><div class="navhead">目录</div><a href="#summary">执行摘要</a><a href="#q1">一 · 交易逻辑</a><a href="#q2">二 · 价值从哪来</a><a href="#q3">三 · 各方视角</a><a href="#q4">四 · 整合与时间表</a><a href="#facts">附录 · 交易要点与来源</a><a class="lang" href="en.html" hreflang="en">English version →</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">案例分析 · 瑞士电信：Sunrise、UPC Switzerland 与 Liberty Global（2019–2020）</div>
+      <h1>Sunrise / UPC 案例分析：同一逻辑，两种结局</h1>
+      <p class="sub">基于三份新闻稿回答案例四道题，并与 <a href="../abn-amro-2007/index.html">ABN AMRO</a>、<a href="../commerzbank-2026/index.html">Commerzbank</a> 案例对照。分析日期 2026-11-26。</p>
+      <div class="kpis"><div class="kpi"><b>CHF 6.8bn</b><span>2020 年企业价值</span></div><div class="kpi"><b>32%</b><span>较 60 日均价溢价</span></div><div class="kpi"><b>CHF 3.1bn</b><span>协同效应净现值</span></div><div class="kpi"><b>~4 年</b><span>交割至分拆上市</span></div></div>
+    </header>
+    <section id="summary"><h2>执行摘要</h2>
+<p>Sunrise 是瑞士第二大移动运营商，UPC Switzerland 是 Liberty Global 旗下的有线网络公司。两者的合并方案前后出现过两次。2019 年 2 月，Sunrise 同意以 63 亿瑞郎企业价值收购 UPC，但支付所需的 41 亿瑞郎配股被自己的股东否决。2020 年 8 月，交易方向反转：Liberty Global 以每股 110 瑞郎现金收购 Sunrise 全部股份，企业价值 68 亿瑞郎。产业逻辑始终没变，变的是谁承担风险、谁留下协同价值。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>核心回答</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一、交易逻辑</td>
+<td>固网与移动融合：打造在移动、宽带、电视、固话四项业务上全面对标 Swisscom 的全国性挑战者。Sunrise 有移动网络但租用固网接入，UPC 有有线网络但租用移动网络，双方都在向竞争对手付费购买对方已经拥有的东西</td>
+</tr>
+<tr>
+<td>二、为何合理、对谁合理、价值从哪来</td>
+<td>协同效应年化 2.75 亿瑞郎，净现值 31 亿瑞郎，其中约 26 亿来自低风险的成本和资本开支节省。Liberty 作为买方支付约 12 亿瑞郎溢价，保留约 19 亿协同价值，外加杠杆收益。2019 年方案中，大部分协同价值通过价格流向了卖方</td>
+</tr>
+<tr>
+<td>三、各方视角</td>
+<td>Liberty 和 Sunrise 董事会两次都支持。Sunrise 股东（以持股约 25% 的 Freenet 为首）拒绝了 2019 年的价格和稀释，却接受了 2020 年 32% 的现金溢价。客户获得融合套餐，但要承受迁移带来的干扰。监管不是障碍</td>
+</tr>
+<tr>
+<td>四、整合</td>
+<td>以 Sunrise 品牌全面吸收，UPC 的网络和电视平台作为固网主干。先拿批发成本协同，再分批迁移 IT 和计费系统。成本协同第三年达到全年水平，收入协同第四年。实际情况：2020 年交割，2021 年退市，2024 年 88% 客户完成迁移，2024 年 11 月分拆重新上市</td>
+</tr>
+</tbody>
+</table></div>
+<p>启示：同一个战略，交易结构不同，结果截然相反。一家小市值买方要靠相当于自身市值 130% 的配股融资，失去了股东支持；一家现金充裕的母公司支付 32% 溢价，赢得了股东。</p></section>
+<section id="q1"><h2>一 · 交易的根本逻辑是什么？</h2>
+<p><strong>回答：</strong> 固网与移动融合（FMC）。把两个"半个挑战者"变成一个在移动、宽带、电视和固话四项业务上全面对标 Swisscom 的全国性挑战者。</p>
+<h3>两家公司高度互补</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>Sunrise</th>
+<th>UPC Switzerland</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>优势</td>
+<td>一流的 4G 网络、5G 频谱（3.5 GHz）、强势品牌和门店网络</td>
+<td>有线网络覆盖 230 万户（约占瑞士 60%）、17,500 公里光纤骨干、领先的电视平台（UPC TV、4K、MySports 内容）</td>
+</tr>
+<tr>
+<td>短板</td>
+<td>没有自有固网：向 Swisscom 租用固网接入，自有光纤入户只覆盖约 30% 家庭</td>
+<td>移动业务弱：约 10 万用户，作为虚拟运营商租用他人网络</td>
+</tr>
+<tr>
+<td>2018 年收入</td>
+<td>18.76 亿瑞郎，+1.2%</td>
+<td>12.96 亿瑞郎，−3.7%</td>
+</tr>
+<tr>
+<td>2018 年调整后 EBITDA 利润率</td>
+<td>32.0%</td>
+<td>49.1%</td>
+</tr>
+<tr>
+<td>企业业务</td>
+<td>以移动为主，增长较快</td>
+<td>固网企业业务排名第二，仅次于 Swisscom</td>
+</tr>
+</tbody>
+</table></div>
+<p>双方都在向竞争对手付费买对方已经拥有的东西：Sunrise 付固网批发费，UPC 付移动网络批发费。消除这两笔费用是交易的核心。</p>
+<h3>合并后形成什么</h3>
+<ul>
+<li>收入约 31 亿瑞郎，移动后付费、宽带和电视市场份额各约 30%，每个领域都是稳固的第二名。</li>
+<li>自有千兆固网：UPC 网络覆盖约 75% 家庭，加上 Sunrise 光纤合作覆盖 30% 以上，2021 年前 90% 瑞士家庭可获得 1 Gbps，并有升级到 10 Gbps 的路线（DOCSIS 3.1）。</li>
+<li>移动加宽带加电视的融合套餐，降低流失率、提高每户收入。</li>
+<li>对 Liberty Global 来说，这和它在其他核心市场推行的"全国性融合冠军"战略一致，例如荷兰的 VodafoneZiggo、英国的 Virgin Media O2。</li>
+</ul></section>
+<section id="q2"><h2>二 · 交易为何合理？对谁合理？价值从哪里来？</h2>
+<h3>价值来源（2020 年数据）</h3>
+<p>协同效应扣除整合成本后的净现值为 31 亿瑞郎，年化 2.75 亿瑞郎。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>来源</th>
+<th>年化（百万瑞郎）</th>
+<th>内容</th>
+<th>风险</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>成本协同</td>
+<td>187</td>
+<td>消除双方的批发费用；合并 IT、网络、采购和营销；精简重复的管理和行政岗位</td>
+<td>低：同一市场内整合，管理层可控</td>
+</tr>
+<tr>
+<td>资本开支协同</td>
+<td>42</td>
+<td>一张网络路线图、一套 IT 系统，而不是两套</td>
+<td>低</td>
+</tr>
+<tr>
+<td>收入协同</td>
+<td>46</td>
+<td>向 UPC 客户交叉销售移动业务，向 Sunrise 客户销售宽带和电视；企业业务规模效应</td>
+<td>较高</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>275</strong></td>
+<td>31 亿净现值中约 26 亿来自成本和资本开支</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>仅成本协同就相当于合并后 2018 年调整后 EBITDA（12.38 亿瑞郎）的约 15%。所以交易在协同前看起来贵（2020 年为 10.0 倍 EBITDA），协同后看起来便宜（7.5 倍）。</p>
+<h3>谁拿走价值：交易结构决定</h3>
+<p><strong>2019 年，Sunrise 作为买方</strong></p>
+<ul>
+<li>Sunrise 按 UPC 2018 年调整后 EBITDA 的 9.9 倍（协同后 8.0 倍）出价，而 UPC 收入每年下滑约 4%。</li>
+<li>它需要 41 亿瑞郎配股，约相当于自身市值的 130%。</li>
+<li>协同净现值约 28 亿瑞郎（成本和资本开支 24 亿，收入 4 亿），但其中很大部分通过价格转给了卖方：Liberty 将获得约 26 亿瑞郎现金，接近原始投资的 4 倍。</li>
+<li>Sunrise 股东要承担执行风险和大幅稀释。</li>
+</ul>
+<p><strong>2020 年，Liberty Global 作为买方</strong></p>
+<ul>
+<li>支付的溢价：（110 − 83.17 的 60 日成交量加权均价）× 4,540 万股 ≈ 12 亿瑞郎。</li>
+<li>协同净现值约 31 亿瑞郎，Liberty 让出约 40%，保留约 19 亿。</li>
+<li>额外的财务价值：Liberty 动用现有现金（约 35 亿瑞郎），把 Sunrise 并入 UPC 借贷集团，杠杆目标 5.0 倍，而 Sunrise 原计划是 3.0 倍；同时消除了上市少数股东。</li>
+</ul>
+<h3>对谁合理？</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>一方</th>
+<th>结论</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Liberty Global</td>
+<td>合理</td>
+<td>拥有 100% 协同效应；符合其全国冠军战略；高效利用现金和杠杆</td>
+</tr>
+<tr>
+<td>2020 年的 Sunrise 股东</td>
+<td>合理</td>
+<td>32% 现金溢价，不承担整合风险</td>
+</tr>
+<tr>
+<td>瑞士消费者</td>
+<td>大概率合理</td>
+<td>更强的第二名能在价格和千兆速度上更有力地挑战 Swisscom</td>
+</tr>
+<tr>
+<td>2019 年的 Sunrise 股东</td>
+<td>存疑</td>
+<td>他们要为协同效应付钱给卖方并承担风险，所以投了反对票</td>
+</tr>
+</tbody>
+</table></div></section>
+<section id="q3"><h2>三 · 各方视角</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>利益相关方</th>
+<th>态度</th>
+<th>要点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>收购方：Liberty Global（2020）</strong></td>
+<td>非常积极</td>
+<td>把一个萎缩的有线资产变成融合冠军；保留大部分协同；动用现金并增加杠杆。2019 年它同样乐于出售：真正目标是无论哪种方式都要完成瑞士市场整合</td>
+</tr>
+<tr>
+<td><strong>目标公司董事会和管理层：Sunrise</strong></td>
+<td>两次都支持</td>
+<td>2019 年董事会力推收购 UPC，投票失败后仍称交易逻辑"令人信服"。2020 年一致建议接受 Liberty 的要约，以独立性换取确定的结果</td>
+</tr>
+<tr>
+<td><strong>Sunrise 股东</strong></td>
+<td>2019 年反对，2020 年接受</td>
+<td>Freenet（约 25%）认为 UPC 价格过高；代理投票顾问 ISS 建议投反对票。Sunrise 在 2019 年 10 月取消特别股东大会，11 月终止交易，支付 5,000 万瑞郎分手费，外加 7,000 万至 7,500 万瑞郎其他费用。2020 年 Freenet 承诺以 110 瑞郎出售股份。股东反对的不是逻辑，而是为它买单</td>
+</tr>
+<tr>
+<td><strong>Liberty Global 股东</strong></td>
+<td>积极</td>
+<td>价值得到兑现；2024 年 Liberty 分拆 Sunrise 并在瑞士交易所重新上市，股东可以直接持有</td>
+</tr>
+<tr>
+<td><strong>客户</strong></td>
+<td>短期好坏参半，长期积极</td>
+<td>好处：融合套餐、千兆覆盖、Sunrise 客户可用 UPC TV、UPC 客户获得更好的移动服务。风险：迁移带来干扰；长期看，若三家运营商默契竞争，竞争压力会减弱</td>
+</tr>
+<tr>
+<td><strong>员工</strong></td>
+<td>担忧</td>
+<td>裁员主要集中在重复的管理和行政岗位；由于 UPC 门店少，一线员工受影响预计有限</td>
+</tr>
+<tr>
+<td><strong>竞争对手</strong></td>
+<td>Swisscom 面对更强对手；Salt 成为唯一没有自有固网的运营商</td>
+<td>Swisscom 还会失去 Sunrise 的固网批发收入。Salt 曾被传为 UPC 的另一个潜在合作方</td>
+</tr>
+<tr>
+<td><strong>监管：瑞士竞争委员会</strong></td>
+<td>不是障碍</td>
+<td>批准了 2019 年交易，认为不会形成不当的市场支配地位。在欧洲并购中，由股东而不是监管机构否决交易的情况很少见</td>
+</tr>
+<tr>
+<td><strong>债权人</strong></td>
+<td>杠杆结构不同</td>
+<td>在 Liberty 旗下，Sunrise 进入杠杆目标 5.0 倍的借贷池，而 2019 年方案是 3.0 倍并以投资级评级为目标</td>
+</tr>
+</tbody>
+</table></div></section>
+<section id="q4"><h2>四 · 整合策略与时间表</h2>
+<h3>建议策略：全面吸收，取两家之长</h3>
+<ul>
+<li><strong>一家公司，以 Sunrise 为主品牌：</strong> Sunrise 品牌更强且在增长，UPC 品牌在下滑。保留低价副品牌 yallo，服务价格敏感客户。</li>
+<li><strong>UPC 的有线网络和电视平台</strong>作为固网主干。</li>
+<li><strong>Sunrise 的移动网络</strong>承接 UPC 的虚拟运营商客户。</li>
+<li><strong>排序原则：</strong> 先拿批发成本协同，因为见效快、金额大、公司可控；再分批推进风险最高的 IT 和计费系统迁移。</li>
+</ul>
+<h3>参考时间表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>时间</th>
+<th>主要行动</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>交割前</td>
+<td>宣布至交割（约 4 个月）</td>
+<td>用"洁净团队"验证协同、建立整合管理办公室、提交监管申报、设计第一天的组织架构、确定品牌架构</td>
+</tr>
+<tr>
+<td>第 1 至 100 天</td>
+<td>第 0 至 3 个月</td>
+<td>任命领导团队、确定治理节奏；与员工和客户沟通。速赢：开始把 UPC 移动客户迁到 Sunrise 网络；推出第一款融合套餐</td>
+</tr>
+<tr>
+<td>第一年</td>
+<td>第 3 至 12 个月</td>
+<td>合并管理和行政职能；整合采购；合并企业业务销售；挤出少数股东并退市；启动网络升级</td>
+</tr>
+<tr>
+<td>第 1 至 3 年</td>
+<td>核心整合</td>
+<td>分批迁移计费和 IT 系统；在有线网络覆盖区把 Sunrise 固网客户从 Swisscom 批发网络迁出；整合网络；UPC 品牌并入 Sunrise。成本和资本开支协同在第三个完整年度达到全年水平</td>
+</tr>
+<tr>
+<td>第 3 至 4 年</td>
+<td>收尾</td>
+<td>完成客户迁移；收入协同在第四个完整年度达到全年水平；关停旧系统</td>
+</tr>
+<tr>
+<td>第 4 年以后</td>
+<td>下一阶段</td>
+<td>准备独立的股权故事（实际结果：分拆并重新上市）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>实际发生了什么（新闻稿以外的信息）</h3>
+<ul>
+<li>2020 年要约成功；Sunrise 于 2021 年从瑞士交易所退市。</li>
+<li>到 2024 年 Liberty Global 投资者日，品牌和系统已统一，88% 的客户迁移已完成。</li>
+<li>Liberty 分拆 Sunrise，2024 年 11 月 15 日 Sunrise 在瑞士交易所重新上市，A 类股开盘价 44.75 瑞郎，定位为完成整合、兑现协同的市场挑战者。</li>
+</ul>
+<p>从交割到重新上市大约四年，与三到四年的协同计划一致。</p>
+<h3>主要整合风险</h3>
+<ul>
+<li>迁移期间的客户流失，而 UPC 收入本已每年下滑约 4%。</li>
+<li>IT 和计费系统迁移延误。</li>
+<li>精干的移动挑战者与美国母公司管理下的有线运营商之间的文化冲突。</li>
+<li>降本过程中服务质量下滑。</li>
+</ul></section>
+<section id="facts"><h2>交易要点与来源</h2>
+<h3>两笔交易对比</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>2019：Sunrise 收购 UPC（失败）</th>
+<th>2020：Liberty Global 收购 Sunrise（完成）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>宣布日期</td>
+<td>2019 年 2 月 27 日</td>
+<td>2020 年 8 月 11 日</td>
+</tr>
+<tr>
+<td>企业价值</td>
+<td>63 亿瑞郎</td>
+<td>68 亿瑞郎</td>
+</tr>
+<tr>
+<td>对价</td>
+<td>承接 UPC 债务 36 亿瑞郎 + 现金 27 亿；Liberty 净现金约 26 亿</td>
+<td>每股 110 瑞郎现金，股权价值 50 亿瑞郎（4,540 万股）</td>
+</tr>
+<tr>
+<td>溢价</td>
+<td>不适用（非上市目标）</td>
+<td>较 60 日成交量加权均价 83.17 瑞郎溢价 32%</td>
+</tr>
+<tr>
+<td>协同前倍数</td>
+<td>2018 年调整后 EBITDA 9.9 倍；经营自由现金流 16.1 倍</td>
+<td>调整后 EBITDA 10.0 倍；经营自由现金流 17.6 倍</td>
+</tr>
+<tr>
+<td>协同后倍数</td>
+<td>调整后 EBITDA 8.0 倍；经营自由现金流 10.9 倍</td>
+<td>调整后 EBITDA 7.5 倍；经营自由现金流 10.3 倍</td>
+</tr>
+<tr>
+<td>年化协同</td>
+<td>成本和资本开支 1.9 亿瑞郎（第三年）+ 收入 4,500 万（第四年）</td>
+<td>2.75 亿瑞郎：成本 1.87 亿、资本开支 4,200 万、收入 4,600 万</td>
+</tr>
+<tr>
+<td>协同净现值</td>
+<td>约 28 亿瑞郎（24 + 4）</td>
+<td>31 亿瑞郎（成本和资本开支 26 亿）</td>
+</tr>
+<tr>
+<td>融资</td>
+<td>41 亿瑞郎全额包销配股（后缩减至 28 亿）</td>
+<td>Liberty 现金约 35 亿 + 新债 32 亿</td>
+</tr>
+<tr>
+<td>杠杆</td>
+<td>净债务/EBITDA 约 3.0 倍（计入协同 2.7 倍）</td>
+<td>UPC 借贷池目标 5.0 倍</td>
+</tr>
+<tr>
+<td>关键条件</td>
+<td>Sunrise 特别股东大会批准配股</td>
+<td>三分之二接受率；监管批准</td>
+</tr>
+<tr>
+<td>分手费</td>
+<td>Sunrise 支付 5,000 万瑞郎</td>
+<td>未披露</td>
+</tr>
+<tr>
+<td>过渡服务</td>
+<td>Liberty 向 Sunrise 提供最长 4 年（+1 年），首年约 9,000 万瑞郎</td>
+<td>不需要（同一集团）</td>
+</tr>
+<tr>
+<td>结果</td>
+<td>2019 年 10 月取消股东大会；11 月终止</td>
+<td>完成；2021 年退市；2024 年 11 月分拆</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2018 年财务数据（百万瑞郎）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>Sunrise</th>
+<th>UPC Switzerland</th>
+<th>合计</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>收入</td>
+<td>1,876</td>
+<td>1,296</td>
+<td>3,173</td>
+</tr>
+<tr>
+<td>增长</td>
+<td>+1.2%</td>
+<td>−3.7%</td>
+<td>−0.9%</td>
+</tr>
+<tr>
+<td>调整后 EBITDA（扣除总部分摊）</td>
+<td>601</td>
+<td>637</td>
+<td>1,238</td>
+</tr>
+<tr>
+<td>利润率</td>
+<td>32.0%</td>
+<td>49.1%</td>
+<td>39.0%</td>
+</tr>
+<tr>
+<td>经常性资本开支</td>
+<td>243</td>
+<td>245</td>
+<td>488</td>
+</tr>
+<tr>
+<td>调整后经营自由现金流</td>
+<td>358</td>
+<td>392</td>
+<td>750</td>
+</tr>
+</tbody>
+</table></div>
+<h3>本分析中的计算</h3>
+<ul>
+<li>2020 年支付的溢价：（110 − 83.17）× 4,540 万股 ≈ 12 亿瑞郎；对比 31 亿瑞郎协同净现值，Liberty 保留约 19 亿（约 60%）。</li>
+<li>成本协同占合并 EBITDA 比例：187 / 1,238 ≈ 15%。</li>
+</ul>
+<h3>来源</h3>
+<ul>
+<li>新闻稿：Sunrise《Sunrise to acquire UPC Switzerland for CHF 6.3 billion》（2019-02-27）；Liberty Global《Liberty Global to sell UPC Switzerland to Sunrise》（2019-02-27）；Liberty Global《Liberty Global to acquire 100% of Sunrise Communications Group by tender offer》（2020-08-11）。</li>
+<li><a href="https://www.investing.com/news/stock-market-news/sunrises-64-billion-takeover-of-upc-teeters-as-rights-issue-collapses-2000863">Reuters（Investing.com 转载）：股东反对导致 2019 年交易失败</a></li>
+<li><a href="https://telecompaper.com/news/sunrise-says-upc-switzerland-takeover-deal-dead--1313048">Telecompaper：Sunrise 称 UPC 交易已"死亡"</a></li>
+<li><a href="https://digitaltveurope.com/2019/11/13/sunrise-puts-end-to-upc-acquisition">DTVE：Sunrise 终止收购，支付 5,000 万瑞郎罚金</a></li>
+<li><a href="https://telecomtv.com/content/mobile/regulators-not-to-blame-for-once-as-sunrise-upc-deal-collapses-36690">TelecomTV：竞争委员会批准，股东否决</a></li>
+<li><a href="https://quartr.com/events/liberty-global-plc-lbtya-investor-day-2024_3P2hwrpF">Liberty Global 2024 投资者日摘要（Quartr）</a></li>
+<li><a href="https://www.six-group.com/en/newsroom/news/the-swiss-stock-exchange/2024/sunrise-listing.html">SIX：Sunrise 于 2024 年 11 月 15 日上市</a></li>
+</ul></section>
+    <footer>本页基于三份交易新闻稿及标注的公开报道，用于学习练习，不构成投资建议。</footer>
+  </main>
+</div>
+</body>
+</html>
