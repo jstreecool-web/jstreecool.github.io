@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legend Holdings: Akquisitionsprogramm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: deal-memo page — fixed contents rail on the left, one reading column, tables full column width */
+:root {
+  --bg: #f6f6f3;
+  --paper: #ffffff;
+  --ink: #1b2130;
+  --ink-2: #4d5566;
+  --rule: #dcdcd4;
+  --accent: #184f95;
+  --accent-soft: #e6eefa;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+    --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+    --s1: #3987e5; --s2: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15171c; --paper: #1d2027; --ink: #ecebe6; --ink-2: #b4b6bd;
+  --rule: #343843; --accent: #86b6ef; --accent-soft: #1f2b3d;
+  --s1: #3987e5; --s2: #d95926;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+nav { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .navhead { font-size: 12px; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 8px; }
+nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-left: 2px solid var(--rule); }
+nav a.lang { margin-top: 14px; border-left: 0; padding-left: 0; color: var(--accent); font-weight: 700; }
+nav a:hover, nav a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; }
+header { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--ink-2); letter-spacing: .04em; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; }
+.sub a { color: var(--accent); }
+.sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 8px; }
+.kpi { background: var(--paper); padding: 14px 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.kpi span { font-size: 13px; color: var(--ink-2); }
+section { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 24px; scroll-margin-top: 16px; }
+section > *:first-child { margin-top: 0; }
+h2 { font-family: var(--display); font-size: 24px; line-height: 1.4; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); text-wrap: balance; }
+h3 { font-size: 17px; margin: 28px 0 8px; color: var(--accent); text-wrap: balance; }
+p, li { max-width: 46em; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 1.4em; margin: 8px 0; }
+li { margin: 4px 0; }
+section > p:nth-of-type(1) strong:first-child { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+thead th { text-align: left; font-weight: 700; background: var(--accent-soft); border-bottom: 2px solid var(--accent); }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+code { font-size: .9em; }
+.fig { margin: 22px 0 6px; }
+.fig figcaption { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); }
+.sw.ref { height: 0; border-top: 2px dashed var(--ink-2); border-radius: 0; width: 16px; }
+.chart { width: 100%; max-width: 680px; height: auto; display: block; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .tick, .chart .reflab { fill: var(--ink-2); font-size: 12px; font-family: var(--body); }
+.chart .cat { fill: var(--ink); font-size: 13px; font-family: var(--body); }
+.chart .val { fill: var(--ink); font-size: 12px; font-weight: 700; font-family: var(--body); }
+.chart .s1 { fill: var(--s1); } .chart .s2 { fill: var(--s2); }
+.chart .ref { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .bar:hover path, .chart .bar:focus path { opacity: .8; }
+.chart .bar:focus { outline: none; }
+.src { font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+footer { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 16px; }
+  nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  nav .navhead { width: 100%; margin: 0; }
+  nav a { border: 1px solid var(--rule); padding: 4px 10px; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 20px 18px; }
+  h1 { font-size: 27px; }
+}
+section img{display:block;max-width:100%;height:auto;border:1px solid var(--rule,#ddd);margin:12px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="Inhalt"><div class="navhead">Inhalt</div><a href="#summary">Zusammenfassung</a><a href="#strategy">1 · Vision und Akquisitionslogik</a><a href="#programs">2 · Die drei gewählten Programme</a><a href="#facts">Anhang · Eckdaten und Quellen</a><a class="lang" href="en.html" hreflang="en">English →</a><a class="lang" href="index.html" hreflang="zh-CN">中文版 →</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">Gruppenarbeit · Entwurf eines Akquisitionsprogramms: Legend Holdings (HKEX 3396), Schwerpunkt KI-Technologie</div>
+      <h1>Legend Holdings: ein KI-Akquisitionsprogramm, das auf Kontrolle setzt</h1>
+      <p class="sub">Gestaltungselemente 1 und 2: strategische Vision und Akquisitionslogik sowie die drei von der Gruppe gewählten Programme: Technologiezugang, Plattform plus Bolt-ons und vertikale Integration. Analyse vom 27. November 2026, nur öffentliche Informationen.</p>
+      <div class="kpis"><div class="kpi"><b>RMB 606 Mrd.</b><span>Umsatz 2025</span></div><div class="kpi"><b>300+</b><span>KI-Beteiligungen (Legend-Gruppe)</span></div><div class="kpi"><b>USD 2 Mrd.</b><span>M&A-Dry-Powder</span></div><div class="kpi"><b>32,34 %</b><span>Anteil an Lenovo</span></div></div>
+    </header>
+    <section id="summary"><h2>Zusammenfassung</h2>
+<p><strong>Gruppenarbeit, CAS-M&amp;A-Modul Laamanen (27. November 2026):</strong> ein Akquisitionsprogramm für Legend Holdings (HKEX: 3396) mit Schwerpunkt KI-Technologie entwerfen. Diese Seite behandelt die Gestaltungselemente 1 und 2: strategische Vision und Akquisitionslogik sowie die von der Gruppe gewählten Programme.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Kernaussage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ambition</td>
+<td>Ein Wissenschafts- und Technologiekonzern mit KI im Zentrum werden: Lenovo als Motor, ein Portfolio von über 300 KI-Unternehmen als Deal-Pipeline und neue kontrollierte operative Säulen neben Lenovo und Levima</td>
+</tr>
+<tr>
+<td>Wo Akquisitionen nötig sind</td>
+<td>Nur dort, wo die <strong>Kontrolle</strong> über ein bewährtes KI-Unternehmen Wert schafft, den Minderheitsbeteiligungen nicht schaffen: eine kontrollierte operative KI-Säule und die Versorgungssicherheit für die KI-Hardware der Gruppe. Nicht für frühphasige Spitzen-KI (Venture Capital ist besser) und nicht für Lenovos eigenes Wachstum (Lenovos eigene M&amp;A)</td>
+</tr>
+<tr>
+<td>Gewählte Programme</td>
+<td><strong>Technologiezugang</strong> (schrittweise von Minderheit zu Mehrheit in bewährten Portfoliounternehmen), <strong>Plattform plus Bolt-ons</strong> (eine Gruppe für industrielle KI-Lösungen), <strong>vertikale Integration</strong> (kritische Lieferkette für KI-Rechenleistung)</td>
+</tr>
+<tr>
+<td>Budget</td>
+<td><strong>USD 2 Mrd. „Dry Powder" für das M&amp;A-Team</strong> (rund RMB 14 Mrd.), von der Gruppe festgelegt: etwa USD 0,5 Mrd. Technologiezugang, USD 0,8 Mrd. Plattform plus Bolt-ons, USD 0,5 Mrd. vertikale Integration, USD 0,2 Mrd. Reserve. Finanziert aus RMB 79,5 Mrd. Barmitteln (Juni 2026) und dem erwarteten Erlös aus dem BIL-Verkauf</td>
+</tr>
+<tr>
+<td>Grösste Risiken</td>
+<td>Bewertung unbewiesener Technologie; Interessenkonflikte mit Lenovo und Legends eigenen Fonds; Integrationslast; Exportkontrollen; Kapitalintensität von Lieferkettenanlagen</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Logik in einem Satz:</strong> Legend sollte nur dort zukaufen, wo die Kontrolle über ein bewährtes KI-Unternehmen Wert schafft, den Minderheitsbeteiligungen nicht schaffen, und dabei Lenovos Vertrieb und das Portfolio von 300 Unternehmen als Deal-Pipeline nutzen.</p>
+<p>Nächste Schritte der Gruppe: Element 3 (Zielmarkt-Landkarte und Longlist), Element 4 (Fünfjahres-Pipeline), Element 5 (Governance und Abbruchregel).</p></section>
+<section id="strategy"><h2>1 · Strategische Vision und Akquisitionslogik</h2>
+<h3>Legend Holdings heute</h3>
+<ul>
+<li><strong>Modell:</strong> eine Holding mit zwei Säulen, „industrieller Betrieb" und „industrielle Inkubation und Investitionen". Operative Tochtergesellschaften: Lenovo Group (intelligente Geräte und Infrastruktur), Levima Group (neue Werkstoffe), Banque Internationale à Luxembourg (BIL, Bank) und Joyvio Group (Landwirtschaft und Lebensmittel).</li>
+<li><strong>Grösse:</strong> Umsatz 2025 RMB 605,9 Mrd. (+18 %), Reingewinn RMB 9,8 Mrd. (+28 %), F&amp;E über RMB 17 Mrd., Investitionen in fast 150 chinesische Technologieunternehmen im Jahr. Umsatz H1 2026 RMB 362,9 Mrd. (+29 %), den Aktionären zurechenbarer Gewinn RMB 2,23 Mrd. (+219 %), Barmittel RMB 79,5 Mrd.</li>
+<li><strong>Strategie:</strong> Neupositionierung als Wissenschafts- und Technologiekonzern. Im ersten Halbjahr 2026 kamen über 80 Beteiligungen hinzu, in KI, optischen Verbindungen, Quantentechnologie, verkörperter Intelligenz, neuen Werkstoffen, intelligenter Medizin, kommerzieller Raumfahrt und Niedrigflug-Wirtschaft.</li>
+<li><strong>KI-Präsenz:</strong> über 300 KI-Unternehmen in der gesamten Legend-Gruppe, darunter Zhipu, Moore Threads, MetaX, Pony.ai und Cambricon. Über 70 Portfoliounternehmen arbeiten geschäftlich mit Lenovo zusammen.</li>
+<li><strong>Lenovo ist der Motor:</strong> Legend erhöhte seinen Anteil Ende 2025 von 31,41 % auf 32,34 %. Im ersten Halbjahr 2026 wuchs Lenovos Infrastrukturumsatz um 62 % bei einem Auftragsbestand an KI-Servern von USD 54 Mrd.; der KI-bezogene Umsatz stieg um 64 % auf 36 % des Gesamtumsatzes.</li>
+<li><strong>Portfolio-Bereinigung:</strong> Laut Financial Times (September 2026) arbeitet Legend mit Goldman Sachs am Verkauf seiner 90-%-Beteiligung an der BIL, bei einer Bewertung von rund EUR 2,5 Mrd. oder mehr.</li>
+</ul>
+<h3>Woher Wachstum kommen muss und welches Instrument passt</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Ambition</th>
+<th>Bester Weg</th>
+<th>Warum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frühphasige Spitzen-KI (Modelle, Chips, Robotik)</td>
+<td>Minderheitsbeteiligungen über Venture Capital (Legend Capital, Legend Star)</td>
+<td>Hohe, unbewiesene Bewertungen; Gründerbeteiligung treibt die Leistung; Legend tut dies bereits in grossem Umfang</td>
+</tr>
+<tr>
+<td>KI-Hardware und Lenovos Wachstum</td>
+<td>Lenovo, organisch oder über eigene M&amp;A</td>
+<td>Lenovo ist separat kotiert und hat eine eigene Strategie</td>
+</tr>
+<tr>
+<td>Kommerzieller Zug für das KI-Portfolio</td>
+<td>Allianzen (über 70 Portfoliounternehmen arbeiten mit Lenovo)</td>
+<td>Funktioniert bereits; kein Kapital nötig</td>
+</tr>
+<tr>
+<td><strong>Eine kontrollierte operative KI-Säule neben Lenovo und Levima</strong></td>
+<td><strong>Akquisitionen</strong></td>
+<td>Minderheitsbeteiligungen bringen Buchgewinne und schwankende Ergebnisse (Verluste 2022–24), aber keine Kontrolle, keinen Cashflow und keinen kleineren Holdingabschlag; organische Inkubation dauert 7–10 Jahre</td>
+</tr>
+<tr>
+<td><strong>Versorgungssicherheit bei kritischen KI-Komponenten</strong></td>
+<td><strong>Akquisitionen</strong></td>
+<td>Exportkontrollen machen Versorgungssicherheit strategisch; Minderheitsbeteiligungen sichern keine Zuteilung</td>
+</tr>
+<tr>
+<td>Wiederanlage der BIL-Erlöse und der Barmittel</td>
+<td>Akquisitionen, sofern sie zur Technologiestrategie passen</td>
+<td>Sonst Ausschüttung an die Aktionäre</td>
+</tr>
+</tbody>
+</table></div></section>
+<section id="programs"><h2>2 · Akquisitionsprogramme: die drei gewählten Programme</h2>
+<h3>A. Technologiezugang: von der Minderheit zur Mehrheit</h3>
+<ul>
+<li><strong>Logik:</strong> den Informationsvorsprung aus über 300 KI-Beteiligungen nutzen. Innerhalb von fünf Jahren den Anteil an 2–4 Portfoliounternehmen mit nachgewiesenem Product-Market-Fit auf eine Mehrheit (51 %+) erhöhen, mit Fokus auf verkörperter Intelligenz und KI-Hardware (Edge-KI-Chips, optische Verbindungen). Zukauf in späten Finanzierungsrunden oder vor dem Börsengang, mit Legends Fonds als Mitverkäufern.</li>
+<li><strong>Warum es passt:</strong> niedrigste Suchkosten und beste Due Diligence, da Legend bereits in diesen Verwaltungsräten sitzt. Die Börsengänge im Portfolio (15 im Jahr 2025, 12 im ersten Halbjahr 2026) erlauben pro Beteiligung eine klare Entscheidung: Ausstieg oder Kontrolle.</li>
+<li><strong>Risiken und Gegenmassnahmen:</strong><ul>
+<li>Bewertung unbewiesener Technologie → Stufenweise Aufstockung (z. B. 20 % → 35 % → 51 %) nach Meilensteinen, Earn-outs.</li>
+<li>Konflikte zwischen der kotierten Muttergesellschaft und den Investoren ihrer Fonds → unabhängige Bewertung, Genehmigung von Transaktionen mit nahestehenden Parteien durch unabhängige Verwaltungsräte.</li>
+<li>Abgang von Gründern und Schlüsselingenieuren nach der Übernahme → Gründerbeteiligung und Autonomie belassen, Halteprämien.</li>
+<li>Exportkontrollen für KI-Chips → Technologierisiko vor jedem Schritt prüfen.</li>
+</ul>
+</li>
+</ul>
+<h3>B. Plattform plus Bolt-ons: eine Gruppe für industrielle KI-Lösungen</h3>
+<ul>
+<li><strong>Logik:</strong> die Kontrolle über ein mittelgrosses chinesisches Unternehmen für industrielle KI oder „KI+"-Lösungen als Plattform erwerben und dann 4–6 branchenspezifische KI-Anwendungsunternehmen hinzufügen (Fertigung, Energie, Gesundheit, Logistik), viele davon bereits im Portfolio. Lenovo liefert Hardware und Vertriebskanäle; Levima und Joyvio sind die ersten Referenzkunden.</li>
+<li><strong>Warum es passt:</strong> unterstützt Chinas „KI+"-Initiative und das KI+-Anwendungsökosystem der Gruppe; schafft eine dritte Säule mit wiederkehrenden Software- und Serviceerlösen.</li>
+<li><strong>Risiken und Gegenmassnahmen:</strong><ul>
+<li>Ein voller Preis für die Plattform → Plattform aus dem eigenen Portfolio wählen, wo Legend Einblick und Beziehungen hat.</li>
+<li>Zu viele kleine Integrationen personenabhängiger Softwareteams → leichte Integration (gemeinsamer Vertrieb, Cloud und Backoffice; Produktteams bleiben eigenständig), höchstens etwa zwei Bolt-ons pro Jahr.</li>
+<li>Kanalkonflikt mit Lenovos Lösungs- und Servicegeschäft → Branchen und eine Vertriebsvereinbarung im Voraus festlegen.</li>
+</ul>
+</li>
+</ul>
+<h3>C. Vertikale Integration: kritische Lieferkette für KI-Rechenleistung</h3>
+<ul>
+<li><strong>Logik:</strong> Mehrheitsbeteiligungen an 2–3 Zulieferern von knappen oder exportkontrollierten Komponenten erwerben, von denen Lenovos KI-Server abhängen, etwa optische Module und Verbindungen, Flüssigkühlung und Stromversorgung oder inländische Beschleunigerkarten. Lenovos Auftragsbestand an KI-Servern von USD 54 Mrd. liefert die Grundnachfrage; Legend hält die Beteiligungen auf Holdingebene und liefert zu Marktbedingungen an Lenovo.</li>
+<li><strong>Warum es passt:</strong> Versorgungssicherheit ist unter Exportkontrollen strategisch; die Gruppe sichert sich Marge entlang der KI-Hardware-Wertschöpfungskette; sie nutzt die Fertigungserfahrung der Gruppe (Levima) und Portfoliobeziehungen bei KI-Chips.</li>
+<li><strong>Risiken und Gegenmassnahmen:</strong><ul>
+<li>Kapitalintensität und Hardwarezyklen → Minderheitspartner, gestaffelte Investitionen, Fokus auf kapitalarme Design- und Montagebetriebe.</li>
+<li>Verlust an Flexibilität bei Technologiewechseln (z. B. von Kupfer zu Optik, neue Kühlung) → alternative Lieferanten behalten; Programm jährlich überprüfen.</li>
+<li>Abhängigkeit von Lenovo als nahestehender Partei und Konflikt mit Lenovos eigenem Einkauf → Verträge zu Marktbedingungen, unabhängige Genehmigung, Ziel von mindestens 40 % Umsatz mit anderen Kunden als Lenovo.</li>
+<li>Sanktions- und Exportkontrollrisiken → inländische Liefersegmente bevorzugen; rechtliche Prüfung vor jeder Transaktion.</li>
+</ul>
+</li>
+</ul>
+<h3>Wie die drei Programme zusammenspielen</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>A. Technologiezugang</th>
+<th>B. Plattform plus Bolt-ons</th>
+<th>C. Vertikale Integration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rolle im Programm</td>
+<td>Zubringer: wandelt die besten Beteiligungen in Kontrolle um</td>
+<td>Baut die KI-Anwendungssäule auf</td>
+<td>Sichert die KI-Hardware-Lieferkette</td>
+</tr>
+<tr>
+<td>Verfügbarkeit von Zielen</td>
+<td>Hoch (eigenes Portfolio)</td>
+<td>Mittel</td>
+<td>Mittel</td>
+</tr>
+<tr>
+<td>Integrationslast</td>
+<td>Gering bis mittel</td>
+<td>Hoch</td>
+<td>Mittel</td>
+</tr>
+<tr>
+<td>Budget aus USD 2 Mrd. Dry Powder</td>
+<td>USD 0,5 Mrd. (25 %)</td>
+<td>USD 0,8 Mrd. (40 %)</td>
+<td>USD 0,5 Mrd. (25 %)</td>
+</tr>
+<tr>
+<td>Hauptrisiko</td>
+<td>Bewertung, Interessenkonflikte</td>
+<td>Integration, Plattformpreis</td>
+<td>Kapitalintensität, Abhängigkeit von Lenovo</td>
+</tr>
+</tbody>
+</table></div>
+<p>Der Technologiezugang ist der Einstieg für die beiden anderen Programme: Die ersten Mehrheitsbeteiligungen können die Plattform für B oder das erste Lieferkettenunternehmen für C werden.</p>
+<p><strong>Budget:</strong> Die Gruppe hat für das M&amp;A-Team USD 2 Mrd. „Dry Powder" (rund RMB 14 Mrd.) für die Programmdauer festgelegt. Die Aufteilung oben lässt USD 0,2 Mrd. (10 %) als Reserve für Integrationskosten und opportunistische Transaktionen. In dieser Grössenordnung kauft B eine mittelgrosse Plattform (etwa USD 300–500 Mio.) plus kleine Bolt-ons, und C setzt auf Minderheits-plus-Kontrolle-Beteiligungen an kapitalarmen Zulieferern statt auf kapitalintensive Werke. Aufteilung und Einschätzungen sind Arbeitsschätzungen der Gruppe, keine Quellenangaben.</p>
+<h3>Nicht gewählte Programmtypen</h3>
+<ul>
+<li><strong>Geografische Expansion</strong> (KI-gestützte Industrietechnologie in Europa und Südostasien): verworfen wegen des hohen regulatorischen Risikos für einen chinesischen KI-Käufer (EU-Investitionsprüfung, US-Beschränkungen) und weil der BIL-Ausstieg einen Rückzug aus europäischen Anlagen signalisiert.</li>
+<li><strong>Konsolidierung:</strong> kein fragmentierter Kernmarkt, der sich zusammenführen liesse.</li>
+</ul></section>
+<section id="facts"><h2>Eckdaten und Quellen</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Position</th>
+<th>Wert</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kotierung</td>
+<td>HKEX: 3396; gegründet 1984, Peking</td>
+</tr>
+<tr>
+<td>Umsatz / Reingewinn 2025</td>
+<td>RMB 605,9 Mrd. (+18 %) / RMB 9,8 Mrd. (+28 %)</td>
+</tr>
+<tr>
+<td>Den Aktionären zurechenbarer Gewinn 2025</td>
+<td>RMB 1,06 Mrd. (Dividende wieder aufgenommen)</td>
+</tr>
+<tr>
+<td>Umsatz / zurechenbarer Gewinn H1 2026</td>
+<td>RMB 362,9 Mrd. (+29 %) / RMB 2,23 Mrd. (+219 %)</td>
+</tr>
+<tr>
+<td>Barmittel (30. Juni 2026)</td>
+<td>RMB 79,5 Mrd.</td>
+</tr>
+<tr>
+<td>F&amp;E der Gruppe</td>
+<td>über RMB 17 Mrd. (2025); RMB 10 Mrd. (H1 2026)</td>
+</tr>
+<tr>
+<td>KI-Beteiligungen (Legend-Gruppe)</td>
+<td>über 300</td>
+</tr>
+<tr>
+<td>Neue Technologiebeteiligungen</td>
+<td>rund 150 (2025); über 80 (H1 2026)</td>
+</tr>
+<tr>
+<td>Anteil an Lenovo</td>
+<td>32,34 % (nach Zukäufen Ende 2025)</td>
+</tr>
+<tr>
+<td>Lenovo H1 2026</td>
+<td>Infrastrukturumsatz +62 %; Auftragsbestand KI-Server USD 54 Mrd.; KI-Umsatz 36 % des Gesamtumsatzes</td>
+</tr>
+<tr>
+<td>M&amp;A-Dry-Powder (Gruppenentscheid)</td>
+<td>USD 2 Mrd. (rund RMB 14 Mrd.)</td>
+</tr>
+<tr>
+<td>BIL</td>
+<td>rund 90 % Anteil; Verkauf laut Berichten im Gange, Bewertung rund EUR 2,5 Mrd.+ (FT, September 2026)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Hinweise:</strong> Die Zahl von über 300 KI-Unternehmen umfasst die gesamte Legend-Gruppe, einschliesslich der von ihr verwalteten Fonds. Der BIL-Verkauf beruht auf Medienberichten und ist von Legend nicht bestätigt. Die Budgetaufteilung ist eine Arbeitsschätzung der Gruppe. Wie im Modul verlangt, vor der Präsentation jeden Firmennamen und jede Zahl prüfen.</p>
+<h3>Quellen</h3>
+<ul>
+<li><a href="https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0331/2026033100960.pdf">Legend Holdings, Jahresergebnis 2025 (HKEX)</a></li>
+<li><a href="https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0828/2026082800825.pdf">Legend Holdings, Halbjahresergebnis 2026 (HKEX)</a></li>
+<li><a href="https://tech.ifeng.com/c/8rwOSCS10A0">IT之家 / ifeng: Ergebnis 2025</a></li>
+<li><a href="https://www.news.cn/finance/20260828/d49286dfb0204558b7ae215771054c4e/c.html">Xinhua: Ergebnis H1 2026</a></li>
+<li><a href="https://cj.sina.com.cn/articles/view/5835524730/15bd30a7a020029fhu">Sina Finance: Barmittel und neue Beteiligungen H1 2026</a></li>
+<li><a href="https://tech.ifeng.com/c/8x3jYyDI32M">ifeng: über 300 KI-Unternehmen und Synergien mit Lenovo</a></li>
+<li><a href="https://m.tech.china.com/articles/20260818/202608181943671.html">China.com: Aufstockung bei Lenovo auf 32,34 %</a></li>
+<li><a href="https://pulse2.com/legend-holdings-reportedly-launches-sale-of-90-stake-in-banque-internationale-a-luxembourg-at-e2-5-billion-valuation/">Pulse 2.0: BIL-Verkauf zu rund EUR 2,5 Mrd. (mit Verweis auf FT)</a></li>
+<li>Laamanen, <em>Group Work: Designing an Acquisition Program</em>, CAS M&amp;A and Corporate Strategy, St. Gallen, 27. November 2026</li>
+</ul></section>
+    <footer>Auf Basis öffentlicher Informationen, für eine Gruppenarbeit im Kurs. Keine Anlageberatung.</footer>
+  </main>
+</div>
+</body>
+</html>
